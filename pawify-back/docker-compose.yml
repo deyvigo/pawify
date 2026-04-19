@@ -1,0 +1,10 @@
+services:
+  pawify-db:
+    image: postgres:16
+    container_name: pawify-db
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=pawify-db
+      - POSTGRES_USER=paw-user
+      - POSTGRES_PASSWORD=paw-pass
