@@ -1,0 +1,23 @@
+meta {
+  name: refresh token
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{url}}/auth/refresh
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "token": "string",
+    "refresh_token": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InVzZXJvbmUiLCJleHAiOjE3NzcyNDgyNDR9.CrKrgWxvrRUveAjl7zeJbKfkazBZQrDPlrRhY"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
