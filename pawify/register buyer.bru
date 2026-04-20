@@ -1,0 +1,26 @@
+meta {
+  name: register buyer
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{url}}/auth/register/buyer
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "username": "usertwo",
+    "password": "password",
+    "first_name": "User",
+    "last_name": "Buyer",
+    "email": "example@gmail.com"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
