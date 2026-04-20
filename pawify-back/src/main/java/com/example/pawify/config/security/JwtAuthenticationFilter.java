@@ -52,22 +52,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
         String token = getTokenFromRequest(request);
         if (token != null) {
-            var claims = jwtService.extractPayload(token);
-            if (claims == null) {
-                SecurityContextHolder.clearContext();
-                throw new BadCredentialsException("Invalid token");
-            }
-            String username = claims.get("username").toString();
-
+            String username = jwtService.getUsernameFromToken(token);
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-                UsernamePasswordAuthenticationToken authenticationToken =
-                    new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities()
+                if (jwtService.isValidToken(token)) {
+                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                        userDetails,
+                        null,
+                        userDetails.getAuthorities()
                     );
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                } else {
+                    SecurityContextHolder.clearContext();
+                    throw new BadCredentialsException("Invalid JWT token");
+                }
 
-                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+
             }
         }
 
