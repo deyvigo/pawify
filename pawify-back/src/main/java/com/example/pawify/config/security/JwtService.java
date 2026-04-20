@@ -23,11 +23,19 @@ public class JwtService {
         return Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
     }
 
-    public String buildToken(Map<String, Object> claims) {
+    public String buildAccessToken(Map<String, Object> claims) {
         return Jwts.builder()
             .claims(claims)
             .signWith(getSigningKey())
             .expiration(new Date(System.currentTimeMillis() + expirationTime))
+            .compact();
+    }
+
+    public String buildRefreshToken(String username) {
+        return Jwts.builder()
+            .claims(Map.of("username", username))
+            .expiration(new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24 * 7)) // 7 days
+            .signWith(getSigningKey())
             .compact();
     }
 

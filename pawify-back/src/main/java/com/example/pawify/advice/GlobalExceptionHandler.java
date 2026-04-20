@@ -2,6 +2,7 @@ package com.example.pawify.advice;
 
 import com.example.pawify.dto.out.error.ErrorResponseDTO;
 import com.example.pawify.exception.ResourceNotFoundException;
+import com.example.pawify.exception.UserInvalidCredentialsException;
 import com.example.pawify.exception.UsernameAlreadyUsedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +39,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponseDTO> handleResourceNotFound(ResourceNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
             .body(ErrorResponseDTO.of(HttpStatus.NOT_FOUND, "RESOURCE_NOT_FOUND", ex.getMessage()));
+    }
+
+    @ExceptionHandler(UserInvalidCredentialsException.class)
+    public ResponseEntity<ErrorResponseDTO> handleUserInvalidCredentials(UserInvalidCredentialsException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+            .body(ErrorResponseDTO.of(HttpStatus.UNAUTHORIZED, "INVALID_CREDENTIALS", ex.getMessage()));
     }
 
     private static String toSnakeCase(String field) {
