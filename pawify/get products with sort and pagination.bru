@@ -1,0 +1,25 @@
+meta {
+  name: get products with sort and pagination
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{url}}/product?&size=10&sort=name,desc
+  body: none
+  auth: bearer
+}
+
+params:query {
+  size: 10
+  sort: name,desc
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiJ9.eyJsYXN0X25hbWUiOiJBZG1pbiIsImZpcnN0X25hbWUiOiJVc2VyIiwiaWQiOjEsInJvbGUiOiJBRE1JTiIsInVzZXJuYW1lIjoidXNlcm9uZSIsImV4cCI6MTc3NzU4MzkwOX0.z9YOwQXyd2a90HJH5p3CWTmGnI5j4T6seEGpegR3lcE
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
