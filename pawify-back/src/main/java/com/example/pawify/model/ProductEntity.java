@@ -35,6 +35,9 @@ public class ProductEntity {
     @Min(value = 0)
     private int stock;
 
+    @Column(nullable = false, unique = true)
+    private String shareCode;
+
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 

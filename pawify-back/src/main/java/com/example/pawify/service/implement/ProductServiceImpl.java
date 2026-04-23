@@ -10,6 +10,7 @@ import com.example.pawify.repository.AdminRepository;
 import com.example.pawify.repository.ImageRepository;
 import com.example.pawify.repository.ProductRepository;
 import com.example.pawify.service.CloudinaryService;
+import com.example.pawify.service.CodeGenerator;
 import com.example.pawify.service.ProductService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,7 @@ public class ProductServiceImpl implements ProductService {
     private final CloudinaryService cloudinaryService;
     private final ProductMapper productMapper;
     private final AdminRepository adminRepository;
+    private final CodeGenerator codeGenerator;
 
     @Override
     @Transactional
@@ -43,6 +45,13 @@ public class ProductServiceImpl implements ProductService {
 
         ProductEntity productEntity = productMapper.toEntity(productCreateRequestDTO);
         productEntity.setCreatedBy(adminEntity);
+
+        String code;
+        do {
+            code = codeGenerator.generateCode();
+        } while (productRepository.existsByShareCode(code));
+        productEntity.setShareCode(code);
+
         ProductEntity savedProduct = productRepository.save(productEntity);
 
         List<ImageEntity> imageEntities = new ArrayList<>();

@@ -10,6 +10,7 @@ public record ProductResponseDTO(
     String description,
     BigDecimal price,
     int stock,
+    String shareCode,
     LocalDateTime createdAt,
     List<ImageResponseDTO> images
 ) {}
