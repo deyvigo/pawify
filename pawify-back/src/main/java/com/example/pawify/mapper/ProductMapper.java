@@ -9,11 +9,13 @@ import org.mapstruct.MappingConstants;
 
 @Mapper(
     componentModel = MappingConstants.ComponentModel.SPRING,
-    uses = ImageMapper.class
+    uses = {ImageMapper.class, BrandMapper.class}
 )
 public interface ProductMapper {
+    @Mapping(target = "brand", ignore = true)
     ProductEntity toEntity(ProductCreateRequestDTO dto);
 
     @Mapping(source = "images", target = "images")
+    @Mapping(source = "brand", target = "brand")
     ProductResponseDTO toResponseDTO(ProductEntity productEntity);
 }

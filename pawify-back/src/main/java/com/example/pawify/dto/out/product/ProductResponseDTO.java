@@ -9,6 +9,8 @@ public record ProductResponseDTO(
     String name,
     String description,
     BigDecimal price,
+    BrandResponseDTO brand,
+    int countSelled,
     int stock,
     String shareCode,
     LocalDateTime createdAt,

@@ -6,13 +6,15 @@ import com.example.pawify.exception.ImagesNotProvidedException;
 import com.example.pawify.exception.UnauthorizedRequestException;
 import com.example.pawify.mapper.ProductMapper;
 import com.example.pawify.model.*;
-import com.example.pawify.repository.AdminRepository;
+import com.example.pawify.repository.BrandRepository;
 import com.example.pawify.repository.ImageRepository;
 import com.example.pawify.repository.ProductRepository;
 import com.example.pawify.service.CloudinaryService;
 import com.example.pawify.service.CodeGenerator;
 import com.example.pawify.service.ProductService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,8 +29,8 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final CloudinaryService cloudinaryService;
     private final ProductMapper productMapper;
-    private final AdminRepository adminRepository;
     private final CodeGenerator codeGenerator;
+    private final BrandRepository brandRepository;
 
     @Override
     @Transactional
@@ -52,6 +54,17 @@ public class ProductServiceImpl implements ProductService {
         } while (productRepository.existsByShareCode(code));
         productEntity.setShareCode(code);
 
+        BrandEntity brandEntity = brandRepository.findByName(productCreateRequestDTO.brand())
+            .orElse(null);
+
+        if (brandEntity == null) {
+            BrandEntity brand = new BrandEntity();
+            brand.setName(productCreateRequestDTO.brand());
+            brandEntity = brandRepository.save(brand);
+        }
+
+        productEntity.setBrand(brandEntity);
+
         ProductEntity savedProduct = productRepository.save(productEntity);
 
         List<ImageEntity> imageEntities = new ArrayList<>();
@@ -69,5 +82,12 @@ public class ProductServiceImpl implements ProductService {
         savedProduct.setImages(imageEntities);
 
         return productMapper.toResponseDTO(savedProduct);
+    }
+
+    @Override
+    public Slice<ProductResponseDTO> getProducts(Pageable pageable) {
+        return productRepository
+            .findAllBy(pageable)
+            .map(productMapper::toResponseDTO);
     }
 }

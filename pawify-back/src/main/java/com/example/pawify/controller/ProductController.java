@@ -6,7 +6,10 @@ import com.example.pawify.model.UserEntity;
 import com.example.pawify.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -28,5 +31,10 @@ public class ProductController {
         @AuthenticationPrincipal UserEntity userEntity
         ) {
         return productService.createProduct(productCreateRequestDTO, images, userEntity);
+    }
+
+    @GetMapping("")
+    public ResponseEntity<Slice<ProductResponseDTO>> getProducts(Pageable pageable) {
+        return ResponseEntity.ok(productService.getProducts(pageable));
     }
 }
