@@ -1,0 +1,29 @@
+meta {
+  name: create product
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{url}}/product
+  body: multipartForm
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiJ9.eyJsYXN0X25hbWUiOiJBZG1pbiIsImZpcnN0X25hbWUiOiJVc2VyIiwiaWQiOjIsInJvbGUiOiJBRE1JTiIsInVzZXJuYW1lIjoidXNlcm9uZSIsImV4cCI6MTc3NzMxNDM2MX0.vCK4GuvS3J8xAagRKwZxlBGRrTixuRP7gCdqCENOBoI
+}
+
+body:multipart-form {
+  name: Shampoo
+  description: Premium
+  price: 10.0
+  stock: 10
+  images: @file(/Users/deyvigo/Downloads/Wallpapers/969450.jpg)
+  images: @file(/Users/deyvigo/Downloads/Wallpapers/fish.jpg)
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
