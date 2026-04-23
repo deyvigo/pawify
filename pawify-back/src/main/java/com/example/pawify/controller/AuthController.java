@@ -10,7 +10,6 @@ import com.example.pawify.dto.out.auth.JwtDTO;
 import com.example.pawify.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

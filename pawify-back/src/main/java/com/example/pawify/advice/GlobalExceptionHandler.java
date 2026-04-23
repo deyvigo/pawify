@@ -1,9 +1,7 @@
 package com.example.pawify.advice;
 
 import com.example.pawify.dto.out.error.ErrorResponseDTO;
-import com.example.pawify.exception.ResourceNotFoundException;
-import com.example.pawify.exception.UserInvalidCredentialsException;
-import com.example.pawify.exception.UsernameAlreadyUsedException;
+import com.example.pawify.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -45,6 +43,18 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponseDTO> handleUserInvalidCredentials(UserInvalidCredentialsException ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
             .body(ErrorResponseDTO.of(HttpStatus.UNAUTHORIZED, "INVALID_CREDENTIALS", ex.getMessage()));
+    }
+
+    @ExceptionHandler(ImagesNotProvidedException.class)
+    public ResponseEntity<ErrorResponseDTO> handleImagesNotProvided(ImagesNotProvidedException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(ErrorResponseDTO.of(HttpStatus.BAD_REQUEST, "IMAGES_NOT_PROVIDED", ex.getMessage()));
+    }
+
+    @ExceptionHandler(UnauthorizedRequestException.class) // its authenticated but not have roles required
+    public ResponseEntity<ErrorResponseDTO> handleUnauthorizedRequest(UnauthorizedRequestException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+            .body(ErrorResponseDTO.of(HttpStatus.FORBIDDEN, "ROLE_UNAUTHORIZED", ex.getMessage()));
     }
 
     private static String toSnakeCase(String field) {

@@ -16,6 +16,6 @@ public class BuyerEntity extends UserEntity {
     private String email;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_address", nullable = true)
+    @JoinColumn(name = "address_id", nullable = true)
     private AddressEntity address;
 }

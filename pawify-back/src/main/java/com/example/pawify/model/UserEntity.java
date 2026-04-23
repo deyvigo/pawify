@@ -34,12 +34,12 @@ public abstract class UserEntity implements UserDetails {
     private String lastName;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_role", nullable = false)
+    @JoinColumn(name = "role_id", nullable = false)
     private RoleEntity role;
 
     @Override
     @NonNull
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.getRole().name()));
+        return List.of(new SimpleGrantedAuthority("ROLE_" + role.getRole().name()));
     }
 }
