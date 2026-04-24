@@ -1,0 +1,20 @@
+meta {
+  name: categories ordered by name
+  type: http
+  seq: 8
+}
+
+get {
+  url: {{url}}/category
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InVzZXJhZG1pbiIsInJvbGUiOiJBRE1JTiIsImlkIjoxLCJmaXJzdF9uYW1lIjoiVXNlciIsImxhc3RfbmFtZSI6IkFkbWluIiwiZXhwIjoxNzc3Njc1MzI5fQ.N22MqQzQjEWwIRfdLJ1MyGAQWvOBSa265lyRkAcJEHs
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
