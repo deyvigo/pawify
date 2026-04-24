@@ -14,6 +14,7 @@ public record ProductResponseDTO(
     int soldCount,
     int stock,
     String shareCode,
+    boolean active,
     LocalDateTime createdAt,
     List<ImageResponseDTO> images
 ) {}

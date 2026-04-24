@@ -1,5 +1,6 @@
 package com.example.pawify.service;
 
+import com.example.pawify.dto.in.product.ChangeActiveStatusDTO;
 import com.example.pawify.dto.in.product.ProductCreateRequestDTO;
 import com.example.pawify.dto.out.product.ProductResponseDTO;
 import com.example.pawify.model.UserEntity;
@@ -23,4 +24,6 @@ public interface ProductService {
         BigDecimal maxPrice,
         Pageable pageable
     );
+
+    ProductResponseDTO changeActiveStatus(String shareCode, ChangeActiveStatusDTO newStatus);
 }

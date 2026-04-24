@@ -1,5 +1,6 @@
 package com.example.pawify.controller;
 
+import com.example.pawify.dto.in.product.ChangeActiveStatusDTO;
 import com.example.pawify.dto.in.product.ProductCreateRequestDTO;
 import com.example.pawify.dto.out.product.ProductResponseDTO;
 import com.example.pawify.model.UserEntity;
@@ -46,5 +47,14 @@ public class ProductController {
         return ResponseEntity.ok(productService.getProducts(
             search, brand, category, minPrice, maxPrice, pageable
         ));
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PatchMapping("{shareCode}/active")
+    public ResponseEntity<ProductResponseDTO> changeActiveStatus(
+        @PathVariable String shareCode,
+        @Valid @RequestBody ChangeActiveStatusDTO active
+    ) {
+        return ResponseEntity.ok(productService.changeActiveStatus(shareCode, active));
     }
 }

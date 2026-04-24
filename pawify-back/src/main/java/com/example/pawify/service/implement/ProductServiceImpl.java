@@ -1,8 +1,10 @@
 package com.example.pawify.service.implement;
 
+import com.example.pawify.dto.in.product.ChangeActiveStatusDTO;
 import com.example.pawify.dto.in.product.ProductCreateRequestDTO;
 import com.example.pawify.dto.out.product.ProductResponseDTO;
 import com.example.pawify.exception.ImagesNotProvidedException;
+import com.example.pawify.exception.ResourceNotFoundException;
 import com.example.pawify.exception.UnauthorizedRequestException;
 import com.example.pawify.mapper.ProductMapper;
 import com.example.pawify.model.*;
@@ -117,7 +119,6 @@ public class ProductServiceImpl implements ProductService {
 
         if (search != null) {
             specs = specs.and(ProductSpecification.nameContains(search));
-            System.out.println("search: " + search);
         }
         if (brand != null) {
             specs = specs.and(ProductSpecification.hasBrand(brand));
@@ -129,6 +130,8 @@ public class ProductServiceImpl implements ProductService {
             specs = specs.and(ProductSpecification.priceBetween(minPrice, maxPrice));
         }
 
+        specs = specs.and(ProductSpecification.isActive());
+
         Page<ProductEntity> page = productRepository.findAll(specs, pageable);
         Slice<ProductResponseDTO> slice = new SliceImpl<>(
             page.map(productMapper::toResponseDTO).getContent(),
@@ -137,5 +140,16 @@ public class ProductServiceImpl implements ProductService {
         );
 
         return slice;
+    }
+
+    @Override
+    public ProductResponseDTO changeActiveStatus(String shareCode, ChangeActiveStatusDTO newStatus) {
+        ProductEntity productEntity = productRepository.findByShareCode(shareCode)
+            .orElseThrow(() -> new ResourceNotFoundException("Product with share code " + shareCode + " not found"));
+        productEntity.setActive(newStatus.active());
+        System.out.println(productEntity.isActive());
+        ProductEntity savedProduct = productRepository.save(productEntity);
+        System.out.println(savedProduct.isActive());
+        return productMapper.toResponseDTO(savedProduct);
     }
 }

@@ -4,16 +4,47 @@ import com.example.pawify.dto.out.error.ErrorResponseDTO;
 import com.example.pawify.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import tools.jackson.databind.exc.InvalidFormatException;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResponseDTO> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
+        Throwable cause = ex.getCause();
+
+        Map<String, Object> errors = new HashMap<>();
+        if (cause instanceof InvalidFormatException ife) {
+            String field = ife.getPath()
+                .stream()
+                .map(ref -> ref.getPropertyName())
+                .reduce((first, second) -> second)
+                .orElse("unknown");
+
+            errors.put(field, "Invalid value: " + ife.getValue());
+        } else {
+            errors.put("body", "Malformed JSON request");
+        }
+
+        return ResponseEntity.badRequest()
+            .body(
+                ErrorResponseDTO.of(
+                    HttpStatus.BAD_REQUEST,
+                    "INVALID_JSON",
+                    "Request body has invalid types",
+                    errors
+                )
+            );
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponseDTO> handleValidationErrors(MethodArgumentNotValidException ex) {
         Map<String, Object> errors = ex.getBindingResult().getFieldErrors().stream()

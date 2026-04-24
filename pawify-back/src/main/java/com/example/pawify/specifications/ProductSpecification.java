@@ -40,4 +40,8 @@ public class ProductSpecification {
             return cb.conjunction();
         });
     }
+
+    public static Specification<ProductEntity> isActive() {
+        return ((root, query, cb) -> cb.isTrue(root.get("active")));
+    }
 }

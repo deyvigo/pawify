@@ -46,6 +46,9 @@ public class ProductEntity {
     @Column(nullable = false)
     private int soldCount;
 
+    @Column(nullable = false)
+    boolean active;
+
     @Column(nullable = false, unique = true)
     private String shareCode;
 
@@ -63,6 +66,7 @@ public class ProductEntity {
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
         this.soldCount = 0;
+        this.active = true;
     }
 
 }
