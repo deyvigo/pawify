@@ -370,7 +370,7 @@ if __name__ == "__main__":
   print("-- Admin logged in!")
   print("Token: ", token)
   print("Creating products...")
-  print("--------------------------------------------------------------------------------")
   for product in products:
+    print("--------------------------------------------------------------------------------")
     product = create_product(token, product)
     print("Product created!: ", product)
