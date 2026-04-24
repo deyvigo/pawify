@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface ProductService {
@@ -14,5 +15,12 @@ public interface ProductService {
         ProductCreateRequestDTO productCreateRequestDTO, List<MultipartFile> images, UserEntity userEntity
     );
 
-    Slice<ProductResponseDTO> getProducts(Pageable pageable);
+    Slice<ProductResponseDTO> getProducts(
+        String search,
+        String brand,
+        String category,
+        BigDecimal minPrice,
+        BigDecimal maxPrice,
+        Pageable pageable
+    );
 }

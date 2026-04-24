@@ -15,6 +15,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -25,16 +26,25 @@ public class ProductController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ProductResponseDTO createProduct(
+    public ResponseEntity<ProductResponseDTO> createProduct(
         @Valid @ModelAttribute ProductCreateRequestDTO productCreateRequestDTO,
         @RequestParam("images") List<MultipartFile> images,
         @AuthenticationPrincipal UserEntity userEntity
         ) {
-        return productService.createProduct(productCreateRequestDTO, images, userEntity);
+        return ResponseEntity.ok(productService.createProduct(productCreateRequestDTO, images, userEntity));
     }
 
     @GetMapping("")
-    public ResponseEntity<Slice<ProductResponseDTO>> getProducts(Pageable pageable) {
-        return ResponseEntity.ok(productService.getProducts(pageable));
+    public ResponseEntity<Slice<ProductResponseDTO>> getProducts(
+        @RequestParam(required = false) String search,
+        @RequestParam(required = false) String brand,
+        @RequestParam(required = false) String category,
+        @RequestParam(required = false) BigDecimal minPrice,
+        @RequestParam(required = false) BigDecimal maxPrice,
+        Pageable pageable
+    ) {
+        return ResponseEntity.ok(productService.getProducts(
+            search, brand, category, minPrice, maxPrice, pageable
+        ));
     }
 }

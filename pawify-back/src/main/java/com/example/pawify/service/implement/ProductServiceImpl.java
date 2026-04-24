@@ -7,18 +7,24 @@ import com.example.pawify.exception.UnauthorizedRequestException;
 import com.example.pawify.mapper.ProductMapper;
 import com.example.pawify.model.*;
 import com.example.pawify.repository.BrandRepository;
+import com.example.pawify.repository.CategoryRepository;
 import com.example.pawify.repository.ImageRepository;
 import com.example.pawify.repository.ProductRepository;
 import com.example.pawify.service.CloudinaryService;
 import com.example.pawify.service.CodeGenerator;
 import com.example.pawify.service.ProductService;
+import com.example.pawify.specifications.ProductSpecification;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +37,7 @@ public class ProductServiceImpl implements ProductService {
     private final ProductMapper productMapper;
     private final CodeGenerator codeGenerator;
     private final BrandRepository brandRepository;
+    private final CategoryRepository categoryRepository;
 
     @Override
     @Transactional
@@ -54,16 +61,29 @@ public class ProductServiceImpl implements ProductService {
         } while (productRepository.existsByShareCode(code));
         productEntity.setShareCode(code);
 
-        BrandEntity brandEntity = brandRepository.findByName(productCreateRequestDTO.brand())
+        // create or find brand
+        BrandEntity brandEntity = brandRepository.findByName(productCreateRequestDTO.brand().toLowerCase())
             .orElse(null);
 
         if (brandEntity == null) {
             BrandEntity brand = new BrandEntity();
-            brand.setName(productCreateRequestDTO.brand());
+            brand.setName(productCreateRequestDTO.brand().toLowerCase());
             brandEntity = brandRepository.save(brand);
         }
 
         productEntity.setBrand(brandEntity);
+
+        //create or find category
+        CategoryEntity categoryEntity = categoryRepository.findByName(productCreateRequestDTO.category().toLowerCase())
+            .orElse(null);
+
+        if (categoryEntity == null) {
+            CategoryEntity category = new CategoryEntity();
+            category.setName(productCreateRequestDTO.category().toLowerCase());
+            categoryEntity = categoryRepository.save(category);
+        }
+
+        productEntity.setCategory(categoryEntity);
 
         ProductEntity savedProduct = productRepository.save(productEntity);
 
@@ -85,9 +105,37 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Slice<ProductResponseDTO> getProducts(Pageable pageable) {
-        return productRepository
-            .findAllBy(pageable)
-            .map(productMapper::toResponseDTO);
+    public Slice<ProductResponseDTO> getProducts(
+        String search,
+        String brand,
+        String category,
+        BigDecimal minPrice,
+        BigDecimal maxPrice,
+        Pageable pageable
+    ) {
+        Specification<ProductEntity> specs = Specification.unrestricted();
+
+        if (search != null) {
+            specs = specs.and(ProductSpecification.nameContains(search));
+            System.out.println("search: " + search);
+        }
+        if (brand != null) {
+            specs = specs.and(ProductSpecification.hasBrand(brand));
+        }
+        if (category != null) {
+            specs = specs.and(ProductSpecification.hasCategory(category));
+        }
+        if (minPrice != null || maxPrice != null) {
+            specs = specs.and(ProductSpecification.priceBetween(minPrice, maxPrice));
+        }
+
+        Page<ProductEntity> page = productRepository.findAll(specs, pageable);
+        Slice<ProductResponseDTO> slice = new SliceImpl<>(
+            page.map(productMapper::toResponseDTO).getContent(),
+            pageable,
+            page.hasNext()
+        );
+
+        return slice;
     }
 }

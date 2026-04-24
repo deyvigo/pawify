@@ -39,8 +39,12 @@ public class ProductEntity {
     @JoinColumn(name = "brand_id", nullable = false)
     private BrandEntity brand;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id", nullable = false)
+    private CategoryEntity category;
+
     @Column(nullable = false)
-    private int countSelled;
+    private int soldCount;
 
     @Column(nullable = false, unique = true)
     private String shareCode;
@@ -58,7 +62,7 @@ public class ProductEntity {
     @PrePersist
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
-        this.countSelled = 0;
+        this.soldCount = 0;
     }
 
 }
