@@ -4,12 +4,23 @@ meta {
   seq: 7
 }
 
-get {
-  url: {{url}}/product/7p5u974mmo/active
-  body: none
-  auth: inherit
+patch {
+  url: {{url}}/product/39rd3wotyq/active
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiJ9.eyJsYXN0X25hbWUiOiJBZG1pbiIsInVzZXJuYW1lIjoidXNlcmFkbWluIiwicm9sZSI6IkFETUlOIiwiaWQiOjEsImZpcnN0X25hbWUiOiJVc2VyIiwiZXhwIjoxNzc3NjA5OTUyfQ.SABkNFapCaePQ9koIVt0HlH9q17kyhBPi7toohL1ZXY
+}
+
+body:json {
+  {
+    "active": "a"
+  }
 }
 
 settings {
   encodeUrl: true
+  timeout: 0
 }
