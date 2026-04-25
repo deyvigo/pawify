@@ -1,7 +1,7 @@
-# As admin user
+# Como usuario administrador
 
 # Autenticación
-### 1. Como admin quiero crear otro administrador (HU01)
+### 1. Como administrador quiero crear otro administrador (HU01)
 #### Criterios de aceptación
 * Si el usuario ya existe, el sistema debe mostrar un mensaje de error
 * Si se han completado los campos y el usuario no existe, el sistema debe registrar el nuevo usuario
@@ -59,7 +59,7 @@
 #### Criterios de aceptación
 * Dado que responde al reclamo, el sistema debe registrar la repuesta
 
-# As common user
+# Como usuario comprador
 
 ## Autenticación
 
