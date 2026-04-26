@@ -1,13 +1,19 @@
 meta {
-  name: brand ordered by name
+  name: products with sort and pagination
   type: http
-  seq: 9
+  seq: 6
 }
 
 get {
-  url: {{url}}/brand
+  url: {{url}}/product?search=correa&size=10&sort=rating,asc
   body: none
   auth: bearer
+}
+
+params:query {
+  search: correa
+  size: 10
+  sort: rating,asc
 }
 
 auth:bearer {

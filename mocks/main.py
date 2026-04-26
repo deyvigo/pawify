@@ -1,4 +1,5 @@
 import requests
+import json
 
 API_URL = "http://localhost:8080"
 
@@ -366,11 +367,12 @@ if __name__ == "__main__":
   admin = create_admin()
   print("-- Admin created!: ", admin)
   print("Login admin...")
-  token = login_admin()["token"]
+  token = login_admin()
   print("-- Admin logged in!")
-  print("Token: ", token)
+  print(json.dumps(token, indent=2, ensure_ascii=False))
   print("Creating products...")
   for product in products:
     print("--------------------------------------------------------------------------------")
     product = create_product(token, product)
-    print("Product created!: ", product)
+    print("Product created!: ")
+    print(json.dumps(product, indent=2, ensure_ascii=False))
