@@ -15,7 +15,7 @@ public record BuyerRegisterRequestDTO(
     String firstName,
     @NotBlank(message = "last_name is required")
     String lastName,
-    @NotBlank(message = "email ir required")
+    @NotBlank(message = "email is required")
     @Email
     @Size(max = 100)
     String email

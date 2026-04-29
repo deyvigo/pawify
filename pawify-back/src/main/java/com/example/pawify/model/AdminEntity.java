@@ -12,9 +12,6 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 public class AdminEntity extends UserEntity {
-    @Column(nullable = false, unique = true)
-    private String dniNumber;
-
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 

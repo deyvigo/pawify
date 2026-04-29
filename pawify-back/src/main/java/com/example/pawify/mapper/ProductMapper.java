@@ -14,6 +14,7 @@ import org.mapstruct.MappingConstants;
 public interface ProductMapper {
     @Mapping(target = "brand", ignore = true)
     @Mapping(target = "category", ignore = true)
+    @Mapping(target = "subCategory", ignore = true)
     ProductEntity toEntity(ProductCreateRequestDTO dto);
 
     @Mapping(source = "images", target = "images")

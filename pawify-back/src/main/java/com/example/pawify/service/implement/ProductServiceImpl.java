@@ -8,10 +8,7 @@ import com.example.pawify.exception.ResourceNotFoundException;
 import com.example.pawify.exception.UnauthorizedRequestException;
 import com.example.pawify.mapper.ProductMapper;
 import com.example.pawify.model.*;
-import com.example.pawify.repository.BrandRepository;
-import com.example.pawify.repository.CategoryRepository;
-import com.example.pawify.repository.ImageRepository;
-import com.example.pawify.repository.ProductRepository;
+import com.example.pawify.repository.*;
 import com.example.pawify.service.CloudinaryService;
 import com.example.pawify.service.CodeGenerator;
 import com.example.pawify.service.ProductService;
@@ -40,6 +37,7 @@ public class ProductServiceImpl implements ProductService {
     private final CodeGenerator codeGenerator;
     private final BrandRepository brandRepository;
     private final CategoryRepository categoryRepository;
+    private final SubCategoryRepository subCategoryRepository;
 
     @Override
     @Transactional
@@ -86,6 +84,19 @@ public class ProductServiceImpl implements ProductService {
         }
 
         productEntity.setCategory(categoryEntity);
+
+        // create or find subcategory
+        SubCategoryEntity subCategoryEntity = subCategoryRepository.findByName(productCreateRequestDTO.subCategory().toLowerCase())
+            .orElse(null);
+
+        if (subCategoryEntity == null) {
+            SubCategoryEntity subCategory = new SubCategoryEntity();
+            subCategory.setName(productCreateRequestDTO.subCategory().toLowerCase());
+            subCategory.setCategory(categoryEntity);
+            subCategoryEntity = subCategoryRepository.save(subCategory);
+        }
+
+        productEntity.setSubCategory(subCategoryEntity);
 
         ProductEntity savedProduct = productRepository.save(productEntity);
 
