@@ -15,6 +15,8 @@ public record ProductCreateRequestDTO (
     String brand,
     @NotBlank(message = "category is required")
     String category,
+    @NotBlank(message = "sub_category is required")
+    String subCategory,
     @NotNull(message = "price is required")
     @DecimalMin(value = "0.00", inclusive = true, message = "price must be a non-negative decimal")
     BigDecimal price,

@@ -28,7 +28,7 @@ public class ProductController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ProductResponseDTO> createProduct(
-        @Valid @ModelAttribute ProductCreateRequestDTO productCreateRequestDTO,
+        @Valid @RequestPart("data") ProductCreateRequestDTO productCreateRequestDTO,
         @RequestParam("images") List<MultipartFile> images,
         @AuthenticationPrincipal UserEntity userEntity
         ) {
