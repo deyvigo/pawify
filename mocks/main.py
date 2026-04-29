@@ -375,7 +375,7 @@ def create_product(jwt_token, product):
       files.append(("images", (img, f)))
 
     headers = {
-      "Authorization": f"Bearer {jwt_token}"
+      "Authorization": f"Bearer {jwt_token['token']}"
     }
 
     r = requests.post(
