@@ -1,4 +1,5 @@
 import requests
+import json
 
 API_URL = "http://localhost:8080"
 
@@ -29,7 +30,8 @@ products = [
     "description": "Chow Chow",
     "price": 10,
     "stock": 10,
-    "category": "Croquetas",
+    "sub_category": "Croquetas",
+    "category": "Alimentación",
     "brand": "Dog Chow",
     "images": [
       "./images/croquetas_1.webp",
@@ -42,7 +44,8 @@ products = [
     "description": "Comida para todos",
     "price": 10,
     "stock": 10,
-    "category": "Dispensador",
+    "sub_category": "Dispensador",
+    "category": "Aseo",
     "brand": "Angies Boutique",
     "images": [
       "./images/dispensador_1.webp",
@@ -55,6 +58,7 @@ products = [
     "description": "Collar resistente y cómodo para perros de todas las tallas",
     "price": 8,
     "stock": 25,
+    "sub_category": "Collar",
     "category": "Accesorios",
     "brand": "PetStyle",
     "images": [
@@ -68,6 +72,7 @@ products = [
     "description": "Correa extensible hasta 5 metros con sistema de bloqueo",
     "price": 15,
     "stock": 18,
+    "sub_category": "Collar",
     "category": "Accesorios",
     "brand": "WalkMate",
     "images": [
@@ -81,6 +86,7 @@ products = [
     "description": "Juguete de goma resistente para reducir ansiedad y estrés",
     "price": 6,
     "stock": 40,
+    "sub_category": "Mordedor",
     "category": "Juguetes",
     "brand": "HappyPet",
     "images": [
@@ -94,7 +100,8 @@ products = [
     "description": "Cama acolchada con base antideslizante",
     "price": 25,
     "stock": 12,
-    "category": "Descanso",
+    "sub_category": "Cama",
+    "category": "Dormitorio",
     "brand": "CozyPaws",
     "images": [
       "./images/cama_para_perro_1.webp",
@@ -107,7 +114,8 @@ products = [
     "description": "Shampoo especial para eliminar pulgas y garrapatas",
     "price": 9,
     "stock": 30,
-    "category": "Higiene",
+    "sub_category": "Shampoo",
+    "category": "Aseo",
     "brand": "VetCare",
     "images": [
       "./images/shampoo_antipulgas_1.webp",
@@ -120,6 +128,7 @@ products = [
     "description": "Bowl doble para agua y comida, fácil de limpiar",
     "price": 12,
     "stock": 22,
+    "sub_category": "Plato",
     "category": "Alimentación",
     "brand": "PetKitchen",
     "images": [
@@ -133,6 +142,7 @@ products = [
     "description": "Caja de transporte segura para viajes cortos y largos",
     "price": 35,
     "stock": 8,
+    "sub_category": "Transportador",
     "category": "Transporte",
     "brand": "SafeTravel Pet",
     "images": [
@@ -146,7 +156,8 @@ products = [
     "description": "Premios saludables ricos en proteína",
     "price": 5,
     "stock": 50,
-    "category": "Snacks",
+    "sub_category": "Snack",
+    "category": "Alimentación",
     "brand": "NatureBites",
     "images": [
       "./images/snack_pollo_1.webp",
@@ -159,6 +170,7 @@ products = [
     "description": "Collar con luz LED para paseos nocturnos seguros",
     "price": 9,
     "stock": 20,
+    "sub_category": "Collar",
     "category": "Accesorios",
     "brand": "NightPaw",
     "images": [
@@ -172,6 +184,7 @@ products = [
     "description": "Comedero diseñado para evitar que el perro coma demasiado rápido",
     "price": 7,
     "stock": 30,
+    "sub_category": "Plato",
     "category": "Alimentación",
     "brand": "SlowEat Pet",
     "images": [
@@ -185,7 +198,8 @@ products = [
     "description": "Cepillo para eliminar pelo muerto en perros y gatos",
     "price": 6,
     "stock": 35,
-    "category": "Higiene",
+    "sub_category": "Cepillo",
+    "category": "Aseo",
     "brand": "FurClean",
     "images": [
       "./images/cepillo_quitapelo_1.webp",
@@ -198,7 +212,8 @@ products = [
     "description": "Arena aglomerante con control de olores",
     "price": 12,
     "stock": 40,
-    "category": "Higiene",
+    "sub_category": "Arena",
+    "category": "Aseo",
     "brand": "CatPure",
     "images": [
       "./images/arena_gato_1.webp",
@@ -211,6 +226,7 @@ products = [
     "description": "Rascador de cartón resistente para gatos",
     "price": 11,
     "stock": 18,
+    "sub_category": "Rascador",
     "category": "Juguetes",
     "brand": "Scratchy",
     "images": [
@@ -224,6 +240,7 @@ products = [
     "description": "Pelota que rebota irregularmente para estimular el juego",
     "price": 5,
     "stock": 60,
+    "sub_category": "Pelota",
     "category": "Juguetes",
     "brand": "PlayPet",
     "images": [
@@ -237,6 +254,7 @@ products = [
     "description": "Suplemento vitamínico para mejorar la salud general",
     "price": 14,
     "stock": 25,
+    "sub_category": "Vitamina",
     "category": "Salud",
     "brand": "VitaPet",
     "images": [
@@ -250,6 +268,7 @@ products = [
     "description": "Permite pasear dos perros al mismo tiempo",
     "price": 13,
     "stock": 15,
+    "sub_category": "Correa",
     "category": "Accesorios",
     "brand": "WalkPro",
     "images": [
@@ -263,6 +282,7 @@ products = [
     "description": "Casa portátil y resistente al clima",
     "price": 28,
     "stock": 10,
+    "sub_category": "Casa",
     "category": "Descanso",
     "brand": "HomePaw",
     "images": [
@@ -276,7 +296,8 @@ products = [
     "description": "Bolsas ecológicas para recoger desechos de mascotas",
     "price": 4,
     "stock": 100,
-    "category": "Higiene",
+    "sub_category": "Bolsa",
+    "category": "Aseo",
     "brand": "EcoPet",
     "images": [
       "./images/bolsa_biodegradable_1.webp",
@@ -289,6 +310,7 @@ products = [
     "description": "Arnés cómodo para control de perros durante el paseo",
     "price": 11,
     "stock": 22,
+    "sub_category": "Collar",
     "category": "Accesorios",
     "brand": "ControlDog",
     "images": [
@@ -302,7 +324,8 @@ products = [
     "description": "Premios que ayudan a limpiar los dientes del perro",
     "price": 6,
     "stock": 45,
-    "category": "Snacks",
+    "sub_category": "Snack",
+    "category": "Alimentación",
     "brand": "DentaPet",
     "images": [
       "./images/snack_dental_1.webp",
@@ -315,6 +338,7 @@ products = [
     "description": "Dispensador de agua con filtrado continuo",
     "price": 22,
     "stock": 14,
+    "sub_category": "Fuente",
     "category": "Alimentación",
     "brand": "HydraPet",
     "images": [
@@ -330,19 +354,25 @@ def create_product(jwt_token, product):
   file_handles = []
   
   try:
-    for img in product["images"]:
-      f = open(img, 'rb')
-      file_handles.append(f)
-      files.append(("images", (img, f)))
-
-    data = {
+    payload = {
       "name": product["name"],
       "description": product["description"],
       "price": product["price"],
       "stock": product["stock"],
       "category": product["category"],
+      "sub_category": product["sub_category"],
       "brand": product["brand"],
     }
+
+    files.append((
+      "data",
+      (None, json.dumps(payload), "application/json")
+    ))
+
+    for img in product["images"]:
+      f = open(img, 'rb')
+      file_handles.append(f)
+      files.append(("images", (img, f)))
 
     headers = {
       "Authorization": f"Bearer {jwt_token}"
@@ -350,7 +380,6 @@ def create_product(jwt_token, product):
 
     r = requests.post(
       url=f"{API_URL}/product",
-      data=data,
       files=files,
       headers=headers
     )
@@ -373,4 +402,5 @@ if __name__ == "__main__":
   for product in products:
     print("--------------------------------------------------------------------------------")
     product = create_product(token, product)
-    print("Product created!: ", product)
+    print("Product created!: ")
+    print(json.dumps(product, indent=2, ensure_ascii=False))
