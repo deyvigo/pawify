@@ -40,12 +40,13 @@ public class ProductController {
         @RequestParam(required = false) String search,
         @RequestParam(required = false) String brand,
         @RequestParam(required = false) String category,
+        @RequestParam(required = false) String subCategory,
         @RequestParam(required = false) BigDecimal minPrice,
         @RequestParam(required = false) BigDecimal maxPrice,
         Pageable pageable
     ) {
         return ResponseEntity.ok(productService.getProducts(
-            search, brand, category, minPrice, maxPrice, pageable
+            search, brand, category, subCategory, minPrice, maxPrice, pageable
         ));
     }
 

@@ -3,6 +3,7 @@ package com.example.pawify.specifications;
 import com.example.pawify.model.BrandEntity;
 import com.example.pawify.model.CategoryEntity;
 import com.example.pawify.model.ProductEntity;
+import com.example.pawify.model.SubCategoryEntity;
 import jakarta.persistence.criteria.Join;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -28,6 +29,15 @@ public class ProductSpecification {
             Join<ProductEntity, CategoryEntity> category = root.join("category");
             return criteriaBuilder.equal(
                 category.get("name"), categoryName.toLowerCase()
+            );
+        });
+    }
+
+    public static Specification<ProductEntity> hasSubCategory(String subCategoryName) {
+        return ((root, query, criteriaBuilder) -> {
+            Join<ProductEntity, SubCategoryEntity> subCategory = root.join("subCategory");
+            return criteriaBuilder.equal(
+                subCategory.get("name"), subCategoryName.toLowerCase()
             );
         });
     }

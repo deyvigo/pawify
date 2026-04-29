@@ -9,7 +9,7 @@ import org.mapstruct.MappingConstants;
 
 @Mapper(
     componentModel = MappingConstants.ComponentModel.SPRING,
-    uses = {ImageMapper.class, BrandMapper.class, CategoryMapper.class}
+    uses = {ImageMapper.class, BrandMapper.class, CategoryMapper.class, SubCategoryMapper.class}
 )
 public interface ProductMapper {
     @Mapping(target = "brand", ignore = true)
