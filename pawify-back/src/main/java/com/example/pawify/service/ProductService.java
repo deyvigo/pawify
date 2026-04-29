@@ -20,6 +20,7 @@ public interface ProductService {
         String search,
         String brand,
         String category,
+        String subCategory,
         BigDecimal minPrice,
         BigDecimal maxPrice,
         Pageable pageable

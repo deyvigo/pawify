@@ -122,6 +122,7 @@ public class ProductServiceImpl implements ProductService {
         String search,
         String brand,
         String category,
+        String subCategory,
         BigDecimal minPrice,
         BigDecimal maxPrice,
         Pageable pageable
@@ -137,6 +138,9 @@ public class ProductServiceImpl implements ProductService {
         if (category != null) {
             specs = specs.and(ProductSpecification.hasCategory(category));
         }
+        if (subCategory != null) {
+            specs = specs.and(ProductSpecification.hasSubCategory(subCategory));
+        }
         if (minPrice != null || maxPrice != null) {
             specs = specs.and(ProductSpecification.priceBetween(minPrice, maxPrice));
         }
@@ -144,13 +148,11 @@ public class ProductServiceImpl implements ProductService {
         specs = specs.and(ProductSpecification.isActive());
 
         Page<ProductEntity> page = productRepository.findAll(specs, pageable);
-        Slice<ProductResponseDTO> slice = new SliceImpl<>(
+        return new SliceImpl<>(
             page.map(productMapper::toResponseDTO).getContent(),
             pageable,
             page.hasNext()
         );
-
-        return slice;
     }
 
     @Override
