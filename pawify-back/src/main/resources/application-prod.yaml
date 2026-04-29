@@ -2,9 +2,9 @@ spring:
   application:
     name: pawify
   datasource:
-    url: jdbc:postgresql://localhost:5432/pawify-db
-    username: paw-user
-    password: paw-pass
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USER}
+    password: ${DATABASE_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: update
@@ -19,13 +19,13 @@ spring:
           auth: true
           starttls:
             enable: true
-    username: {{email}}
-    password: {{appspassword}}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_APPS_PASSWORD}
 
 security:
   jwt:
-    secret-key: misuperclavesecretaaaaaajsjdskjasldjalsjdasd
-    expiration-time: 604800000
+    secret-key: ${SECRET_KEY}
+    expiration-time: ${EXPIRATION_TIME}
 
 springdoc:
   api-docs:
@@ -34,6 +34,6 @@ springdoc:
     path: /
 
 cloudinary:
-  cloud-name: {{cloudinary.cloud-name}}
-  api-key: {{cloudinary.api-key}}
-  api-secret: {{cloudinary.api-secret}}
+  cloud-name: ${CLOUD_NAME}
+  api-key: ${CLOUD_API_KEY}
+  api-secret: ${CLOUD_API_SECRET}

@@ -66,7 +66,7 @@
 ### 1. Como usuario quiero registrarme en la aplicación (HU11)
 #### Criterios de aceptación
 * El usuario no tiene ninguna cuenta de usuario
-* Si el correo o username ya existe, el sistema debe mostrar un mensaje de error
+* Si el username, dni o correo ya existe, el sistema debe mostrar un mensaje de error
 * Si falta algún campo, el sistema debe mostrar un mensaje de error
 
 ### 2. Como usuario quiero iniciar sesión en la aplicación (HU12)
