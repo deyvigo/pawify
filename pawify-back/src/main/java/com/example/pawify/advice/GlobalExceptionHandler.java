@@ -64,6 +64,12 @@ public class GlobalExceptionHandler {
             .body(ErrorResponseDTO.of(HttpStatus.CONFLICT, "USERNAME_TAKEN", ex.getMessage()));
     }
 
+    @ExceptionHandler(CredentialsAlreadyInUseException.class)
+    public ResponseEntity<ErrorResponseDTO> handleCredentialsTaken(CredentialsAlreadyInUseException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+            .body(ErrorResponseDTO.of(HttpStatus.CONFLICT, "CREDENTIALS_TAKEN", ex.getMessage()));
+    }
+
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ErrorResponseDTO> handleResourceNotFound(ResourceNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -86,6 +92,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponseDTO> handleUnauthorizedRequest(UnauthorizedRequestException ex) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
             .body(ErrorResponseDTO.of(HttpStatus.FORBIDDEN, "ROLE_UNAUTHORIZED", ex.getMessage()));
+    }
+
+    @ExceptionHandler(InvalidRecoveryCodeException.class)
+    public ResponseEntity<ErrorResponseDTO> handleInvalidRecoveryCode(InvalidRecoveryCodeException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(ErrorResponseDTO.of(HttpStatus.BAD_REQUEST, "INVALID_RECOVERY_CODE", ex.getMessage()));
     }
 
     private static String toSnakeCase(String field) {

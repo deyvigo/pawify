@@ -1,9 +1,6 @@
 package com.example.pawify.controller;
 
-import com.example.pawify.dto.in.auth.AdminRegisterRequestDTO;
-import com.example.pawify.dto.in.auth.BuyerRegisterRequestDTO;
-import com.example.pawify.dto.in.auth.LoginRequestDTO;
-import com.example.pawify.dto.in.auth.LoginWithTokensRequestDTO;
+import com.example.pawify.dto.in.auth.*;
 import com.example.pawify.dto.out.auth.AdminRegisterResponseDTO;
 import com.example.pawify.dto.out.auth.BuyerRegisterResponseDTO;
 import com.example.pawify.dto.out.auth.JwtDTO;
@@ -45,5 +42,17 @@ public class AuthController {
     public ResponseEntity<JwtDTO> refreshToken(@Valid @RequestBody LoginWithTokensRequestDTO dto) {
         JwtDTO jwtDTO = authService.refreshToken(dto);
         return ResponseEntity.status(HttpStatus.OK).body(jwtDTO);
+    }
+
+    @PostMapping("/recovery/request-code")
+    public ResponseEntity<Void> requestRecoveryCode(@Valid @RequestBody RecoveryCodeRequestDTO dto) {
+        authService.sendRecoveryCode(dto);
+        return ResponseEntity.accepted().build();
+    }
+
+    @PostMapping("/recovery/reset-password")
+    public ResponseEntity<Void> resetPassword(@Valid @RequestBody PasswordRecoveryRequestDTO dto) {
+        authService.resetPassword(dto);
+        return ResponseEntity.ok().build();
     }
 }

@@ -13,14 +13,17 @@ public class CodeGeneratorImpl implements CodeGenerator {
     private final SecureRandom random = new SecureRandom();
 
     @Override
-    public String generateCode() {
-        int length = 10;
-
+    public String generateCode(int length) {
         StringBuilder code = new StringBuilder(length);
         for (int i = 0; i < length; i++) {
             code.append(CHARACTERS.charAt(random.nextInt(CHARACTERS.length())));
         }
 
         return code.toString();
+    }
+
+    @Override
+    public String generateCode() {
+        return generateCode(10);
     }
 }
