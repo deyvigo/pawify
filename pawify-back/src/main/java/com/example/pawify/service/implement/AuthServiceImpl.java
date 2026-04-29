@@ -1,28 +1,26 @@
 package com.example.pawify.service.implement;
 
 import com.example.pawify.config.security.JwtService;
-import com.example.pawify.dto.in.auth.AdminRegisterRequestDTO;
-import com.example.pawify.dto.in.auth.BuyerRegisterRequestDTO;
-import com.example.pawify.dto.in.auth.LoginRequestDTO;
-import com.example.pawify.dto.in.auth.LoginWithTokensRequestDTO;
+import com.example.pawify.dto.in.auth.*;
 import com.example.pawify.dto.out.auth.AdminRegisterResponseDTO;
 import com.example.pawify.dto.out.auth.BuyerRegisterResponseDTO;
 import com.example.pawify.dto.out.auth.JwtDTO;
-import com.example.pawify.exception.ResourceNotFoundException;
-import com.example.pawify.exception.UserInvalidCredentialsException;
-import com.example.pawify.exception.UsernameAlreadyUsedException;
+import com.example.pawify.exception.*;
 import com.example.pawify.mapper.AdminMapper;
 import com.example.pawify.mapper.BuyerMapper;
 import com.example.pawify.model.*;
-import com.example.pawify.repository.AdminRepository;
-import com.example.pawify.repository.BuyerRepository;
-import com.example.pawify.repository.RoleRepository;
-import com.example.pawify.repository.UserRepository;
+import com.example.pawify.repository.*;
 import com.example.pawify.service.AuthService;
+import com.example.pawify.service.CodeGenerator;
+import com.example.pawify.service.EmailService;
+import jakarta.mail.MessagingException;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 
 @Service
@@ -36,10 +34,15 @@ public class AuthServiceImpl implements AuthService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final RoleRepository roleRepository;
     private final JwtService jwtService;
+    private final CodeGenerator codeGenerator;
+    private final PasswordEncoder passwordEncoder;
+    private final PasswordResetTokenRepository passwordResetTokenRepository;
+    private final EmailService emailService;
 
     @Override
     public AdminRegisterResponseDTO registerAdmin(AdminRegisterRequestDTO dto) {
         if (userRepository.existsByUsername(dto.username())) throw new UsernameAlreadyUsedException("Username is already in use");
+        if (userRepository.existsByDniNumber(dto.dniNumber())) throw new CredentialsAlreadyInUseException("DniNumber is already in use");
 
         AdminEntity adminEntity = adminMapper.toEntity(dto);
         adminEntity.setPassword(bCryptPasswordEncoder.encode(dto.password()));
@@ -55,6 +58,8 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public BuyerRegisterResponseDTO registerBuyer(BuyerRegisterRequestDTO dto) {
         if (userRepository.existsByUsername(dto.username()))  throw new UsernameAlreadyUsedException("Username is already in use");
+        if (userRepository.existsByDniNumber(dto.dniNumber())) throw new CredentialsAlreadyInUseException("DniNumber is already in use");
+        if (buyerRepository.existsByEmail(dto.email())) throw new CredentialsAlreadyInUseException("Email is already in use");
 
         BuyerEntity buyerEntity = buyerMapper.toEntity(dto);
         buyerEntity.setPassword(bCryptPasswordEncoder.encode(dto.password()));
@@ -96,6 +101,55 @@ public class AuthServiceImpl implements AuthService {
         String token = jwtService.buildAccessToken(claims);
         String refreshToken = jwtService.buildRefreshToken(userEntity.getUsername());
         return new JwtDTO(token, refreshToken);
+    }
+
+    @Override
+    @Transactional
+    public void sendRecoveryCode(RecoveryCodeRequestDTO dto) {
+        BuyerEntity buyer = buyerRepository.findByUsername(dto.username()).orElse(null);
+
+        if (buyer == null) return;
+
+        passwordResetTokenRepository.deleteAllByUserAndUsedFalse(buyer);
+
+        String token = codeGenerator.generateCode(6);
+        String tokenHashed = passwordEncoder.encode(token);
+
+        PasswordResetTokenEntity passwordResetTokenEntity = new PasswordResetTokenEntity();
+        passwordResetTokenEntity.setTokenHash(tokenHashed);
+        passwordResetTokenEntity.setUser(buyer);
+        passwordResetTokenEntity.setExpirationDate(LocalDateTime.now().plusHours(1));
+        passwordResetTokenRepository.save(passwordResetTokenEntity);
+
+        try {
+            emailService.sendRecoveryCodeToEmail(buyer.getEmail(), token);
+        } catch (MessagingException e) {
+            return;
+        }
+    }
+
+    @Override
+    @Transactional
+    public void resetPassword(PasswordRecoveryRequestDTO dto) {
+        UserEntity user = userRepository.findByUsername(dto.username())
+            .orElseThrow(()  -> new InvalidRecoveryCodeException("Invalid recovery token"));
+
+        PasswordResetTokenEntity passwordResetTokenEntity = passwordResetTokenRepository.findByUserAndUsedFalse(user)
+            .orElseThrow(() -> new InvalidRecoveryCodeException("Invalid recovery token"));
+
+        if (passwordResetTokenEntity.getExpirationDate().isBefore(LocalDateTime.now())) {
+            throw new InvalidRecoveryCodeException("Token expired");
+        }
+
+        if (!passwordEncoder.matches(dto.code(), passwordResetTokenEntity.getTokenHash())) {
+            throw new InvalidRecoveryCodeException("Invalid recovery token");
+        }
+
+        user.setPassword(passwordEncoder.encode(dto.newPassword()));
+        userRepository.save(user);
+
+        passwordResetTokenEntity.setUsed(true);
+        passwordResetTokenRepository.save(passwordResetTokenEntity);
     }
 
     private Map<String, Object> buildClaimsFromUser(UserEntity userEntity) {
