@@ -1,9 +1,9 @@
 package com.example.pawify.dto.in.product;
 
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public record ChangeActiveStatusDTO (
-    @NotBlank(message = "Active status must not be blank")
+    @NotNull(message = "Active status must not null")
     boolean active
 ) {
 }

@@ -375,7 +375,7 @@ def create_product(jwt_token, product):
       files.append(("images", (img, f)))
 
     headers = {
-      "Authorization": f"Bearer {jwt_token}"
+      "Authorization": f"Bearer {jwt_token['token']}"
     }
 
     r = requests.post(
@@ -395,9 +395,9 @@ if __name__ == "__main__":
   admin = create_admin()
   print("-- Admin created!: ", admin)
   print("Login admin...")
-  token = login_admin()["token"]
+  token = login_admin()
   print("-- Admin logged in!")
-  print("Token: ", token)
+  print(json.dumps(token, indent=2, ensure_ascii=False))
   print("Creating products...")
   for product in products:
     print("--------------------------------------------------------------------------------")

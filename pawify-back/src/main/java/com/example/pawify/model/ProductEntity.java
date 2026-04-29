@@ -53,6 +53,12 @@ public class ProductEntity {
     @Column(nullable = false)
     boolean active;
 
+    @Column(nullable = false)
+    private int reviewCount;
+
+    @Column(nullable = false)
+    private double rating;
+
     @Column(nullable = false, unique = true)
     private String shareCode;
 
@@ -71,6 +77,8 @@ public class ProductEntity {
         this.createdAt = LocalDateTime.now();
         this.soldCount = 0;
         this.active = true;
+        this.reviewCount = 0;
+        this.rating = 0;
     }
 
 }
