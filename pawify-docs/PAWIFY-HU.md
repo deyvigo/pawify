@@ -75,6 +75,8 @@
 * Si el usuario no existe, el sistema debe mostrar un mensaje de error
 * Si falta algún campo, el sistema debe mostrar un mensaje de error
 * Si la contraseña es incorrecta, el sistema debe mostrar un mensaje de error
+* Si el usuario ha olvidado la contraseña, debe ingresar su username y solicitar un código de recuperación en su correo.
+* Dado que se ingresa el código correcto y la nueva contraseña el sistema cambia la contraseña.
 
 ## Catálogo de productos
 
