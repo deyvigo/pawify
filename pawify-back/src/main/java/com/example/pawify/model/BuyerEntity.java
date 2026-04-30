@@ -17,9 +17,9 @@ public class BuyerEntity extends UserEntity {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "address_id", nullable = true)
-    private AddressEntity address;
+    private List<AddressEntity> address;
 
     @OneToMany(fetch = FetchType.LAZY)
     private List<CardEntity> cards;

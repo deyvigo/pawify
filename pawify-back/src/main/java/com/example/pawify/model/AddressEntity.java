@@ -26,4 +26,16 @@ public class AddressEntity {
 
     @Column(nullable = false)
     private Double longitude;
+
+    @Column(nullable = false)
+    private boolean active;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "buyer_id", nullable = false)
+    private BuyerEntity buyer;
+
+    @PrePersist
+    public void prePersist() {
+        this.active = true;
+    }
 }

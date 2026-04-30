@@ -41,7 +41,8 @@ public class SecurityConfiguration {
                 ).permitAll()
                 .requestMatchers(request -> "OPTIONS".equalsIgnoreCase(request.getMethod())).permitAll()
                 .requestMatchers(
-                    "/card/**"
+                    "/card/**",
+                    "/address/**"
                 ).hasRole("BUYER")
                 .anyRequest().authenticated()
             ).exceptionHandling(ex -> ex.authenticationEntryPoint(customAuthenticationEntryPoint))
