@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Table(name = "buyers")
 @PrimaryKeyJoinColumn(name = "id")
@@ -18,4 +20,7 @@ public class BuyerEntity extends UserEntity {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "address_id", nullable = true)
     private AddressEntity address;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<CardEntity> cards;
 }
