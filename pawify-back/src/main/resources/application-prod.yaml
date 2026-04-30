@@ -11,16 +11,21 @@ spring:
   jackson:
     property-naming-strategy: SNAKE_CASE
   mail:
-    host: smtp.gmail.com
+    host: smtp.sendgrid.net
     port: 587
+    username: apikey
+    password: ${SENDGRID_APIKEY}
+    protocol: smtp
     properties:
       mail:
         smtp:
           auth: true
           starttls:
             enable: true
-    username: ${MAIL_USERNAME}
-    password: ${MAIL_APPS_PASSWORD}
+            require: true
+          ssl:
+            trust: smtp.sendgrid.net
+
 
 security:
   jwt:

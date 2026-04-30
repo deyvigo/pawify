@@ -20,7 +20,7 @@ public class EmailServiceImpl implements EmailService {
 
         helper.setTo(email);
         helper.setSubject("CÓDIGO DE RECUPERACIÓN");
-        helper.setFrom("Pawify <tuemail@gmail.com>");
+        helper.setFrom("Pawify <deyvipgo17@gmail.com>");
 
         String html = """
             <div style="font-family: Arial, sans-serif; text-align: center;">

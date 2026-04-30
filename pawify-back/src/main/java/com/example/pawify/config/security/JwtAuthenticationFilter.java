@@ -28,7 +28,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         "/error",
         "/swagger-ui.html",
         "/swagger-ui/**",
-        "/api-docs"
+        "/api-docs",
+        "/helloworld"
     ).map(path -> PathPatternRequestMatcher.withDefaults().matcher(path)).toList();
 
     public JwtAuthenticationFilter(JwtService jwtService, UserDetailsService userDetailsService) {
