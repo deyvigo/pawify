@@ -3,6 +3,7 @@ package com.example.pawify.service;
 import com.example.pawify.dto.in.product.ChangeActiveStatusDTO;
 import com.example.pawify.dto.in.product.ProductCreateRequestDTO;
 import com.example.pawify.dto.out.product.ProductResponseDTO;
+import com.example.pawify.model.AdminEntity;
 import com.example.pawify.model.UserEntity;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -26,5 +27,6 @@ public interface ProductService {
         Pageable pageable
     );
 
-    ProductResponseDTO changeActiveStatus(String shareCode, ChangeActiveStatusDTO newStatus);
+    void deactivateProduct(String shareCode);
+    void activateProduct(String shareCode);
 }

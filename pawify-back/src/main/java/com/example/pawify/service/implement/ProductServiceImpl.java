@@ -156,13 +156,24 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductResponseDTO changeActiveStatus(String shareCode, ChangeActiveStatusDTO newStatus) {
+    public void deactivateProduct(String shareCode) {
         ProductEntity productEntity = productRepository.findByShareCode(shareCode)
             .orElseThrow(() -> new ResourceNotFoundException("Product with share code " + shareCode + " not found"));
-        productEntity.setActive(newStatus.active());
-        System.out.println(productEntity.isActive());
-        ProductEntity savedProduct = productRepository.save(productEntity);
-        System.out.println(savedProduct.isActive());
-        return productMapper.toResponseDTO(savedProduct);
+
+        if (!productEntity.isActive()) return;
+
+        productEntity.setActive(false);
+        productRepository.save(productEntity);
+    }
+
+    @Override
+    public void activateProduct(String shareCode) {
+        ProductEntity productEntity = productRepository.findByShareCode(shareCode)
+            .orElseThrow(() -> new ResourceNotFoundException("Product with share code " + shareCode + " not found"));
+
+        if (!productEntity.isActive()) return;
+
+        productEntity.setActive(true);
+        productRepository.save(productEntity);
     }
 }
