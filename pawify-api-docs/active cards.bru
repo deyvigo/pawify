@@ -1,0 +1,20 @@
+meta {
+  name: active cards
+  type: http
+  seq: 12
+}
+
+get {
+  url: {{url_local}}/card
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiJ9.eyJsYXN0X25hbWUiOiJCdXllciIsImZpcnN0X25hbWUiOiJVc2VyIiwiaWQiOjEsInJvbGUiOiJCVVlFUiIsInVzZXJuYW1lIjoidXNlcmJ1eWVyIiwiZXhwIjoxNzc4MTgwMjI4fQ.iHZics7HaodThVyX145BO7s4ziMVi2h7XbuM7-A4r8A
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

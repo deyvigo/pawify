@@ -1,0 +1,28 @@
+meta {
+  name: create card
+  type: http
+  seq: 13
+}
+
+post {
+  url: {{url_local}}/card
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InVzZXJidXllciIsInJvbGUiOiJCVVlFUiIsImlkIjoxLCJmaXJzdF9uYW1lIjoiVXNlciIsImxhc3RfbmFtZSI6IkJ1eWVyIiwiZXhwIjoxNzc4MTc5ODY1fQ.xGh_Y4TUYN-0IbpsN_uesSCmmmTNWkqgDQCt6kLrj-4
+}
+
+body:json {
+  {
+    "name": "Tarjeta 3",
+    "due_date": "2026-10",
+    "number": "1234123412341234"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
