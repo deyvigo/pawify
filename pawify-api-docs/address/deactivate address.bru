@@ -1,0 +1,20 @@
+meta {
+  name: deactivate address
+  type: http
+  seq: 3
+}
+
+patch {
+  url: {{url_local}}/address/2/deactivate
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InVzZXJidXllcjIiLCJyb2xlIjoiQlVZRVIiLCJpZCI6MiwiZmlyc3RfbmFtZSI6IlVzZXIiLCJsYXN0X25hbWUiOiJCdXllciIsImV4cCI6MTc3ODE4NDQ5N30.FOcQW1fRRE1C9SVT7vbpjkchNjN6ILa0Q2aqgKs08fI
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
