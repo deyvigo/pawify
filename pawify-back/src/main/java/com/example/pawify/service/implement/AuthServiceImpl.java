@@ -13,7 +13,6 @@ import com.example.pawify.repository.*;
 import com.example.pawify.service.AuthService;
 import com.example.pawify.service.CodeGenerator;
 import com.example.pawify.service.EmailService;
-import jakarta.mail.MessagingException;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -123,7 +122,7 @@ public class AuthServiceImpl implements AuthService {
 
         try {
             emailService.sendRecoveryCodeToEmail(buyer.getEmail(), token);
-        } catch (MessagingException e) {
+        } catch (Exception e) {
             return;
         }
     }

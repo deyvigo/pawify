@@ -10,22 +10,6 @@ spring:
       ddl-auto: update
   jackson:
     property-naming-strategy: SNAKE_CASE
-  mail:
-    host: smtp.sendgrid.net
-    port: 587
-    username: apikey
-    password: ${SENDGRID_APIKEY}
-    protocol: smtp
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
-            require: true
-          ssl:
-            trust: smtp.sendgrid.net
-
 
 security:
   jwt:
@@ -42,3 +26,6 @@ cloudinary:
   cloud-name: ${CLOUD_NAME}
   api-key: ${CLOUD_API_KEY}
   api-secret: ${CLOUD_API_SECRET}
+
+sendgrid:
+  api-key: ${SENDGRID_APIKEY}

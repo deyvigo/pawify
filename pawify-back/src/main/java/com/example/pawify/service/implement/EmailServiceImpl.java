@@ -1,26 +1,26 @@
 package com.example.pawify.service.implement;
 
 import com.example.pawify.service.EmailService;
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
-import lombok.AllArgsConstructor;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
+import com.sendgrid.Method;
+import com.sendgrid.Request;
+import com.sendgrid.Response;
+import com.sendgrid.SendGrid;
+import com.sendgrid.helpers.mail.Mail;
+import com.sendgrid.helpers.mail.objects.Content;
+import com.sendgrid.helpers.mail.objects.Email;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
-@AllArgsConstructor
 public class EmailServiceImpl implements EmailService {
-    private final JavaMailSender javaMailSender;
+    @Value("${sendgrid.api-key}")
+    private String apiKey;
 
     @Override
-    public void sendRecoveryCodeToEmail(String email, String recoveryCode) throws MessagingException {
-        MimeMessage message = javaMailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message, true);
-
-        helper.setTo(email);
-        helper.setSubject("CÓDIGO DE RECUPERACIÓN");
-        helper.setFrom("Pawify <deyvipgo17@gmail.com>");
+    public void sendRecoveryCodeToEmail(String email, String recoveryCode) {
+        Email from = new Email("deyvipgo17@gmail.com"); // debe ser el verificado
+        String subject = "CÓDIGO DE RECUPERACIÓN";
+        Email to = new Email(email);
 
         String html = """
             <div style="font-family: Arial, sans-serif; text-align: center;">
@@ -40,8 +40,26 @@ public class EmailServiceImpl implements EmailService {
             </div>
         """.formatted(recoveryCode);
 
-        helper.setText(html, true);
+        Content content = new Content("text/html", html);
+        Mail mail = new Mail(from, subject, to, content);
 
-        javaMailSender.send(message);
+        SendGrid sg = new SendGrid(apiKey);
+
+        Request request = new Request();
+
+        try {
+            request.setMethod(Method.POST);
+            request.setEndpoint("mail/send");
+            request.setBody(mail.build());
+
+            Response response = sg.api(request);
+
+            if (response.getStatusCode() >= 400) {
+                throw new RuntimeException("Error enviando email: " + response.getBody());
+            }
+
+        } catch (Exception e) {
+            throw new RuntimeException("Fallo enviando email", e);
+        }
     }
 }
