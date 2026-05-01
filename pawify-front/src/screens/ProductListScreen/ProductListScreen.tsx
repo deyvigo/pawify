@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useCallback, useEffect } from "react";
 import {
   View,
   StyleSheet,
@@ -6,6 +6,8 @@ import {
   useWindowDimensions,
   Alert,
   TouchableWithoutFeedback,
+  ActivityIndicator,
+  Text,
 } from "react-native";
 import { colors } from "../../theme/colors";
 import { Header, SearchBar, FilterButton, ProductCard } from "../../components";
@@ -15,6 +17,8 @@ import {
   FilterState,
 } from "../../components/FilterMenu/FilterMenu";
 import { useAppContext } from "../../../App";
+import { useProducts } from "../../hooks/useProducts";
+import { ProductResponseDTO } from "../../types";
 
 type SortOption =
   | "price-asc"
@@ -24,91 +28,19 @@ type SortOption =
   | "best-selling"
   | "best-rated";
 
-interface Product {
-  id: string;
-  name: string;
-  image: string;
-  price: number;
-  rating: number;
-  sold: number;
-  brand?: string;
-  category?: string;
-  pet?: string;
-}
-
-const mockProducts: Product[] = [
-  {
-    id: "1",
-    name: "Alimento Premium para Perro",
-    image:
-      "https://www.superpet.pe/perro/alimentos-y-snacks/snack-y-premios/carnitas-tradicional-250g/PP000207.html?srsltid=AfmBOorP0GU9SVycAGRjxWEKSnaYRzjEZDqC7lqOqo5zdGO2Q64pUOi6",
-    price: 45.99,
-    rating: 5,
-    sold: 234,
-    brand: "Royal Canin",
-    category: "Alimento",
-    pet: "Perro",
-  },
-  {
-    id: "2",
-    name: "Juguete Hueso de Goma",
-    image:
-      "https://i0.wp.com/cat-oh.com/wp-content/uploads/2022/02/7070_arnes_para_gato_5.webp?resize=317%2C317&ssl=1",
-    price: 12.5,
-    rating: 4,
-    sold: 189,
-    brand: "Purina",
-    category: "Juguetes",
-    pet: "Perro",
-  },
-  {
-    id: "3",
-    name: "Cama Acolchada para Gato",
-    image: "https://picsum.photos/seed/cama/300/300",
-    price: 67.0,
-    rating: 5,
-    sold: 312,
-    brand: "Hill's",
-    category: "Camas",
-    pet: "Gato",
-  },
-  {
-    id: "4",
-    name: "Collar Antipulgas",
-    image: "https://picsum.photos/seed/collar/300/300",
-    price: 22.99,
-    rating: 3,
-    sold: 156,
-    brand: "Eukanuba",
-    category: "Salud",
-    pet: "Perro",
-  },
-  {
-    id: "5",
-    name: "Snacks Naturales para Perro",
-    image: "https://picsum.photos/seed/snacks/300/300",
-    price: 8.99,
-    rating: 4,
-    sold: 421,
-    brand: "Pedigree",
-    category: "Alimento",
-    pet: "Perro",
-  },
-  {
-    id: "6",
-    name: "Arena Aglomerante para Gato",
-    image: "https://picsum.photos/seed/arena/300/300",
-    price: 15.5,
-    rating: 4,
-    sold: 278,
-    brand: "Whiskas",
-    category: "Higiene",
-    pet: "Gato",
-  },
-];
-
 const GAP = 10;
 const HORIZONTAL_PADDING = 16;
+
+const mapProduct = (p: ProductResponseDTO) => ({
+  id: p.share_code || String(p.id),
+  name: p.name,
+  image: p.images?.[0]?.url || "https://picsum.photos/seed/default/300/300",
+  price: p.price,
+  rating: p.rating,
+  sold: p.sold_count,
+  brand: p.brand?.name,
+  category: p.category?.name,
+});
 
 export const ProductListScreen: React.FC = () => {
   const { openDrawer } = useAppContext();
@@ -119,11 +51,24 @@ export const ProductListScreen: React.FC = () => {
   const [activeFilters, setActiveFilters] = useState<FilterState | null>(null);
   const { width } = useWindowDimensions();
 
+  const { products: rawProducts, loading, loadingMore, error, hasMore, loadProducts, loadMore } = useProducts();
+  const products = Array.isArray(rawProducts) ? rawProducts : [];
+
   const cardWidth = (width - HORIZONTAL_PADDING * 2 - GAP) / 2;
   const halfRowWidth = (width - HORIZONTAL_PADDING * 2 - GAP) / 2;
 
-  const handleAddToCart = (product: Product) => {
+  const handleAddToCart = (product: ReturnType<typeof mapProduct>) => {
     Alert.alert("Agregado", `${product.name} se agregó al carrito`);
+  };
+
+  const handleScroll = (event: any) => {
+    const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
+    const paddingToBottom = 20;
+    if (layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom) {
+      if (hasMore && !loadingMore) {
+        loadMore();
+      }
+    }
   };
 
   const handleFilter = () => {
@@ -139,77 +84,38 @@ export const ProductListScreen: React.FC = () => {
   const handleSortSelect = (sort: SortOption) => {
     setActiveSort(sort);
     setShowSort(false);
+    loadProducts({ sort, search: searchQuery || undefined });
   };
 
   const handleFilterApply = (filters: FilterState) => {
     setActiveFilters(filters);
     setShowFilter(false);
+    loadProducts({
+      sort: activeSort,
+      search: searchQuery || undefined,
+      minPrice: filters.priceMin,
+      maxPrice: filters.priceMax,
+      brand: filters.brands.length === 1 ? filters.brands[0] : undefined,
+      category: filters.categories.length === 1 ? filters.categories[0] : undefined,
+    });
   };
 
-  const applyFilters = (products: Product[]): Product[] => {
-    if (!activeFilters) return products;
-
-    let result = [...products];
-
-    if (activeFilters.priceMin > 0 || activeFilters.priceMax < 100) {
-      result = result.filter(
-        (p) =>
-          p.price >= activeFilters.priceMin &&
-          p.price <= activeFilters.priceMax,
-      );
+  useEffect(() => {
+    if (searchQuery.length === 0 || searchQuery.length > 2) {
+      const timeout = setTimeout(() => {
+        loadProducts({
+          search: searchQuery || undefined,
+          sort: activeSort,
+        });
+      }, 400);
+      return () => clearTimeout(timeout);
     }
+  }, [searchQuery, activeSort, loadProducts]);
 
-    if (activeFilters.brands.length > 0) {
-      result = result.filter(
-        (p) => p.brand && activeFilters.brands.includes(p.brand),
-      );
-    }
-
-    if (activeFilters.categories.length > 0) {
-      result = result.filter(
-        (p) => p.category && activeFilters.categories.includes(p.category),
-      );
-    }
-
-    if (activeFilters.pets.length > 0) {
-      result = result.filter(
-        (p) => p.pet && activeFilters.pets.includes(p.pet),
-      );
-    }
-
-    return result;
-  };
-
+  const safeProducts = Array.isArray(products) ? products : [];
   const filteredProducts = useMemo(() => {
-    let products = mockProducts.filter((p) =>
-      p.name.toLowerCase().includes(searchQuery.toLowerCase()),
-    );
-
-    products = applyFilters(products);
-
-    switch (activeSort) {
-      case "price-asc":
-        products.sort((a, b) => a.price - b.price);
-        break;
-      case "price-desc":
-        products.sort((a, b) => b.price - a.price);
-        break;
-      case "name-az":
-        products.sort((a, b) => a.name.localeCompare(b.name));
-        break;
-      case "name-za":
-        products.sort((a, b) => b.name.localeCompare(a.name));
-        break;
-      case "best-selling":
-        products.sort((a, b) => b.sold - a.sold);
-        break;
-      case "best-rated":
-        products.sort((a, b) => b.rating - a.rating);
-        break;
-    }
-
-    return products;
-  }, [searchQuery, activeSort, activeFilters]);
+    return safeProducts.map(mapProduct);
+  }, [safeProducts]);
 
   return (
     <View style={styles.container}>
@@ -237,7 +143,11 @@ export const ProductListScreen: React.FC = () => {
           </View>
         </View>
       )}
-      <ScrollView contentContainerStyle={styles.scrollContent}>
+      <ScrollView 
+        contentContainerStyle={styles.scrollContent}
+        onScroll={handleScroll}
+        scrollEventThrottle={16}
+      >
         <View style={styles.flexWrap}>
           {filteredProducts.map((product) => (
             <ProductCard
@@ -248,6 +158,11 @@ export const ProductListScreen: React.FC = () => {
             />
           ))}
         </View>
+        {loadingMore && (
+          <View style={{ padding: 20, alignItems: 'center' }}>
+            <ActivityIndicator size="small" color={colors.primary} />
+          </View>
+        )}
       </ScrollView>
     </View>
   );
