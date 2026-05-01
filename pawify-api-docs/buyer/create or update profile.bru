@@ -1,17 +1,21 @@
 meta {
-  name: buyer info
+  name: create or update profile
   type: http
-  seq: 1
+  seq: 2
 }
 
-get {
-  url: {{url_local}}/buyer
-  body: none
+put {
+  url: {{url_local}}/buyer/profile
+  body: multipartForm
   auth: bearer
 }
 
 auth:bearer {
   token: eyJhbGciOiJIUzI1NiJ9.eyJmaXJzdF9uYW1lIjoiVXNlciIsImxhc3RfbmFtZSI6IkJ1eWVyIiwidXNlcm5hbWUiOiJ1c2VyYnV5ZXIxIiwicm9sZSI6IkJVWUVSIiwiaWQiOjEsImV4cCI6MTc3ODI4MTI4OX0.f916dwVRI6rU8XE4uzsX8ZyzOmH7mVwabg51h7DULDQ
+}
+
+body:multipart-form {
+  image: @file(/Users/deyvigo/dev/pawify/mocks/images/profile/user-profile-1.jpg)
 }
 
 settings {
