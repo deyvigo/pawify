@@ -49,11 +49,14 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.white,
     borderRadius: 12,
-    marginHorizontal: 16,
-    marginBottom: 12,
     padding: 8,
     borderWidth: 1,
     borderColor: colors.border,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
   },
   option: {
     flexDirection: 'row',
