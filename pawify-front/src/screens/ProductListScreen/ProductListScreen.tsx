@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
   View,
   StyleSheet,
@@ -8,6 +8,9 @@ import {
 } from "react-native";
 import { colors } from "../../theme/colors";
 import { Header, SearchBar, FilterButton, ProductCard } from "../../components";
+import { SortMenu } from "../../components/SortMenu/SortMenu";
+
+type SortOption = 'price-asc' | 'price-desc' | 'name-az' | 'name-za' | 'best-selling' | 'best-rated';
 
 interface Product {
   id: string;
@@ -76,6 +79,8 @@ const HORIZONTAL_PADDING = 16;
 
 export const ProductListScreen: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [showSort, setShowSort] = useState(false);
+  const [activeSort, setActiveSort] = useState<SortOption>('name-az');
   const { width } = useWindowDimensions();
 
   const cardWidth = (width - HORIZONTAL_PADDING * 2 - GAP) / 2;
@@ -89,12 +94,42 @@ export const ProductListScreen: React.FC = () => {
   };
 
   const handleSort = () => {
-    Alert.alert("Ordenar", "Abrir opciones de ordenamiento");
+    setShowSort(prev => !prev);
   };
 
-  const filteredProducts = mockProducts.filter((p) =>
-    p.name.toLowerCase().includes(searchQuery.toLowerCase()),
-  );
+  const handleSortSelect = (sort: SortOption) => {
+    setActiveSort(sort);
+    setShowSort(false);
+  };
+
+  const filteredProducts = useMemo(() => {
+    let products = mockProducts.filter((p) =>
+      p.name.toLowerCase().includes(searchQuery.toLowerCase()),
+    );
+
+    switch (activeSort) {
+      case 'price-asc':
+        products.sort((a, b) => a.price - b.price);
+        break;
+      case 'price-desc':
+        products.sort((a, b) => b.price - a.price);
+        break;
+      case 'name-az':
+        products.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      case 'name-za':
+        products.sort((a, b) => b.name.localeCompare(a.name));
+        break;
+      case 'best-selling':
+        products.sort((a, b) => b.sold - a.sold);
+        break;
+      case 'best-rated':
+        products.sort((a, b) => b.rating - a.rating);
+        break;
+    }
+
+    return products;
+  }, [searchQuery, activeSort]);
 
   return (
     <View style={styles.container}>
@@ -104,6 +139,7 @@ export const ProductListScreen: React.FC = () => {
         <FilterButton label="Filtro" icon="ᯤ" onPress={handleFilter} />
         <FilterButton label="Ordenar" icon="▼" onPress={handleSort} />
       </View>
+      {showSort && <SortMenu activeSort={activeSort} onSortSelect={handleSortSelect} />}
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.flexWrap}>
           {filteredProducts.map((product) => (
