@@ -8,6 +8,10 @@ import { ProductListScreen } from './src/screens/ProductListScreen/ProductListSc
 import { PurchaseScreen } from './src/screens/PurchaseScreen/PurchaseScreen';
 import { OrdersScreen } from './src/screens/OrdersScreen/OrdersScreen';
 import { AccountScreen } from './src/screens/AccountScreen/AccountScreen';
+import { ProductDetailScreen } from './src/screens/ProductDetailScreen/ProductDetailScreen';
+import { Product } from './src/types/product';
+import { useProducts } from './src/hooks/useProducts';
+import { ProductResponseDTO } from './src/types';
 
 type TabKey = 'catalog' | 'purchase' | 'orders' | 'account';
 
@@ -15,12 +19,30 @@ interface AppContextType {
   drawerOpen: boolean;
   openDrawer: () => void;
   closeDrawer: () => void;
+  selectedProduct: Product | null;
+  setSelectedProduct: (product: Product | null) => void;
+  products: ProductResponseDTO[];
+  loading: boolean;
+  loadingMore: boolean;
+  hasMore: boolean;
+  loadProducts: (params?: any) => Promise<void>;
+  loadMore: () => void;
+  refresh: () => Promise<void>;
 }
 
 const AppContext = createContext<AppContextType>({
   drawerOpen: false,
   openDrawer: () => {},
   closeDrawer: () => {},
+  selectedProduct: null,
+  setSelectedProduct: () => {},
+  products: [],
+  loading: true,
+  loadingMore: false,
+  hasMore: true,
+  loadProducts: async () => {},
+  loadMore: () => {},
+  refresh: async () => {},
 });
 
 export const useAppContext = () => useContext(AppContext);
@@ -35,17 +57,36 @@ const screens: Record<TabKey, React.FC> = {
 export default function App() {
   const [activeTab, setActiveTab] = useState<TabKey>('catalog');
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   const ActiveScreen = screens[activeTab];
 
+  const productApi = useProducts();
+
   return (
-    <AppContext.Provider value={{ drawerOpen, openDrawer: () => setDrawerOpen(true), closeDrawer: () => setDrawerOpen(false) }}>
+    <AppContext.Provider
+      value={{
+        drawerOpen,
+        openDrawer: () => setDrawerOpen(true),
+        closeDrawer: () => setDrawerOpen(false),
+        selectedProduct,
+        setSelectedProduct,
+        ...productApi,
+      }}
+    >
       <SafeAreaView style={styles.container}>
         <View style={styles.content}>
-          <ActiveScreen />
+          {selectedProduct ? (
+            <ProductDetailScreen product={selectedProduct} onBack={() => setSelectedProduct(null)} />
+          ) : (
+            <ActiveScreen />
+          )}
         </View>
         <DrawerMenu isOpen={drawerOpen} onClose={() => setDrawerOpen(false)} />
-        <BottomNavBar activeTab={activeTab} onTabPress={setActiveTab} />
+        <BottomNavBar activeTab={activeTab} onTabPress={(tab) => {
+          setActiveTab(tab);
+          setSelectedProduct(null); // Clear selected product when switching tabs
+        }} />
         <StatusBar style="dark" />
       </SafeAreaView>
     </AppContext.Provider>

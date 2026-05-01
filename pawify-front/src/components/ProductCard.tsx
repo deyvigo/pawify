@@ -9,29 +9,28 @@ import {
 } from "react-native";
 import { colors } from "../theme/colors";
 import { StarRating } from "./StarRating";
+import { Product } from "../types/product";
 
-interface Product {
-  id: string;
-  name: string;
-  image: string;
-  price: number;
-  rating: number;
-  sold: number;
-}
 
 interface ProductCardProps {
   product: Product;
   onAddToCart: (product: Product) => void;
+  onPress: (product: Product) => void;
   style?: ViewStyle;
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({
   product,
   onAddToCart,
+  onPress,
   style,
 }) => {
   return (
-    <View style={[styles.container, style]}>
+    <TouchableOpacity
+      activeOpacity={0.9}
+      style={[styles.container, style]}
+      onPress={() => onPress(product)}
+    >
       <Image
         source={{ uri: product.image }}
         style={styles.image}
@@ -55,7 +54,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           </TouchableOpacity>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

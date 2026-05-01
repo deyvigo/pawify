@@ -1,24 +1,34 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { colors } from "../theme/colors";
+import { Ionicons } from "@expo/vector-icons";
 
 interface HeaderProps {
-  onMenuPress: () => void;
+  onActionPress: () => void;
+  variant?: "catalog" | "detail";
 }
 
-export const Header: React.FC<HeaderProps> = ({ onMenuPress }) => {
+export const Header: React.FC<HeaderProps> = ({ onActionPress, variant = "catalog" }) => {
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={onMenuPress} style={styles.menuButton}>
-        <View style={styles.hamburgerLine} />
-        <View style={[styles.hamburgerLine, styles.middleLine]} />
-        <View style={styles.hamburgerLine} />
+      <TouchableOpacity onPress={onActionPress} style={styles.actionButton}>
+        {variant === "catalog" ? (
+          <View style={styles.hamburgerContainer}>
+            <View style={styles.hamburgerLine} />
+            <View style={[styles.hamburgerLine, styles.middleLine]} />
+            <View style={styles.hamburgerLine} />
+          </View>
+        ) : (
+          <Ionicons name="arrow-back" size={28} color={colors.black} />
+        )}
       </TouchableOpacity>
+      
       <View style={styles.logoContainer}>
         <Text style={styles.logoEmoji}>🐾</Text>
         <Text style={styles.appName}>Pawify</Text>
       </View>
-      <View style={styles.menuButton} />
+      
+      <View style={styles.actionButton} />
     </View>
   );
 };
@@ -30,12 +40,18 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: 16,
     paddingTop: 30,
-    paddingVertical: 20,
+    paddingVertical: 15,
     backgroundColor: colors.white,
   },
-  menuButton: {
-    width: 32,
-    height: 24,
+  actionButton: {
+    width: 40,
+    height: 40,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  hamburgerContainer: {
+    width: 28,
+    height: 20,
     justifyContent: "center",
     gap: 5,
   },

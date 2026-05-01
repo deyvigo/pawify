@@ -28,7 +28,7 @@
     },
     "extra": {
       "API_BASE_URL": "https://pawify-g5fb.onrender.com",
-      "AUTH_TOKEN": ""
+      "AUTH_TOKEN": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6Im1vbmljYWNoYW1iaSIsInJvbGUiOiJCVVlFUiIsImlkIjoxMDIsImZpcnN0X25hbWUiOiJNb25pY2EiLCJsYXN0X25hbWUiOiJDaGFtYmkiLCJleHAiOjE3NzgyNjQ1OTR9.VXYS4yneKFPD7caf2-xiLWZZHHJVymK_sNuNk-tRFyw"
     }
   }
 }
