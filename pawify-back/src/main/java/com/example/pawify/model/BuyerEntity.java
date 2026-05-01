@@ -23,7 +23,6 @@ public class BuyerEntity extends UserEntity {
     @OneToMany(mappedBy = "buyer", fetch = FetchType.LAZY)
     private List<CardEntity> cards;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "image_ig")
-    private ImageEntity image;
+    @OneToOne(mappedBy = "buyer", cascade = CascadeType.ALL)
+    private BuyerImageEntity profile;
 }

@@ -10,7 +10,7 @@ import org.mapstruct.MappingConstants;
 
 @Mapper(
     componentModel = MappingConstants.ComponentModel.SPRING,
-    uses = {ImageMapper.class, CardMapper.class, AddressMapper.class}
+    uses = {CardMapper.class, AddressMapper.class, BuyerProfileMapper.class}
 )
 public interface BuyerMapper {
     BuyerEntity toEntity(BuyerRegisterRequestDTO buyerRegisterRequestDTO);
