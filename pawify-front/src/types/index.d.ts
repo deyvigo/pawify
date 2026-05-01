@@ -1,3 +1,12 @@
+export interface UserPayload {
+  id: number;
+  username: string;
+  role: string;
+  first_name: string;
+  last_name: string;
+  exp: number;
+}
+
 export interface Product {
   id: string;
   name: string;

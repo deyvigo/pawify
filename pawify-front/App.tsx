@@ -11,7 +11,8 @@ import { AccountScreen } from './src/screens/AccountScreen/AccountScreen';
 import { ProductDetailScreen } from './src/screens/ProductDetailScreen/ProductDetailScreen';
 import { Product } from './src/types/product';
 import { useProducts } from './src/hooks/useProducts';
-import { ProductResponseDTO } from './src/types';
+import { ProductResponseDTO, UserPayload } from './src/types';
+import { getAuthUser } from './src/config';
 
 type TabKey = 'catalog' | 'purchase' | 'orders' | 'account';
 
@@ -28,6 +29,8 @@ interface AppContextType {
   loadProducts: (params?: any) => Promise<void>;
   loadMore: () => void;
   refresh: () => Promise<void>;
+  currentUser: UserPayload | null;
+  setActiveTab: (tab: TabKey) => void;
 }
 
 const AppContext = createContext<AppContextType>({
@@ -43,6 +46,8 @@ const AppContext = createContext<AppContextType>({
   loadProducts: async () => {},
   loadMore: () => {},
   refresh: async () => {},
+  currentUser: null,
+  setActiveTab: () => {},
 });
 
 export const useAppContext = () => useContext(AppContext);
@@ -58,6 +63,7 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<TabKey>('catalog');
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [currentUser] = useState<UserPayload | null>(getAuthUser);
 
   const ActiveScreen = screens[activeTab];
 
@@ -72,6 +78,8 @@ export default function App() {
         selectedProduct,
         setSelectedProduct,
         ...productApi,
+        currentUser,
+        setActiveTab,
       }}
     >
       <SafeAreaView style={styles.container}>

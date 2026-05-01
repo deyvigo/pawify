@@ -1,0 +1,28 @@
+# Build and dependencies
+node_modules/
+.expo/
+
+# Environment variables (contains sensitive data - DO NOT COMMIT)
+.env
+.env.local
+*.env
+
+# Exception: .env.example is a template and SHOULD be committed
+!.env.example
+
+# App config with sensitive data (do not commit tokens)
+app.json
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
