@@ -5,18 +5,30 @@ import {
     TextInput, 
     TouchableOpacity, 
     StyleSheet, 
-    Image 
+    Image ,
+    Alert,
+    ActivityIndicator
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-export const NewPasswordScreen = () => {
+import { resetPassword } from '../services/authService';
+
+interface NewPasswordProps {
+    username: string;
+    code: string;
+    onBackToRecovery: () => void;
+    onPasswordResetSuccess: () => void;
+}
+
+export const NewPasswordScreen = ({ username, code, onBackToRecovery, onPasswordResetSuccess }: NewPasswordProps) => {
     // Estados para las contraseñas
-    const [newPassword, setNewPassword] = useState<string>('');
+    const [new_password, setNewPassword] = useState<string>('');
     const [confirmPassword, setConfirmPassword] = useState<string>('');
     
 
     const [showNewPassword, setShowNewPassword] = useState<boolean>(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
 
     const RequirementItem = ({ text }: { text: string }) => (
@@ -26,11 +38,37 @@ export const NewPasswordScreen = () => {
         </View>
     );
 
+
+    const handleUpdatePassword = async () => {
+        if (new_password.length < 8) {
+            Alert.alert('Atención', 'La nueva contraseña debe tener al menos 8 caracteres.');
+            return;
+        }
+        if (new_password !== confirmPassword) {
+            Alert.alert('Atención', 'Las contraseñas no coinciden.');
+            return;
+        }
+
+        setIsLoading(true);
+        try {
+            // Llamamos a Spring Boot con los 3 datos
+            await resetPassword(username, code, new_password);
+            
+            Alert.alert('¡Éxito!', 'Tu contraseña ha sido actualizada correctamente. Inicia sesión con tu nueva clave.');
+            onPasswordResetSuccess(); // Volvemos al Login
+            
+        } catch (error) {
+            Alert.alert('Error', 'No pudimos actualizar tu contraseña. Revisa si el código ha expirado.');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     return (
         <SafeAreaView style={styles.container}>
              {/* header */}
             <View style={styles.header}>
-                <TouchableOpacity style={styles.backButton}>
+                <TouchableOpacity style={styles.backButton} onPress={onBackToRecovery}>
                     <Image style={styles.backIcon} source={require('../../assets/arrowLeftIcon.png')} />
                 </TouchableOpacity>
                 <Text style={styles.headerTitle}>Recuperar cuenta</Text>
@@ -61,7 +99,7 @@ export const NewPasswordScreen = () => {
                             placeholder="Mínimo 8 caracteres"
                             placeholderTextColor="#6B7280"
                             secureTextEntry={!showNewPassword} 
-                            value={newPassword}
+                            value={new_password}
                             onChangeText={setNewPassword}
                         />
                         <TouchableOpacity onPress={() => setShowNewPassword(!showNewPassword)}>
@@ -103,8 +141,12 @@ export const NewPasswordScreen = () => {
                 </View>
 
                 {/* Boton actualizar */}
-                <TouchableOpacity style={styles.updateButton}>
-                    <Text style={styles.updateButtonText}>Actualizar contraseña</Text>
+                <TouchableOpacity style={styles.updateButton} onPress={handleUpdatePassword} disabled={isLoading}>
+                    {isLoading ? (
+                        <ActivityIndicator color="#FFFFFF" />
+                    ) : (
+                        <Text style={styles.updateButtonText}>Actualizar contraseña</Text>
+                    )}
                 </TouchableOpacity>
 
                 {/* footer de soporte*/}

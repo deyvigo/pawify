@@ -1,4 +1,4 @@
-import React, { useState, createContext, useContext } from 'react';
+import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView, StyleSheet, View } from 'react-native';
 import { colors } from './src/theme/colors';
@@ -9,48 +9,20 @@ import { PurchaseScreen } from './src/screens/PurchaseScreen/PurchaseScreen';
 import { OrdersScreen } from './src/screens/OrdersScreen/OrdersScreen';
 import { AccountScreen } from './src/screens/AccountScreen/AccountScreen';
 import { ProductDetailScreen } from './src/screens/ProductDetailScreen/ProductDetailScreen';
+import { LoginScreen } from './src/screens/LoginScreen';
+import { RegisterScreen } from './src/screens/RegisterScreen'; 
+import { RecoveryScreen } from './src/screens/RecoveryScreen'
+import { NewPasswordScreen } from './src/screens/NewPasswordScreen';
+
 import { Product } from './src/types/product';
 import { useProducts } from './src/hooks/useProducts';
-import { ProductResponseDTO, UserPayload } from './src/types';
+import { UserPayload } from './src/types';
 import { getAuthUser } from './src/config';
+import { AppContext,TabKey } from './src/context/AppContext';
 
-type TabKey = 'catalog' | 'purchase' | 'orders' | 'account';
 
-interface AppContextType {
-  drawerOpen: boolean;
-  openDrawer: () => void;
-  closeDrawer: () => void;
-  selectedProduct: Product | null;
-  setSelectedProduct: (product: Product | null) => void;
-  products: ProductResponseDTO[];
-  loading: boolean;
-  loadingMore: boolean;
-  hasMore: boolean;
-  loadProducts: (params?: any) => Promise<void>;
-  loadMore: () => void;
-  refresh: () => Promise<void>;
-  currentUser: UserPayload | null;
-  setActiveTab: (tab: TabKey) => void;
-}
 
-const AppContext = createContext<AppContextType>({
-  drawerOpen: false,
-  openDrawer: () => {},
-  closeDrawer: () => {},
-  selectedProduct: null,
-  setSelectedProduct: () => {},
-  products: [],
-  loading: true,
-  loadingMore: false,
-  hasMore: true,
-  loadProducts: async () => {},
-  loadMore: () => {},
-  refresh: async () => {},
-  currentUser: null,
-  setActiveTab: () => {},
-});
 
-export const useAppContext = () => useContext(AppContext);
 
 const screens: Record<TabKey, React.FC> = {
   catalog: ProductListScreen,
@@ -63,11 +35,63 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<TabKey>('catalog');
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [currentUser] = useState<UserPayload | null>(getAuthUser);
+
+  const [currentUser,setCurrentUser] = useState<UserPayload | null>(getAuthUser);
+  const [authScreen, setAuthScreen] = useState<'login' | 'register'| 'recovery'| 'newPassword'>('login');
+
+  const [recoveryUser, setRecoveryUser] = useState<string>('');
+  const [recoveryCode, setRecoveryCode] = useState<string>('');
+  
 
   const ActiveScreen = screens[activeTab];
 
   const productApi = useProducts();
+
+  
+  if (!currentUser) {
+    return (
+    <SafeAreaView style={styles.container}>
+            {authScreen === 'login' && (
+              <LoginScreen 
+                onLoginSuccess={(userData: any) => setCurrentUser(userData as UserPayload)} 
+                onNavigateToRegister={() => setAuthScreen('register')} 
+                onNavigateToForgotPassword={(userToRecover: string) => {
+                  setRecoveryUser(userToRecover);  
+                  setAuthScreen('recovery');       
+              }}
+              />
+            )}
+            
+            {authScreen === 'register' && (
+              <RegisterScreen 
+                onNavigateToLogin={() => setAuthScreen('login')} 
+              />
+            )}
+
+            {authScreen === 'recovery' && (
+              <RecoveryScreen 
+                onBackToLogin={() => setAuthScreen('login')} // Para el botón de "Volver"
+                username={recoveryUser}
+                onCodeVerified={(code:string) => {
+                    setRecoveryCode(code);
+                    setAuthScreen('newPassword'); // Pasamos a la siguiente pantalla
+                }}
+              />
+            )}
+
+            {authScreen === 'newPassword' && (
+              <NewPasswordScreen 
+                  username={recoveryUser}
+                  code={recoveryCode}
+                  onBackToRecovery={() => setAuthScreen('recovery')}
+                  onPasswordResetSuccess={() => setAuthScreen('login')} 
+              />
+            )}
+            <StatusBar style="dark" />
+          </SafeAreaView>
+        );
+  }
+
 
   return (
     <AppContext.Provider

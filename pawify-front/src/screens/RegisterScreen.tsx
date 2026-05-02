@@ -6,16 +6,53 @@ import {
     TouchableOpacity, 
     StyleSheet, 
     Image, 
-    ScrollView 
+    ScrollView, 
+    ActivityIndicator
 } from 'react-native';
+import { useRegister } from '../hooks/useRegister';
 
-export const RegisterScreen = () => {
+interface RegisterProps {
+    onNavigateToLogin: () => void;
+}
+
+export const RegisterScreen = ({ onNavigateToLogin }: RegisterProps) => {
     // 1. Estados para capturar los datos del formulario
-    const [name, setName] = useState<string>('');
+    const [username, setUsername] = useState<string>('');   
+    const [firstName, setFirstName] = useState<string>('');
+    const [lastName, setLastName] = useState<string>(''); 
     const [email, setEmail] = useState<string>('');
+    const [dniNumber, setDniNumber] = useState<string>('');
     const [password, setPassword] = useState<string>('');
+
+
     const [confirmPassword, setConfirmPassword] = useState<string>('');
     const [acceptTerms, setAcceptTerms] = useState<boolean>(false); // Estado para el checkbox
+    const [showPassword, setShowPassword] = useState<boolean>(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
+    
+    
+
+
+    const { register, isLoading } = useRegister();
+
+    const handleRegister = () => {
+        // Empaquetamos los datos exactamente como los pide el DTO
+        const userData = {
+            username,
+            first_name: firstName,
+            last_name: lastName,
+            email,
+            dni_number: dniNumber,
+            password
+        };
+
+        // Ejecutamos la función del hook
+        register(userData, confirmPassword, acceptTerms, () => {
+
+            onNavigateToLogin();
+        });
+    };
+
 
     return (
         <ScrollView 
@@ -45,16 +82,32 @@ export const RegisterScreen = () => {
 
                 {/* Input: Nombre Completo */}
                 <View style={styles.inputSection}>
-                    <Text style={styles.label}>Nombre Completo</Text>
+                    <Text style={styles.label}>Nombre y Apellidos</Text>
+                    <View style={styles.rowInputs} >
+                        <View style={[styles.fieldContainer, { flex: 1, marginRight: 5 }]}>
+                            <TextInput style={styles.input} placeholder="Nombres" placeholderTextColor="#A3A3A3" value={firstName} onChangeText={setFirstName} />
+                        </View>
+                        <View style={[styles.fieldContainer, { flex: 1, marginLeft: 5 }]}>
+                            <TextInput style={styles.input} placeholder="Apellidos" placeholderTextColor="#A3A3A3" value={lastName} onChangeText={setLastName} />
+                        </View>
+                    </View>
+                </View>
+
+                {/* Input: Username */}
+                <View style={styles.inputSection}>
+                    <Text style={styles.label}>Nombre de Usuario </Text>
                     <View style={styles.fieldContainer}>
                         <Image style={styles.icon} source={require('../../assets/userIcon.png')} />
-                        <TextInput 
-                            style={styles.input}
-                            placeholder="Ej. Juan Pérez"
-                            placeholderTextColor="#A3A3A3"
-                            value={name}
-                            onChangeText={setName}
-                        />
+                        <TextInput style={styles.input} placeholder="Ej. juanperez123" placeholderTextColor="#A3A3A3" autoCapitalize="none" value={username} onChangeText={setUsername} />
+                    </View>
+                </View>
+
+                {/* Input: DNI */}
+                <View style={styles.inputSection}>
+                    <Text style={styles.label}>Documento de Identidad</Text>
+                    <View style={styles.fieldContainer}>
+                        <Image style={styles.icon} source={require('../../assets/identityIcon.png')} />
+                        <TextInput style={styles.input} placeholder="12345678" placeholderTextColor="#A3A3A3" keyboardType="numeric" maxLength={8} value={dniNumber} onChangeText={setDniNumber} />
                     </View>
                 </View>
 
@@ -84,11 +137,15 @@ export const RegisterScreen = () => {
                             style={styles.input}
                             placeholder="••••••••"
                             placeholderTextColor="#A3A3A3" 
-                            secureTextEntry={true} 
+                            secureTextEntry={!showPassword} 
                             value={password}
                             onChangeText={setPassword}
                         />
+                        <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+                            <Image style={styles.eyeIcon} source={require('../../assets/eyeIcon.png')} />
+                        </TouchableOpacity>
                     </View>
+                    
                 </View>
 
                 {/* Input: Confirmar Contraseña */}
@@ -100,10 +157,13 @@ export const RegisterScreen = () => {
                             style={styles.input}
                             placeholder="••••••••"
                             placeholderTextColor="#A3A3A3" 
-                            secureTextEntry={true} 
+                            secureTextEntry={!showConfirmPassword} 
                             value={confirmPassword}
                             onChangeText={setConfirmPassword}
                         />
+                        <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
+                            <Image style={styles.eyeIcon} source={require('../../assets/eyeIcon.png')} />
+                        </TouchableOpacity>
                     </View>
                 </View>
 
@@ -114,7 +174,6 @@ export const RegisterScreen = () => {
                     onPress={() => setAcceptTerms(!acceptTerms)}
                 >
                     <View style={[styles.checkbox, acceptTerms && styles.checkboxActive]}>
-                        {/* Aquí podrías poner un iconito de "check" si acceptTerms es true */}
                         {acceptTerms && <View style={styles.checkMark} />}
                     </View>
                     <Text style={styles.termsText}>
@@ -123,18 +182,24 @@ export const RegisterScreen = () => {
                 </TouchableOpacity>
 
                 {/* Botón Principal */}
-                <TouchableOpacity style={styles.registerButton}>
-                    <Text style={styles.registerButtonText}>Crear Cuenta</Text>
-                    <Image style={styles.arrowIcon} source={require('../../assets/arrowIcon.png')} />
+                <TouchableOpacity style={styles.registerButton}onPress={handleRegister} disabled={isLoading}>
+                    {isLoading ? (
+                        <ActivityIndicator color="#FFFFFF" />
+                    ) : (
+                        <>
+                            <Text style={styles.registerButtonText}>Crear Cuenta</Text>
+                            <Image style={styles.arrowIcon} source={require('../../assets/arrowIcon.png')} />
+                        </>
+                    )}
                 </TouchableOpacity>
 
-                {/* Línea Separadora (opcional según el diseño) */}
+                {/* Línea Separadora*/}
                 <View style={styles.divider} />
 
                 {/* Ir al Login */}
                 <View style={styles.footerLogin}>
                     <Text style={styles.footerText}>¿Ya tienes una cuenta?</Text>
-                    <TouchableOpacity style={styles.loginLinkContainer}>
+                    <TouchableOpacity style={styles.loginLinkContainer} onPress={onNavigateToLogin}>
                         <Text style={styles.loginText}>Iniciar Sesión</Text>
                         <Image style={styles.loginIcon} source={require('../../assets/loginIcon.png')} />
                     </TouchableOpacity>
@@ -162,7 +227,7 @@ const styles = StyleSheet.create({
         top: 0,
         left: 0,
         right: 0,
-        height: "35%", // Altura ajustada para que baje hasta la mitad de la tarjeta
+        height: "30%", 
     },
     backgroundImage: {
         width: '100%',
@@ -233,6 +298,12 @@ const styles = StyleSheet.create({
         color: '#5E3F3C',
         marginBottom: 8,
     },
+
+    rowInputs: { 
+        flexDirection: 'row', 
+        justifyContent: 'space-between' 
+    },
+
     fieldContainer: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -249,6 +320,11 @@ const styles = StyleSheet.create({
         marginLeft: 10,
         color: '#333333',
         fontSize: 15,
+    },
+
+    eyeIcon: {
+        tintColor: '#9CA3AF',
+        padding: 5,
     },
 
     // --- CHECKBOX Y TÉRMINOS ---

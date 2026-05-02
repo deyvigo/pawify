@@ -5,12 +5,19 @@ import {
     TextInput, 
     TouchableOpacity, 
     StyleSheet, 
-    Image
+    Image,
+    Alert
 } from 'react-native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-export const RecoveryScreen = () => {
+interface ForgotPasswordProps {
+    onBackToLogin: () => void;
+    username: string;
+    onCodeVerified: (code: string) => void;
+}
+
+export const RecoveryScreen = ({ onBackToLogin, username, onCodeVerified }: ForgotPasswordProps) => {
     // Estado: Un arreglo de 6 espacios vacíos para guardar cada dígito
     const [code, setCode] = useState<string[]>(['', '', '', '', '', '']);
 
@@ -23,11 +30,21 @@ export const RecoveryScreen = () => {
         
     };
 
+    const handleVerify = () => {
+        const finalCode = code.join('');
+        if (finalCode.length < 6) {
+            Alert.alert('Atención', 'Por favor, ingresa el código completo.');
+            return;
+        }
+        // Solo pasamos el código a la siguiente pantalla, sin llamar al backend todavía
+        onCodeVerified(finalCode);
+    };
+
     return (
         <SafeAreaView style={styles.container}>
             {/* --- HEADER --- */}
             <View style={styles.header}>
-                <TouchableOpacity style={styles.backButton}>
+                <TouchableOpacity style={styles.backButton} onPress={onBackToLogin}>
                     <Image style={styles.backIcon} source={require('../../assets/arrowLeftIcon.png')} />
                     <Text style={styles.headerTitle}>Recuperar cuenta</Text>
                 </TouchableOpacity>
@@ -58,7 +75,8 @@ export const RecoveryScreen = () => {
                         <TextInput
                             key={index}
                             style={styles.otpInput}
-                            keyboardType="number-pad"
+                            keyboardType="default"
+                            autoCapitalize="none"
                             maxLength={1}
                             placeholder="•"
                             placeholderTextColor="#9CA3AF"
@@ -69,7 +87,7 @@ export const RecoveryScreen = () => {
                 </View>
 
                 {/* --- BOTÓN VERIFICAR --- */}
-                <TouchableOpacity style={styles.verifyButton}>
+                <TouchableOpacity style={styles.verifyButton} onPress={handleVerify}>
                     <Text style={styles.verifyButtonText}>Verificar</Text>
                 </TouchableOpacity>
 

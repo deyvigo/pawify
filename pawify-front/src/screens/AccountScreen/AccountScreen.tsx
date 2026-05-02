@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { colors } from '../../theme/colors';
-import { useAppContext } from '../../../App';
+import { useAppContext } from '../../context/AppContext';
 import { getFullName } from '../../utils/jwt';
 import { Ionicons } from '@expo/vector-icons';
 

@@ -17,13 +17,23 @@ async function request<T>(
     throw new Error(`API Error: ${response.status}`);
   }
 
-  return response.json();
+  const textResponse = await response.text();
+  
+  // Si hay texto, lo convertimos a JSON. Si está vacío, devolvemos un objeto vacío.
+  return textResponse ? JSON.parse(textResponse) : {};
 }
 
 export const api = {
   get: <T>(endpoint: string, token?: string) =>
     request<T>(endpoint, {
       method: "GET",
+      headers: token || authToken ? { Authorization: `Bearer ${token || authToken}` } : {},
+    }),
+
+    post: <T>(endpoint: string, body: any, token?: string) =>
+    request<T>(endpoint, {
+      method: "POST",
+      body: JSON.stringify(body),
       headers: token || authToken ? { Authorization: `Bearer ${token || authToken}` } : {},
     }),
 };

@@ -1,19 +1,52 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity ,Image} from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity ,Image, ActivityIndicator,Alert} from 'react-native';
 
+import { useAuthentication } from '../hooks/useAuthentication';
+import { requestRecoveryCode } from '../services/authService';
 
-export const LoginScreen = () => {
+interface LoginProps {
+    onLoginSuccess: (userData: any) => void;
+    onNavigateToRegister: () => void;
+    onNavigateToForgotPassword: (username: string) => void;
+}
 
-    const [email, setEmail] = useState<String>('');
-    const [password, setPassword] = useState<String>('');
+export const LoginScreen = ({ onLoginSuccess, onNavigateToRegister, onNavigateToForgotPassword }: LoginProps) => {
+
+    
+
+    const [username, setUsername] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
 
     const [showPassword, setShowPassword] = useState<boolean>(false);
 
+    const { login, isLoading } = useAuthentication(onLoginSuccess);
 
+
+
+    const handleForgotPassword = async () => {
+        // Validamos que el usuario haya escrito su nombre de usuario
+        if (!username.trim()) {
+            Alert.alert('Atención', 'Por favor, ingresa su Nombre de Usuario');
+            return;
+        }
+
+        try {
+            // Disparamos la petición a tu Spring Boot (opcional: puedes poner un estado isLoading)
+            await requestRecoveryCode(username); 
+            
+            Alert.alert('¡Código enviado!', 'Revisa tu correo electrónico para continuar.');
+            
+            // 3. SOLO SI EL BACKEND RESPONDE BIEN, NAVEGAMOS A LA PANTALLA RECOVERY
+            onNavigateToForgotPassword(username);
+            
+        } catch (error) {
+            console.log("ERROR REAL DEL BACKEND:", error);
+            console.error(error);
+            Alert.alert('Error', 'No encontramos una cuenta con ese usuario o hubo un problema de conexión.');
+        }
+    };
 
     return (
-
-
 
         <View style={styles.container}>
             <View style={styles.imageWrapper}>
@@ -32,24 +65,23 @@ export const LoginScreen = () => {
             </View>
             <View style={styles.formcontainer}>
                 <View style={styles.inputcontainer}>
-                    <Text style={styles.label1}>Correo Electrónico</Text>
+                    <Text style={styles.label1}>Nombre de Usuario</Text>
                     <View style={styles.fieldContainer}>
-                        <Image  source={require('../../assets/correoIcon.png') } />
+                        <Image  source={require('../../assets/userIcon.png') } />
                         <TextInput 
                             style={styles.input}
-                            placeholder="ejemplo@correo.com"
+                            placeholder="Tu nombre de usuario"
                             placeholderTextColor="#6B7280" 
-                            keyboardType="email-address"
                             autoCapitalize="none"  
-                            value={email}
-                            onChangeText={setEmail}
+                            value={username}
+                            onChangeText={setUsername}
                         />                 
                     </View>
                 </View>
                 <View style={styles.inputcontainer}>
                     <View style={styles.headerContainer}>
                         <Text style={styles.label2}>Contraseña</Text>
-                        <TouchableOpacity >
+                        <TouchableOpacity onPress={handleForgotPassword}>
                             <Text style={styles.forgotPasswordText}>Olvidé mi contraseña</Text>
                         </TouchableOpacity>
                     </View>
@@ -69,14 +101,18 @@ export const LoginScreen = () => {
                     </View>
                 </View>
 
-                <TouchableOpacity style={styles.loginButton}>
-                    <Text style={styles.loginButtonText}>Iniciar Sesión</Text>
+                <TouchableOpacity style={styles.loginButton} onPress={() => login(username, password)} disabled={isLoading}>
+                    {isLoading ? (
+                        <ActivityIndicator color="#ffffff" /> 
+                    ) : (
+                        <Text style={styles.loginButtonText}>Iniciar Sesión</Text>
+                    )}
                 </TouchableOpacity>
             </View>
 
             <View style={styles.footeText}> 
                 <Text style={styles.footerText}>¿No tienes una cuenta?</Text>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={onNavigateToRegister}>
                     <Text style={styles.registerText}>Regístrate gratis</Text>
                 </TouchableOpacity>
             </View>

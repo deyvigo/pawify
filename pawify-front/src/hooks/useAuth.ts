@@ -1,4 +1,4 @@
-import { useAppContext } from "../../App";
+import { useAppContext } from '../context/AppContext';
 import { UserPayload } from "../types";
 
 export function useAuth(): {

@@ -15,7 +15,7 @@ import {
   FilterMenu,
   FilterState,
 } from "../../components/FilterMenu/FilterMenu";
-import { useAppContext } from "../../../App";
+import { useAppContext } from '../../context/AppContext';
 import { ProductResponseDTO, Product } from "../../types";
 import { Product as ProductType } from "../../types/product";
 
