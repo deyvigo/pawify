@@ -5,18 +5,18 @@ meta {
 }
 
 post {
-  url: {{url_local}}/card
+  url: {{actual_url}}/card
   body: json
   auth: bearer
 }
 
 auth:bearer {
-  token: eyJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InVzZXJidXllciIsInJvbGUiOiJCVVlFUiIsImlkIjoxLCJmaXJzdF9uYW1lIjoiVXNlciIsImxhc3RfbmFtZSI6IkJ1eWVyIiwiZXhwIjoxNzc4MTc5ODY1fQ.xGh_Y4TUYN-0IbpsN_uesSCmmmTNWkqgDQCt6kLrj-4
+  token: eyJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InVzZXJidXllciIsImxhc3RfbmFtZSI6IkJ1eWVyIiwiZmlyc3RfbmFtZSI6IlVzZXIiLCJpZCI6MSwicm9sZSI6IkJVWUVSIiwiZXhwIjoxNzc4MTg4NTM3fQ.jtRckYRnBldxoESpp72BEEJGQkBkmQ2mahnvOfCIpEo
 }
 
 body:json {
   {
-    "name": "Tarjeta 3",
+    "name": "Tarjeta 2",
     "due_date": "2026-10",
     "number": "1234123412341234"
   }

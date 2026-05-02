@@ -19,5 +19,5 @@ public record ProductResponseDTO(
     int reviewCount,
     double rating,
     LocalDateTime createdAt,
-    List<ImageResponseDTO> images
+    List<ProductImageResponseDTO> images
 ) {}

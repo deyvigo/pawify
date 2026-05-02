@@ -17,10 +17,12 @@ public class BuyerEntity extends UserEntity {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "address_id", nullable = true)
-    private List<AddressEntity> address;
+    @OneToMany(mappedBy = "buyer", fetch = FetchType.LAZY)
+    private List<AddressEntity> addresses;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "buyer", fetch = FetchType.LAZY)
     private List<CardEntity> cards;
+
+    @OneToOne(mappedBy = "buyer", cascade = CascadeType.ALL)
+    private BuyerImageEntity profile;
 }

@@ -1,6 +1,6 @@
 package com.example.pawify.dto.out.product;
 
-public record ImageResponseDTO (
+public record ProductImageResponseDTO(
     Long id,
     String url
 ) {}
