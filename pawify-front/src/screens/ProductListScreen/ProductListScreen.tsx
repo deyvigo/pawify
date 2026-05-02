@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback, useEffect } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   View,
   StyleSheet,
@@ -7,7 +7,6 @@ import {
   Alert,
   TouchableWithoutFeedback,
   ActivityIndicator,
-  Text,
 } from "react-native";
 import { colors } from "../../theme/colors";
 import { Header, SearchBar, FilterButton, ProductCard } from "../../components";
@@ -17,10 +16,10 @@ import {
   FilterState,
 } from "../../components/FilterMenu/FilterMenu";
 import { useAppContext } from "../../../App";
-import { useProducts } from "../../hooks/useProducts";
-import { ProductResponseDTO } from "../../types";
+import { ProductResponseDTO, Product } from "../../types";
+import { Product as ProductType } from "../../types/product";
 
-type SortOption =
+export type SortOption =
   | "price-asc"
   | "price-desc"
   | "name-az"
@@ -31,34 +30,50 @@ type SortOption =
 const GAP = 10;
 const HORIZONTAL_PADDING = 16;
 
-const mapProduct = (p: ProductResponseDTO) => ({
+const mapProduct = (p: ProductResponseDTO): ProductType => ({
   id: p.share_code || String(p.id),
   name: p.name,
   image: p.images?.[0]?.url || "https://picsum.photos/seed/default/300/300",
+  images: p.images?.map(img => img.url) || [],
   price: p.price,
   rating: p.rating,
   sold: p.sold_count,
+  description: p.description,
+  stock: p.stock,
+  share_code: p.share_code,
+  active: p.active,
   brand: p.brand?.name,
   category: p.category?.name,
+  sub_category: p.sub_category?.name,
 });
 
 export const ProductListScreen: React.FC = () => {
-  const { openDrawer } = useAppContext();
+  const { 
+    openDrawer, 
+    setSelectedProduct, 
+    products, 
+    loading, 
+    loadingMore, 
+    hasMore, 
+    loadProducts, 
+    loadMore 
+  } = useAppContext();
+  
   const [searchQuery, setSearchQuery] = useState("");
   const [showSort, setShowSort] = useState(false);
   const [showFilter, setShowFilter] = useState(false);
   const [activeSort, setActiveSort] = useState<SortOption>("name-az");
-  const [activeFilters, setActiveFilters] = useState<FilterState | null>(null);
   const { width } = useWindowDimensions();
-
-  const { products: rawProducts, loading, loadingMore, error, hasMore, loadProducts, loadMore } = useProducts();
-  const products = Array.isArray(rawProducts) ? rawProducts : [];
 
   const cardWidth = (width - HORIZONTAL_PADDING * 2 - GAP) / 2;
   const halfRowWidth = (width - HORIZONTAL_PADDING * 2 - GAP) / 2;
 
-  const handleAddToCart = (product: ReturnType<typeof mapProduct>) => {
+  const handleAddToCart = (product: ProductType) => {
     Alert.alert("Agregado", `${product.name} se agregó al carrito`);
+  };
+
+  const handleProductPress = (product: ProductType) => {
+    setSelectedProduct(product);
   };
 
   const handleScroll = (event: any) => {
@@ -88,7 +103,6 @@ export const ProductListScreen: React.FC = () => {
   };
 
   const handleFilterApply = (filters: FilterState) => {
-    setActiveFilters(filters);
     setShowFilter(false);
     loadProducts({
       sort: activeSort,
@@ -100,8 +114,10 @@ export const ProductListScreen: React.FC = () => {
     });
   };
 
+  // Only trigger loadProducts if searchQuery or activeSort changes AND we are already mounted
+  // To avoid fetching again on mount if App.tsx already did it, we check if we actually need to change params
   useEffect(() => {
-    if (searchQuery.length === 0 || searchQuery.length > 2) {
+    if (searchQuery.length > 0 || activeSort !== "name-az") {
       const timeout = setTimeout(() => {
         loadProducts({
           search: searchQuery || undefined,
@@ -110,21 +126,21 @@ export const ProductListScreen: React.FC = () => {
       }, 400);
       return () => clearTimeout(timeout);
     }
-  }, [searchQuery, activeSort, loadProducts]);
+  }, [searchQuery, activeSort]);
 
-  const safeProducts = Array.isArray(products) ? products : [];
   const filteredProducts = useMemo(() => {
-    return safeProducts.map(mapProduct);
-  }, [safeProducts]);
+    return (products || []).map(mapProduct);
+  }, [products]);
 
   return (
     <View style={styles.container}>
-      <Header onMenuPress={openDrawer} />
+      <Header onActionPress={openDrawer} />
       <SearchBar value={searchQuery} onChangeText={setSearchQuery} />
       <View style={styles.filterRow}>
         <FilterButton label="Filtro" icon="ᯤ" onPress={handleFilter} />
         <FilterButton label="Ordenar" icon="▼" onPress={handleSort} />
       </View>
+      
       {showFilter && (
         <View style={styles.filterOverlay}>
           <TouchableWithoutFeedback onPress={() => setShowFilter(false)}>
@@ -135,6 +151,7 @@ export const ProductListScreen: React.FC = () => {
           </View>
         </View>
       )}
+      
       {showSort && (
         <View style={styles.sortOverlay}>
           <View style={[styles.sortSpacer, { width: halfRowWidth }]} />
@@ -143,27 +160,35 @@ export const ProductListScreen: React.FC = () => {
           </View>
         </View>
       )}
-      <ScrollView 
-        contentContainerStyle={styles.scrollContent}
-        onScroll={handleScroll}
-        scrollEventThrottle={16}
-      >
-        <View style={styles.flexWrap}>
-          {filteredProducts.map((product) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-              onAddToCart={handleAddToCart}
-              style={{ width: cardWidth }}
-            />
-          ))}
+
+      {loading && !loadingMore && products.length === 0 ? (
+        <View style={styles.centerContainer}>
+          <ActivityIndicator size="large" color={colors.primary} />
         </View>
-        {loadingMore && (
-          <View style={{ padding: 20, alignItems: 'center' }}>
-            <ActivityIndicator size="small" color={colors.primary} />
+      ) : (
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          onScroll={handleScroll}
+          scrollEventThrottle={16}
+        >
+          <View style={styles.flexWrap}>
+            {filteredProducts.map((product) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                onAddToCart={handleAddToCart}
+                onPress={handleProductPress}
+                style={{ width: cardWidth }}
+              />
+            ))}
           </View>
-        )}
-      </ScrollView>
+          {loadingMore && (
+            <View style={styles.loadingMoreContainer}>
+              <ActivityIndicator size="small" color={colors.primary} />
+            </View>
+          )}
+        </ScrollView>
+      )}
     </View>
   );
 };
@@ -172,6 +197,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
+  },
+  centerContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingMoreContainer: {
+    padding: 20,
+    alignItems: 'center',
   },
   filterRow: {
     flexDirection: "row",
