@@ -203,7 +203,7 @@ export const ProductDetailScreen: React.FC<ProductDetailScreenProps> = ({
         
         <TouchableOpacity style={styles.addToCartBtn}>
           <Text style={styles.cartIcon}>🛒</Text>
-          <Text style={styles.addToCartText}>Add to Cart</Text>
+          <Text style={styles.addToCartText}>Añadir al carrito</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
