@@ -100,6 +100,12 @@ public class GlobalExceptionHandler {
             .body(ErrorResponseDTO.of(HttpStatus.BAD_REQUEST, "INVALID_RECOVERY_CODE", ex.getMessage()));
     }
 
+    @ExceptionHandler(CardExpiredException.class)
+    public ResponseEntity<ErrorResponseDTO> handleCardExpired(CardExpiredException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(ErrorResponseDTO.of(HttpStatus.BAD_REQUEST, "INVALID_DATA", ex.getMessage()));
+    }
+
     private static String toSnakeCase(String field) {
         return field.replaceAll("([a-z])([A-Z]+)", "$1_$2").toLowerCase();
     }

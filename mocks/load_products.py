@@ -1,7 +1,7 @@
 import requests
 import json
 
-API_URL = "https://pawify-g5fb.onrender.com"
+API_URL = "http://localhost:8080"
 
 admin = {
   "username": "useradmin",

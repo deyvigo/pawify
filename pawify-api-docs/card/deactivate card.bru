@@ -1,0 +1,20 @@
+meta {
+  name: deactivate card
+  type: http
+  seq: 2
+}
+
+patch {
+  url: {{actual_url}}/card/1/deactivate
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiJ9.eyJmaXJzdF9uYW1lIjoiVXNlciIsImxhc3RfbmFtZSI6IkJ1eWVyIiwidXNlcm5hbWUiOiJ1c2VyYnV5ZXIyIiwicm9sZSI6IkJVWUVSIiwiaWQiOjUyLCJleHAiOjE3NzgxNzkyODJ9.ZLDKSjC-HthrgcSXOBqJdQ2NextAgV_9WyFEdFXp5N0
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

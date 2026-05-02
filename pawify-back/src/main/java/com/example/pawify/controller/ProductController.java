@@ -51,11 +51,20 @@ public class ProductController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PatchMapping("{shareCode}/active")
-    public ResponseEntity<ProductResponseDTO> changeActiveStatus(
-        @PathVariable String shareCode,
-        @Valid @RequestBody ChangeActiveStatusDTO active
+    @PatchMapping("/{shareCode}/deactivate")
+    public ResponseEntity<Void> deactivateProduct(
+        @PathVariable String shareCode
     ) {
-        return ResponseEntity.ok(productService.changeActiveStatus(shareCode, active));
+        productService.deactivateProduct(shareCode);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PatchMapping("/{shareCode}/activate")
+    public ResponseEntity<Void> activateProduct(
+        @PathVariable String shareCode
+    ) {
+        productService.activateProduct(shareCode);
+        return ResponseEntity.noContent().build();
     }
 }

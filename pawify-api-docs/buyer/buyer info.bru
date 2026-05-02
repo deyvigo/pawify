@@ -1,0 +1,20 @@
+meta {
+  name: buyer info
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{actual_url}}/buyer
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiJ9.eyJsYXN0X25hbWUiOiJCdXllciIsImZpcnN0X25hbWUiOiJVc2VyIiwiaWQiOjEsInJvbGUiOiJCVVlFUiIsInVzZXJuYW1lIjoidXNlcmJ1eWVyMSIsImV4cCI6MTc3ODI4OTkzMX0.Gr0urp4oM8twd25GQ9kkyJlAAmv_dSI9poWNTvUrO7I
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

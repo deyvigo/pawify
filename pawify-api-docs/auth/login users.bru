@@ -1,11 +1,11 @@
 meta {
-  name: register admin
+  name: login users
   type: http
   seq: 2
 }
 
 post {
-  url: {{url}}/auth/register/admin
+  url: {{actual_url}}/auth/login
   body: json
   auth: inherit
 }
@@ -13,10 +13,7 @@ post {
 body:json {
   {
     "username": "useradmin",
-    "password": "password",
-    "first_name": "User",
-    "last_name": "Admin",
-    "dni_number": "88697867"
+    "password": "password"
   }
 }
 

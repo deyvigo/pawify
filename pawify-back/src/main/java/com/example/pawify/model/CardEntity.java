@@ -5,30 +5,29 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.YearMonth;
+
 @Entity
-@Table(name = "addresses")
+@Table(name = "cards")
 @Getter
 @Setter
 @NoArgsConstructor
-public class AddressEntity {
+public class CardEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
     private String name;
 
     @Column(nullable = false)
-    private String reference;
+    private String number;
 
     @Column(nullable = false)
-    private Double latitude;
+    private YearMonth dueDate;
 
     @Column(nullable = false)
-    private Double longitude;
-
-    @Column(nullable = false)
-    private boolean active;
+    private Boolean active;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "buyer_id", nullable = false)

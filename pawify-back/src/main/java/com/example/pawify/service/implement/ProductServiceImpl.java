@@ -1,6 +1,5 @@
 package com.example.pawify.service.implement;
 
-import com.example.pawify.dto.in.product.ChangeActiveStatusDTO;
 import com.example.pawify.dto.in.product.ProductCreateRequestDTO;
 import com.example.pawify.dto.out.product.ProductResponseDTO;
 import com.example.pawify.exception.ImagesNotProvidedException;
@@ -100,12 +99,12 @@ public class ProductServiceImpl implements ProductService {
 
         ProductEntity savedProduct = productRepository.save(productEntity);
 
-        List<ImageEntity> imageEntities = new ArrayList<>();
+        List<ProductImageEntity> imageEntities = new ArrayList<>();
 
         for (MultipartFile image : images) {
             String url = cloudinaryService.uploadImage(image);
 
-            ImageEntity imageEntity = new ImageEntity();
+            ProductImageEntity imageEntity = new ProductImageEntity();
             imageEntity.setUrl(url);
             imageEntity.setProduct(savedProduct);
 
@@ -156,13 +155,24 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductResponseDTO changeActiveStatus(String shareCode, ChangeActiveStatusDTO newStatus) {
+    public void deactivateProduct(String shareCode) {
         ProductEntity productEntity = productRepository.findByShareCode(shareCode)
             .orElseThrow(() -> new ResourceNotFoundException("Product with share code " + shareCode + " not found"));
-        productEntity.setActive(newStatus.active());
-        System.out.println(productEntity.isActive());
-        ProductEntity savedProduct = productRepository.save(productEntity);
-        System.out.println(savedProduct.isActive());
-        return productMapper.toResponseDTO(savedProduct);
+
+        if (!productEntity.isActive()) return;
+
+        productEntity.setActive(false);
+        productRepository.save(productEntity);
+    }
+
+    @Override
+    public void activateProduct(String shareCode) {
+        ProductEntity productEntity = productRepository.findByShareCode(shareCode)
+            .orElseThrow(() -> new ResourceNotFoundException("Product with share code " + shareCode + " not found"));
+
+        if (!productEntity.isActive()) return;
+
+        productEntity.setActive(true);
+        productRepository.save(productEntity);
     }
 }

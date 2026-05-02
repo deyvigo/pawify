@@ -1,23 +1,17 @@
 meta {
-  name: update active status
+  name: activate product
   type: http
-  seq: 7
+  seq: 6
 }
 
 patch {
-  url: {{url}}/product/x1pchal5zk/active
+  url: {{actual_url}}/product/x1pchal5zk/activate
   body: json
   auth: bearer
 }
 
 auth:bearer {
   token: eyJhbGciOiJIUzI1NiJ9.eyJsYXN0X25hbWUiOiJBZG1pbiIsInVzZXJuYW1lIjoidXNlcmFkbWluIiwicm9sZSI6IkFETUlOIiwiaWQiOjEsImZpcnN0X25hbWUiOiJVc2VyIiwiZXhwIjoxNzc3NjA5OTUyfQ.SABkNFapCaePQ9koIVt0HlH9q17kyhBPi7toohL1ZXY
-}
-
-body:json {
-  {
-    "active": true
-  }
 }
 
 settings {

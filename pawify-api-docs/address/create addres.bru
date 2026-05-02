@@ -1,0 +1,29 @@
+meta {
+  name: create addres
+  type: http
+  seq: 16
+}
+
+post {
+  url: {{actual_url}}/address
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InVzZXJidXllciIsImxhc3RfbmFtZSI6IkJ1eWVyIiwiZmlyc3RfbmFtZSI6IlVzZXIiLCJpZCI6MSwicm9sZSI6IkJVWUVSIiwiZXhwIjoxNzc4MTg4NTM3fQ.jtRckYRnBldxoESpp72BEEJGQkBkmQ2mahnvOfCIpEo
+}
+
+body:json {
+  {
+    "name": "Dirección 1",
+    "reference": "UNMSM",
+    "latitude": 12.1,
+    "longitude": 35.1
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

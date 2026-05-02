@@ -1,11 +1,11 @@
 meta {
   name: refresh token
   type: http
-  seq: 5
+  seq: 2
 }
 
 post {
-  url: {{url}}/auth/refresh
+  url: {{actual_url}}/auth/refresh
   body: json
   auth: inherit
 }

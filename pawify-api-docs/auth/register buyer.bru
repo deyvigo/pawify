@@ -1,23 +1,23 @@
 meta {
   name: register buyer
   type: http
-  seq: 5
+  seq: 2
 }
 
 post {
-  url: {{url}}/auth/register/buyer
+  url: {{actual_url}}/auth/register/buyer
   body: json
   auth: inherit
 }
 
 body:json {
   {
-    "username": "userbuyertest3",
+    "username": "userbuyer1",
     "password": "password",
     "first_name": "User",
     "last_name": "Buyer",
-    "email": "deyvipgo21@gmail.com",
-    "dni_number": "64758490"
+    "email": "example2@gmail.com",
+    "dni_number": "12367823"
   }
 }
 

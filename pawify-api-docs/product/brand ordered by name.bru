@@ -1,0 +1,20 @@
+meta {
+  name: brand ordered by name
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{actual_url}}/brand
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiJ9.eyJsYXN0X25hbWUiOiJBZG1pbiIsImZpcnN0X25hbWUiOiJVc2VyIiwiaWQiOjIsInJvbGUiOiJBRE1JTiIsInVzZXJuYW1lIjoidXNlcmFkbWluIiwiZXhwIjoxNzc4MjkwMjQ5fQ.BVPjW4A3cJK8faJnxrrxSITSDsw2LngwaWc4VzD-1uA
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
