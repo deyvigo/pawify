@@ -31,12 +31,12 @@ export const LoginScreen = ({ onLoginSuccess, onNavigateToRegister, onNavigateTo
         }
 
         try {
-            // Disparamos la petición a tu Spring Boot (opcional: puedes poner un estado isLoading)
+            // Disparamos la petición al back
             await requestRecoveryCode(username); 
             
             Alert.alert('¡Código enviado!', 'Revisa tu correo electrónico para continuar.');
             
-            // 3. SOLO SI EL BACKEND RESPONDE BIEN, NAVEGAMOS A LA PANTALLA RECOVERY
+            // 3. solo si la petición fue exitosa, navegamos a la pantalla de recuperación y le pasamos el username
             onNavigateToForgotPassword(username);
             
         } catch (error) {

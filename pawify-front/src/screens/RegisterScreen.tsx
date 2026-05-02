@@ -36,7 +36,7 @@ export const RegisterScreen = ({ onNavigateToLogin }: RegisterProps) => {
     const { register, isLoading } = useRegister();
 
     const handleRegister = () => {
-        // Empaquetamos los datos exactamente como los pide el DTO
+    
         const userData = {
             username,
             first_name: firstName,

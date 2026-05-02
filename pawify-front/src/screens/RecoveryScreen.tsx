@@ -21,9 +21,9 @@ export const RecoveryScreen = ({ onBackToLogin, username, onCodeVerified }: Forg
     // Estado: Un arreglo de 6 espacios vacíos para guardar cada dígito
     const [code, setCode] = useState<string[]>(['', '', '', '', '', '']);
 
-    // Función de Acción: Actualiza solo la cajita en la que el usuario está escribiendo
+    // Función de Acción: Actualiza solo la field en la que el usuario está escribiendo
     const handleChangeText = (text: string, index: number) => {
-        // Creamos una copia del arreglo actual para no modificar el estado directamente (Regla de oro de React)
+        // Creamos una copia del arreglo actual para no modificar el estado directamente 
         const newCode = [...code];
         newCode[index] = text;
         setCode(newCode);
@@ -42,7 +42,7 @@ export const RecoveryScreen = ({ onBackToLogin, username, onCodeVerified }: Forg
 
     return (
         <SafeAreaView style={styles.container}>
-            {/* --- HEADER --- */}
+            {/*header */}
             <View style={styles.header}>
                 <TouchableOpacity style={styles.backButton} onPress={onBackToLogin}>
                     <Image style={styles.backIcon} source={require('../../assets/arrowLeftIcon.png')} />
@@ -53,7 +53,7 @@ export const RecoveryScreen = ({ onBackToLogin, username, onCodeVerified }: Forg
 
             <View style={styles.content}>
                 
-                {/* --- ÍCONO CENTRAL CON BADGE --- */}
+                {/*icono principal */}
                 <View style={styles.iconWrapper}>
                     <View style={styles.mainIconContainer}>
                         <Image style={styles.emailIcon} source={require('../../assets/emailIcon.png')} />
@@ -63,7 +63,7 @@ export const RecoveryScreen = ({ onBackToLogin, username, onCodeVerified }: Forg
                     </View>
                 </View>
 
-                {/* --- TEXTOS INFORMATIVOS --- */}
+                {/* textos */}
                 <Text style={styles.title}>Verifica tu código</Text>
                 <Text style={styles.subtitle}>
                     Hemos enviado un código de seguridad de 6 dígitos a su correo electrónico asociado.
@@ -86,12 +86,12 @@ export const RecoveryScreen = ({ onBackToLogin, username, onCodeVerified }: Forg
                     ))}
                 </View>
 
-                {/* --- BOTÓN VERIFICAR --- */}
+                {/* boton de verificación */}
                 <TouchableOpacity style={styles.verifyButton} onPress={handleVerify}>
                     <Text style={styles.verifyButtonText}>Verificar</Text>
                 </TouchableOpacity>
 
-                {/* --- SECCIÓN REENVIAR CÓDIGO --- */}
+                {/*seccion de reenvio de código */}
                 <View style={styles.resendContainer}>
                     <Text style={styles.resendText}>¿No recibiste el código?</Text>
                     
@@ -101,11 +101,11 @@ export const RecoveryScreen = ({ onBackToLogin, username, onCodeVerified }: Forg
                     </TouchableOpacity>
                     
                     <Text style={styles.timerText}>
-                        Disponible en <Text style={styles.timerBold}>00:59</Text>
+                        Disponible en <Text style={styles.timerBold}>1:00</Text>
                     </Text>
                 </View>
 
-                {/* --- TARJETA DE SEGURIDAD --- */}
+                {/*tarjeta informativa */}
                 <View style={styles.securityCard}>
                     <View style={styles.shieldIconContainer}>
                         <Image style={styles.shieldIcon} source={require('../../assets/shieldIcon.png')} />
