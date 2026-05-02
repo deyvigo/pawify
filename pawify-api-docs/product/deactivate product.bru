@@ -1,0 +1,20 @@
+meta {
+  name: deactivate product
+  type: http
+  seq: 2
+}
+
+patch {
+  url: {{actual_url}}/product/x1pchal5zk/deactivate
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiJ9.eyJsYXN0X25hbWUiOiJBZG1pbiIsInVzZXJuYW1lIjoidXNlcmFkbWluIiwicm9sZSI6IkFETUlOIiwiaWQiOjEsImZpcnN0X25hbWUiOiJVc2VyIiwiZXhwIjoxNzc3NjA5OTUyfQ.SABkNFapCaePQ9koIVt0HlH9q17kyhBPi7toohL1ZXY
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
