@@ -24,17 +24,17 @@ async function request<T>(
 }
 
 export const api = {
-  get: <T>(endpoint: string, token?: string) =>
+  get: <T>(endpoint: string) =>
     request<T>(endpoint, {
       method: "GET",
-      headers: token || authToken ? { Authorization: `Bearer ${token || authToken}` } : {},
+      headers: authToken ? { Authorization: `Bearer ${authToken}` } : {},
     }),
 
-    post: <T>(endpoint: string, body: any, token?: string) =>
+    post: <T>(endpoint: string, body: any) =>
     request<T>(endpoint, {
       method: "POST",
       body: JSON.stringify(body),
-      headers: token || authToken ? { Authorization: `Bearer ${token || authToken}` } : {},
+      headers: authToken ? { Authorization: `Bearer ${authToken}` } : {},
     }),
 };
 

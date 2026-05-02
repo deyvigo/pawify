@@ -32,14 +32,14 @@ const SORT_MAP: Record<string, string> = {
   "best-rated": "rating,desc",
 };
 
-export function useProducts(token?: string): UseProductsReturn {
+export function useProducts(authKey?: string): UseProductsReturn {
   const [products, setProducts] = useState<ProductResponseDTO[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
-  const [currentParams, setCurrentParams] = useState<Record<string, any>>({});
+  const [currentParams, setCurrentParams] = useState<Record<string, any>>({ sort: 'name,asc' });
 
   const buildQueryString = (params: Record<string, any>, page: number): string => {
     const query = new URLSearchParams({
@@ -69,7 +69,7 @@ export function useProducts(token?: string): UseProductsReturn {
     page?: number;
   } = {}) => {
     const page = params.page ?? 0;
-    const sortParam = params.sort ? SORT_MAP[params.sort] || params.sort : undefined;
+    const sortParam = params.sort ? SORT_MAP[params.sort] || params.sort : 'name,asc';
     const queryParams = { ...params, sort: sortParam };
     delete queryParams.page;
 
@@ -87,7 +87,7 @@ export function useProducts(token?: string): UseProductsReturn {
       const response = await api.get<{
         content: ProductResponseDTO[];
         last: boolean;
-      }>(`/product${queryString}`, token);
+      }>(`/product${queryString}`);
 
       const newProducts = response.content || [];
       
@@ -109,7 +109,7 @@ export function useProducts(token?: string): UseProductsReturn {
         setLoading(false);
       }
     }
-  }, [token]);
+  }, [authKey]);
 
   const loadMore = useCallback(() => {
     if (!loadingMore && hasMore) {
@@ -123,7 +123,7 @@ export function useProducts(token?: string): UseProductsReturn {
 
   useEffect(() => {
     loadProducts();
-  }, []);
+  }, [authKey]);
 
   return {
     products: Array.isArray(products) ? products : [],

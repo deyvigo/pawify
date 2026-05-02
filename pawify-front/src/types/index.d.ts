@@ -5,6 +5,7 @@ export interface UserPayload {
   first_name: string;
   last_name: string;
   exp: number;
+  token?: string;
 }
 
 export interface Product {

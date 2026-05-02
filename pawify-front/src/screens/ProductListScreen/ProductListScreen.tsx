@@ -56,7 +56,9 @@ export const ProductListScreen: React.FC = () => {
     loadingMore, 
     hasMore, 
     loadProducts, 
-    loadMore 
+    loadMore,
+    currentUser,
+    refresh,
   } = useAppContext();
   
   const [searchQuery, setSearchQuery] = useState("");
@@ -64,6 +66,15 @@ export const ProductListScreen: React.FC = () => {
   const [showFilter, setShowFilter] = useState(false);
   const [activeSort, setActiveSort] = useState<SortOption>("name-az");
   const { width } = useWindowDimensions();
+  const prevUserRef = React.useRef(currentUser);
+
+  // Reload products when user logs in
+  useEffect(() => {
+    if (currentUser && !prevUserRef.current) {
+      refresh();
+    }
+    prevUserRef.current = currentUser;
+  }, [currentUser]);
 
   const cardWidth = (width - HORIZONTAL_PADDING * 2 - GAP) / 2;
   const halfRowWidth = (width - HORIZONTAL_PADDING * 2 - GAP) / 2;

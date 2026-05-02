@@ -21,6 +21,7 @@ export interface AppContextType {
     loadMore: () => void;
     refresh: () => Promise<void>;
     currentUser: UserPayload | null;
+    setCurrentUser: (user: UserPayload | null) => void;
     setActiveTab: (tab: TabKey) => void;
 }
 
@@ -38,6 +39,7 @@ export const AppContext = createContext<AppContextType>({
     loadMore: () => {},
     refresh: async () => {},
     currentUser: null,
+    setCurrentUser: () => {},
     setActiveTab: () => {},
 });
 

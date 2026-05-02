@@ -26,6 +26,7 @@ export default {
     web: {
       favicon: "./assets/favicon.png",
     },
+    plugins: ["expo-secure-store"],
     extra: {
       API_BASE_URL: process.env.API_BASE_URL || "https://pawify-g5fb.onrender.com",
       AUTH_TOKEN: process.env.AUTH_TOKEN || "",

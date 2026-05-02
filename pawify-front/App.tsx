@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { SafeAreaView, StyleSheet, View } from 'react-native';
+import { SafeAreaView, StyleSheet, View, ActivityIndicator } from 'react-native';
 import { colors } from './src/theme/colors';
 import { BottomNavBar } from './src/components/BottomNavBar/BottomNavBar';
 import { DrawerMenu } from './src/components/DrawerMenu/DrawerMenu';
@@ -17,12 +17,8 @@ import { NewPasswordScreen } from './src/screens/NewPasswordScreen';
 import { Product } from './src/types/product';
 import { useProducts } from './src/hooks/useProducts';
 import { UserPayload } from './src/types';
-import { getAuthUser } from './src/config';
+import { setAuthToken, loadAuthToken, getAuthUser } from './src/config';
 import { AppContext,TabKey } from './src/context/AppContext';
-
-
-
-
 
 const screens: Record<TabKey, React.FC> = {
   catalog: ProductListScreen,
@@ -36,24 +32,67 @@ export default function App() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
-  const [currentUser,setCurrentUser] = useState<UserPayload | null>(getAuthUser);
+  const [currentUser,setCurrentUser] = useState<UserPayload | null>(null);
+  const [isLoadingAuth, setIsLoadingAuth] = useState(true);
   const [authScreen, setAuthScreen] = useState<'login' | 'register'| 'recovery'| 'newPassword'>('login');
 
   const [recoveryUser, setRecoveryUser] = useState<string>('');
   const [recoveryCode, setRecoveryCode] = useState<string>('');
-  
+
+  // Load token from secure store on app start
+  useEffect(() => {
+    const loadUser = async () => {
+      try {
+        const token = await loadAuthToken();
+        const user = getAuthUser();
+        if (user && token) {
+          setCurrentUser({ ...user, token: token });
+        }
+      } catch (error) {
+        console.error('Error loading auth token:', error);
+      } finally {
+        setIsLoadingAuth(false);
+      }
+    };
+    loadUser();
+  }, []);
+
+  const handleSetCurrentUser = async (user: any) => {
+    if (user?.token) {
+      await setAuthToken(user.token);
+      const decoded = getAuthUser();
+      if (decoded) {
+        setCurrentUser({ ...decoded, token: user.token });
+      } else {
+        setCurrentUser(null);
+      }
+    } else {
+      await setAuthToken(null);
+      setCurrentUser(null);
+    }
+  };
+
+  const productApi = useProducts(currentUser?.token);
 
   const ActiveScreen = screens[activeTab];
 
-  const productApi = useProducts();
-
   
+  if (isLoadingAuth) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={colors.primary} />
+        </View>
+      </SafeAreaView>
+    );
+  }
+
   if (!currentUser) {
     return (
     <SafeAreaView style={styles.container}>
             {authScreen === 'login' && (
               <LoginScreen 
-                onLoginSuccess={(userData: any) => setCurrentUser(userData as UserPayload)} 
+                onLoginSuccess={handleSetCurrentUser} 
                 onNavigateToRegister={() => setAuthScreen('register')} 
                 onNavigateToForgotPassword={(userToRecover: string) => {
                   setRecoveryUser(userToRecover);  
@@ -70,11 +109,11 @@ export default function App() {
 
             {authScreen === 'recovery' && (
               <RecoveryScreen 
-                onBackToLogin={() => setAuthScreen('login')} // Para el botón de "Volver"
+                onBackToLogin={() => setAuthScreen('login')}
                 username={recoveryUser}
                 onCodeVerified={(code:string) => {
                     setRecoveryCode(code);
-                    setAuthScreen('newPassword'); // Pasamos a la siguiente pantalla
+                    setAuthScreen('newPassword');
                 }}
               />
             )}
@@ -103,6 +142,7 @@ export default function App() {
         setSelectedProduct,
         ...productApi,
         currentUser,
+        setCurrentUser: handleSetCurrentUser,
         setActiveTab,
       }}
     >
@@ -129,10 +169,15 @@ export default function App() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex:1,
     backgroundColor: colors.background,
   },
   content: {
-    flex: 1,
+    flex:1,
+  },
+  loadingContainer: {
+    flex:1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

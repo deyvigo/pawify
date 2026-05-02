@@ -21,12 +21,16 @@ const InfoRow: React.FC<InfoRowProps> = ({ label, value }) => (
 );
 
 export const AccountScreen: React.FC = () => {
-  const { currentUser, setActiveTab } = useAppContext();
+  const { currentUser, setActiveTab, setCurrentUser } = useAppContext();
 
   const fullName = currentUser ? getFullName(currentUser) : '';
 
   const handleBack = () => {
     setActiveTab('catalog');
+  };
+
+  const handleLogout = () => {
+    setCurrentUser(null);
   };
 
   return (
@@ -61,7 +65,7 @@ export const AccountScreen: React.FC = () => {
           <InfoRow label="DNI" value={SIMULATED_DNI} />
         </View>
 
-        <TouchableOpacity style={styles.logoutButton}>
+        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
           <Text style={styles.logoutText}>Cerrar sesión</Text>
         </TouchableOpacity>
       </ScrollView>
