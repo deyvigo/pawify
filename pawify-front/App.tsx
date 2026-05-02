@@ -83,10 +83,12 @@ export default function App() {
           )}
         </View>
         <DrawerMenu isOpen={drawerOpen} onClose={() => setDrawerOpen(false)} />
-        <BottomNavBar activeTab={activeTab} onTabPress={(tab) => {
-          setActiveTab(tab);
-          setSelectedProduct(null); // Clear selected product when switching tabs
-        }} />
+        {!selectedProduct && (
+          <BottomNavBar activeTab={activeTab} onTabPress={(tab) => {
+            setActiveTab(tab);
+            setSelectedProduct(null);
+          }} />
+        )}
         <StatusBar style="dark" />
       </SafeAreaView>
     </AppContext.Provider>
