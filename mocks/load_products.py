@@ -8,7 +8,7 @@ admin = {
   "password": "password",
   "first_name": "User",
   "last_name": "Admin",
-  "dni_number": "88697867"
+  "dni_number": "88694321"
 }
 
 admin_login = {

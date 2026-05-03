@@ -2,8 +2,8 @@ package com.example.pawify.mapper;
 
 import com.example.pawify.dto.in.auth.BuyerRegisterRequestDTO;
 import com.example.pawify.dto.out.auth.BuyerRegisterResponseDTO;
-import com.example.pawify.dto.out.user.BuyerResponseSimpleDTO;
-import com.example.pawify.dto.out.user.UpdateBuyerResponseDTO;
+import com.example.pawify.dto.out.buyer.BuyerResponseSimpleDTO;
+import com.example.pawify.dto.out.buyer.UpdateBuyerResponseDTO;
 import com.example.pawify.model.BuyerEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
