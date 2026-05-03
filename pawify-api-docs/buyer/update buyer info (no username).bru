@@ -1,17 +1,26 @@
 meta {
-  name: buyer info
+  name: update buyer info (no username)
   type: http
-  seq: 1
+  seq: 3
 }
 
-get {
+patch {
   url: {{actual_url}}/buyer
-  body: none
+  body: json
   auth: bearer
 }
 
 auth:bearer {
   token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQlVZRVIiLCJpZCI6MSwiZmlyc3RfbmFtZSI6IlVzZXIiLCJsYXN0X25hbWUiOiJCdXllciIsInVzZXJuYW1lIjoidXNlcmJ1eWVyMSIsImV4cCI6MTc3ODM3MjI5NH0.dJb8jbxy1tEnshfxhCEI2rmZA7gkLzmLA1sxqOnoU40
+}
+
+body:json {
+  {
+    "first_name": "Comprador",
+    "last_name": "Compulsivo",
+    "dni_number": "12345678",
+    "email": "example2@gmail.com"
+  }
 }
 
 settings {
