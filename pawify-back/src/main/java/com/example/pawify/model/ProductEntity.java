@@ -69,8 +69,7 @@ public class ProductEntity {
     @JoinColumn(name = "admin_id", nullable = false)
     private AdminEntity createdBy;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "image_id")
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductImageEntity> images;
 
     @PrePersist
