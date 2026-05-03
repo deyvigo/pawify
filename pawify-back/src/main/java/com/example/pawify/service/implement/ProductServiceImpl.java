@@ -1,7 +1,7 @@
 package com.example.pawify.service.implement;
 
 import com.example.pawify.dto.in.product.ProductCreateRequestDTO;
-import com.example.pawify.dto.out.product.ProductResponseDTO;
+import com.example.pawify.dto.out.product.ProductResponseSimpleDTO;
 import com.example.pawify.exception.ImagesNotProvidedException;
 import com.example.pawify.exception.ResourceNotFoundException;
 import com.example.pawify.exception.UnauthorizedRequestException;
@@ -40,7 +40,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public ProductResponseDTO createProduct(
+    public ProductResponseSimpleDTO createProduct(
         ProductCreateRequestDTO productCreateRequestDTO, List<MultipartFile> images, UserEntity userEntity
     ) {
         if (!userEntity.getRole().getRole().equals(RoleEnum.ADMIN)) {
@@ -117,7 +117,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Slice<ProductResponseDTO> getProducts(
+    public Slice<ProductResponseSimpleDTO> getProducts(
         String search,
         String brand,
         String category,
@@ -174,5 +174,10 @@ public class ProductServiceImpl implements ProductService {
 
         productEntity.setActive(true);
         productRepository.save(productEntity);
+    }
+
+    @Override
+    public ProductResponseSimpleDTO getProductById(Long id) {
+        return productMapper.toResponseDTO(productRepository.findById(id).orElse(null));
     }
 }

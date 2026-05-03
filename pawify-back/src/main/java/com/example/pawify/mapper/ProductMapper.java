@@ -1,7 +1,7 @@
 package com.example.pawify.mapper;
 
 import com.example.pawify.dto.in.product.ProductCreateRequestDTO;
-import com.example.pawify.dto.out.product.ProductResponseDTO;
+import com.example.pawify.dto.out.product.ProductResponseSimpleDTO;
 import com.example.pawify.model.ProductEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -20,5 +20,5 @@ public interface ProductMapper {
     @Mapping(source = "images", target = "images")
     @Mapping(source = "brand", target = "brand")
     @Mapping(source = "category", target = "category")
-    ProductResponseDTO toResponseDTO(ProductEntity productEntity);
+    ProductResponseSimpleDTO toResponseDTO(ProductEntity productEntity);
 }
