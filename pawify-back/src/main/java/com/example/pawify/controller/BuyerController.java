@@ -1,9 +1,9 @@
 package com.example.pawify.controller;
 
 import com.example.pawify.dto.in.buyer.UpdateBuyerRequestDTO;
-import com.example.pawify.dto.out.user.BuyerImageResponseDTO;
-import com.example.pawify.dto.out.user.BuyerResponseSimpleDTO;
-import com.example.pawify.dto.out.user.UpdateBuyerResponseDTO;
+import com.example.pawify.dto.out.buyer.BuyerImageResponseDTO;
+import com.example.pawify.dto.out.buyer.BuyerResponseSimpleDTO;
+import com.example.pawify.dto.out.buyer.UpdateBuyerResponseDTO;
 import com.example.pawify.model.BuyerEntity;
 import com.example.pawify.service.BuyerService;
 import jakarta.validation.Valid;
