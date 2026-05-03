@@ -1,7 +1,9 @@
 package com.example.pawify.controller;
 
+import com.example.pawify.dto.in.buyer.UpdateBuyerRequestDTO;
 import com.example.pawify.dto.out.user.BuyerImageResponseDTO;
 import com.example.pawify.dto.out.user.BuyerResponseSimpleDTO;
+import com.example.pawify.dto.out.user.UpdateBuyerResponseDTO;
 import com.example.pawify.model.BuyerEntity;
 import com.example.pawify.service.BuyerService;
 import jakarta.validation.Valid;
@@ -30,5 +32,13 @@ public class BuyerController {
         @Valid @RequestParam("image")MultipartFile image
     ) {
         return ResponseEntity.ok(buyerService.createOrUpdateImage(buyerEntity, image));
+    }
+
+    @PatchMapping("")
+    public ResponseEntity<UpdateBuyerResponseDTO> updateBuyer(
+        @AuthenticationPrincipal BuyerEntity buyer,
+        @Valid @RequestBody UpdateBuyerRequestDTO updateBuyer
+    ) {
+        return ResponseEntity.ok((buyerService.updateBuyer(buyer, updateBuyer)));
     }
 }
