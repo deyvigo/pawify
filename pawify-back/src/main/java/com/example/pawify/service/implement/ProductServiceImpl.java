@@ -61,7 +61,7 @@ public class ProductServiceImpl implements ProductService {
         productEntity.setShareCode(code);
 
         // create or find brand
-        BrandEntity brandEntity = brandRepository.findByName(productCreateRequestDTO.brand().toLowerCase())
+        BrandEntity brandEntity = brandRepository.findByNameIgnoreCase(productCreateRequestDTO.brand().toLowerCase())
             .orElse(null);
 
         if (brandEntity == null) {
@@ -73,7 +73,7 @@ public class ProductServiceImpl implements ProductService {
         productEntity.setBrand(brandEntity);
 
         //create or find category
-        CategoryEntity categoryEntity = categoryRepository.findByName(productCreateRequestDTO.category().toLowerCase())
+        CategoryEntity categoryEntity = categoryRepository.findByNameIgnoreCase(productCreateRequestDTO.category().toLowerCase())
             .orElse(null);
 
         if (categoryEntity == null) {
@@ -85,7 +85,7 @@ public class ProductServiceImpl implements ProductService {
         productEntity.setCategory(categoryEntity);
 
         // create or find subcategory
-        SubCategoryEntity subCategoryEntity = subCategoryRepository.findByName(productCreateRequestDTO.subCategory().toLowerCase())
+        SubCategoryEntity subCategoryEntity = subCategoryRepository.findByNameIgnoreCase(productCreateRequestDTO.subCategory().toLowerCase())
             .orElse(null);
 
         if (subCategoryEntity == null) {
@@ -179,5 +179,42 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductResponseSimpleDTO getProductById(Long id) {
         return productMapper.toResponseDTO(productRepository.findById(id).orElse(null));
+    }
+
+    @Override
+    public ProductResponseSimpleDTO updateProduct(Long id, ProductCreateRequestDTO dto) {
+        ProductEntity productInDb = productRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Product with id " + id + " not found"));
+
+        BrandEntity brandEntity = brandRepository.findByNameIgnoreCase(dto.brand())
+            .orElseGet(() -> {
+                BrandEntity newBrand = new BrandEntity();
+                newBrand.setName(dto.brand());
+                return brandRepository.save(newBrand);
+            });
+
+        CategoryEntity categoryEntity = categoryRepository.findByNameIgnoreCase(dto.category())
+            .orElseGet(() -> {
+                CategoryEntity newCategory = new CategoryEntity();
+                newCategory.setName(dto.category());
+                return categoryRepository.save(newCategory);
+            });
+
+        SubCategoryEntity subCategoryEntity = subCategoryRepository.findByNameIgnoreCase(dto.subCategory())
+            .orElseGet(() -> {
+                SubCategoryEntity newSubCategory = new SubCategoryEntity();
+                newSubCategory.setCategory(categoryEntity);
+                newSubCategory.setName(dto.subCategory());
+                return subCategoryRepository.save(newSubCategory);
+            });
+
+        productInDb.setName(dto.name());
+        productInDb.setDescription(dto.description());
+        productInDb.setBrand(brandEntity);
+        productInDb.setCategory(categoryEntity);
+        productInDb.setSubCategory(subCategoryEntity);
+        productInDb.setPrice(dto.price());
+
+        return productMapper.toResponseDTO(productRepository.save(productInDb));
     }
 }

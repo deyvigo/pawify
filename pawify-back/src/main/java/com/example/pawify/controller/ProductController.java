@@ -73,4 +73,13 @@ public class ProductController {
     ) {
         return ResponseEntity.ok(productService.getProductById(id));
     }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PatchMapping("/{id}")
+    public ResponseEntity<ProductResponseSimpleDTO> updateProduct(
+        @PathVariable Long id,
+        @Valid @RequestBody ProductCreateRequestDTO productCreateRequestDTO
+    ) {
+        return ResponseEntity.ok(productService.updateProduct(id, productCreateRequestDTO));
+    }
 }

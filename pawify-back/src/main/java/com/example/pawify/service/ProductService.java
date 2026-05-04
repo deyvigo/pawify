@@ -28,4 +28,5 @@ public interface ProductService {
     void deactivateProduct(String shareCode);
     void activateProduct(String shareCode);
     ProductResponseSimpleDTO getProductById(Long id);
+    ProductResponseSimpleDTO updateProduct(Long id, ProductCreateRequestDTO productCreateRequestDTO);
 }
