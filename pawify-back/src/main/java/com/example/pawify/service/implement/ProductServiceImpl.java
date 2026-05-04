@@ -24,7 +24,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @AllArgsConstructor
@@ -99,7 +101,7 @@ public class ProductServiceImpl implements ProductService {
 
         ProductEntity savedProduct = productRepository.save(productEntity);
 
-        List<ProductImageEntity> imageEntities = new ArrayList<>();
+        Set<ProductImageEntity> imageEntities = new HashSet<>();
 
         for (MultipartFile image : images) {
             String url = cloudinaryService.uploadImage(image);

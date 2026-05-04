@@ -9,7 +9,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "products")
@@ -70,7 +70,7 @@ public class ProductEntity {
     private AdminEntity createdBy;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ProductImageEntity> images;
+    private Set<ProductImageEntity> images;
 
     @PrePersist
     public void prePersist() {
@@ -80,5 +80,4 @@ public class ProductEntity {
         this.reviewCount = 0;
         this.rating = 0;
     }
-
 }
