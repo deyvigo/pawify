@@ -12,6 +12,10 @@ import com.example.pawify.repository.OrderRepository;
 import com.example.pawify.repository.ProductRepository;
 import com.example.pawify.service.OrderService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -84,5 +88,15 @@ public class OrderServiceImpl implements OrderService {
         OrderEntity savedOrder = orderRepository.save(order);
 
         return orderMapper.toResponseDTO(savedOrder);
+    }
+
+    @Override
+    public Slice<OrderResponseDTO> getOrdersByBuyer(BuyerEntity buyerEntity, Pageable pageable) {
+        Page<OrderEntity> page = orderRepository.findAllByBuyer(buyerEntity, pageable);
+        return new SliceImpl<>(
+            page.map(orderMapper::toResponseDTO).getContent(),
+            pageable,
+            page.hasNext()
+        );
     }
 }

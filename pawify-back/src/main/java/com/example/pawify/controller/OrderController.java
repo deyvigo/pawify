@@ -6,12 +6,11 @@ import com.example.pawify.model.BuyerEntity;
 import com.example.pawify.service.OrderService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/order")
@@ -25,5 +24,13 @@ public class OrderController {
         @Valid @RequestBody OrderCreateRequestDTO orderCreateRequestDTO
         ) {
         return ResponseEntity.ok(orderService.createOrder(buyerEntity, orderCreateRequestDTO));
+    }
+
+    @GetMapping("")
+    public ResponseEntity<Slice<OrderResponseDTO>> getOrdersByBuyer(
+        @AuthenticationPrincipal BuyerEntity buyerEntity,
+        Pageable pageable
+    ) {
+        return ResponseEntity.ok(orderService.getOrdersByBuyer(buyerEntity, pageable));
     }
 }
