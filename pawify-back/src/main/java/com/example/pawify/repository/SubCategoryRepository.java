@@ -9,7 +9,7 @@ import java.util.Optional;
 
 @Repository
 public interface SubCategoryRepository extends JpaRepository<SubCategoryEntity, Long> {
-    Optional<SubCategoryEntity> findByName(String name);
+    Optional<SubCategoryEntity> findByNameIgnoreCase(String name);
     List<SubCategoryEntity> findByOrderByNameAsc();
 
 }
