@@ -1,25 +1,32 @@
 meta {
-  name: products with sort and pagination
+  name: create order
   type: http
-  seq: 2
+  seq: 1
 }
 
-get {
-  url: {{actual_url}}/product?category=accesorios&size=10&sort=price,asc
-  body: none
+post {
+  url: {{actual_url}}/order
+  body: json
   auth: bearer
-}
-
-params:query {
-  category: accesorios
-  size: 10
-  sort: price,asc
-  ~search: correa
-  ~subCategory: correa
 }
 
 auth:bearer {
   token: eyJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InVzZXJidXllcjEiLCJyb2xlIjoiQlVZRVIiLCJpZCI6MiwiZmlyc3RfbmFtZSI6IlVzZXIiLCJsYXN0X25hbWUiOiJCdXllciIsImV4cCI6MTc3ODUxNTA2Nn0.SlxSd6BwE7qz4AyamPp7G_1RMZkacGJpeZhJoR8_Cq4
+}
+
+body:json {
+  {
+    "details": [
+      {
+        "product_id": 3,
+        "quantity": 2
+      },
+      {
+        "product_id": 11,
+        "quantity": 1
+      }
+    ]
+  }
 }
 
 settings {
