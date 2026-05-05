@@ -1,12 +1,12 @@
 meta {
-  name: create order
+  name: create review
   type: http
   seq: 1
 }
 
 post {
-  url: {{actual_url}}/order
-  body: json
+  url: {{actual_url}}/review
+  body: multipartForm
   auth: bearer
 }
 
@@ -14,19 +14,15 @@ auth:bearer {
   token: eyJhbGciOiJIUzI1NiJ9.eyJsYXN0X25hbWUiOiJCdXllciIsImZpcnN0X25hbWUiOiJVc2VyIiwiaWQiOjIsInJvbGUiOiJCVVlFUiIsInVzZXJuYW1lIjoidXNlcmJ1eWVyMiIsImV4cCI6MTc3ODU2ODA4M30.EZXePfT1uQ7IXWsqIJvq1TqtQCKx95Ya56-tPO2dAuA
 }
 
-body:json {
-  {
-    "details": [
-      {
-        "product_id": 3,
-        "quantity": 2
-      },
-      {
-        "product_id": 11,
-        "quantity": 1
+body:multipart-form {
+  data: '''
+    {
+        "content": "Buen producto",
+        "rating": 1,
+        "detail_id": 3
       }
-    ]
-  }
+  ''' @contentType(application/json)
+  images: @file(/Users/deyvigo/dev/pawify/mocks/images/fuente_agua_3.webp)
 }
 
 settings {
