@@ -80,4 +80,16 @@ public class ReviewServiceImpl implements ReviewService {
             page.hasNext()
         );
     }
+
+    @Override
+    public void deleteReview(BuyerEntity entity, Long reviewId) {
+        ReviewEntity reviewEntity = reviewRepository.findById(reviewId)
+            .orElseThrow(() -> new ResourceNotFoundException("review_id not found"));
+
+        if (!reviewEntity.getBuyer().getId().equals(entity.getId())) {
+            throw new UnauthorizedRequestException("you are not the owner of this review");
+        }
+
+        reviewRepository.delete(reviewEntity);
+    }
 }

@@ -20,4 +20,6 @@ public interface ReviewService {
         Long productId,
         Pageable pageable
     );
+
+    void deleteReview(BuyerEntity entity, Long reviewId);
 }
