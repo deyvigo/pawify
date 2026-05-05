@@ -12,6 +12,10 @@ import com.example.pawify.repository.ReviewRepository;
 import com.example.pawify.service.CloudinaryService;
 import com.example.pawify.service.ReviewService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -65,5 +69,15 @@ public class ReviewServiceImpl implements ReviewService {
         ReviewEntity savedReview = reviewRepository.save(reviewEntity);
 
         return reviewMapper.toResponseDTO(savedReview);
+    }
+
+    @Override
+    public Slice<ReviewResponseDTO> getReviewByProductId(Long productId, Pageable pageable) {
+        Page<ReviewEntity> page = reviewRepository.findAllByProduct_Id(pageable, productId);
+        return new SliceImpl<>(
+            page.map(reviewMapper::toResponseDTO).getContent(),
+            pageable,
+            page.hasNext()
+        );
     }
 }

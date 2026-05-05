@@ -6,6 +6,8 @@ import com.example.pawify.model.BuyerEntity;
 import com.example.pawify.service.ReviewService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -26,5 +28,13 @@ public class ReviewController {
         @RequestParam(value = "images", required = false)List<MultipartFile> images
     ) {
         return ResponseEntity.ok(reviewService.createReview(buyerEntity, reviewCreateRequestDTO, images));
+    }
+
+    @GetMapping("/product/{productId}")
+    public ResponseEntity<Slice<ReviewResponseDTO>> getAllReviewsByProductId(
+        @PathVariable Long productId,
+        Pageable pageable
+    ) {
+        return ResponseEntity.ok(reviewService.getReviewByProductId(productId, pageable));
     }
 }
