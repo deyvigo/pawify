@@ -1,21 +1,17 @@
 meta {
-  name: products with sort and pagination
+  name: reviews by product
   type: http
   seq: 2
 }
 
 get {
-  url: {{actual_url}}/product?category=accesorios&size=10&sort=price,asc
+  url: {{actual_url}}/review/product/11?size=10
   body: none
   auth: bearer
 }
 
 params:query {
-  category: accesorios
   size: 10
-  sort: price,asc
-  ~search: correa
-  ~subCategory: correa
 }
 
 auth:bearer {
