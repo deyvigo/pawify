@@ -19,31 +19,52 @@ export const LoginScreen = ({ onLoginSuccess, onNavigateToRegister, onNavigateTo
 
     const [showPassword, setShowPassword] = useState<boolean>(false);
 
+    const [usernameError, setUsernameError] = useState<string>('');
+    const [passwordError, setPasswordError] = useState<string>('');
+
     const { login, isLoading } = useAuthentication(onLoginSuccess);
 
 
 
     const handleForgotPassword = async () => {
         // Validamos que el usuario haya escrito su nombre de usuario
-        if (!username.trim()) {
-            Alert.alert('Atención', 'Por favor, ingresa su Nombre de Usuario');
+        const cleanUsername = username.trim();
+
+        if (!cleanUsername) {
+            Alert.alert('Atención', 'Por favor, ingrese su Nombre de Usuario');
+            return;
+        }
+
+        if (cleanUsername.length < 6) {
+            Alert.alert('Atención', 'El Nombre de Usuario debe tener al menos 6 caracteres');
             return;
         }
 
         try {
             // Disparamos la petición al back
-            await requestRecoveryCode(username); 
+            await requestRecoveryCode(cleanUsername); 
             
-            Alert.alert('¡Código enviado!', 'Revisa tu correo electrónico para continuar.');
+            Alert.alert(
+                'Solicitud recibida', 
+                'Si el usuario existe en nuestro sistema, hemos enviado un código de seguridad a su correo asociado.'
+            );
             
             // 3. solo si la petición fue exitosa, navegamos a la pantalla de recuperación y le pasamos el username
-            onNavigateToForgotPassword(username);
+            onNavigateToForgotPassword(cleanUsername);
             
         } catch (error) {
             console.log("ERROR REAL DEL BACKEND:", error);
             console.error(error);
             Alert.alert('Error', 'No encontramos una cuenta con ese usuario o hubo un problema de conexión.');
         }
+    };
+
+    const handleLogin = () => {
+        if (username.length < 6 || password.length < 8) {
+            Alert.alert('Atención', 'Por favor, corrige los errores en rojo antes de continuar.');
+            return;
+        }
+        login(username, password);
     };
 
     return (
@@ -66,7 +87,7 @@ export const LoginScreen = ({ onLoginSuccess, onNavigateToRegister, onNavigateTo
             <View style={styles.formcontainer}>
                 <View style={styles.inputcontainer}>
                     <Text style={styles.label1}>Nombre de Usuario</Text>
-                    <View style={styles.fieldContainer}>
+                    <View style={[styles.fieldContainer, usernameError ? styles.fieldErrorBorder : null]}>
                         <Image  source={require('../../assets/userIcon.png') } />
                         <TextInput 
                             style={styles.input}
@@ -74,9 +95,17 @@ export const LoginScreen = ({ onLoginSuccess, onNavigateToRegister, onNavigateTo
                             placeholderTextColor="#6B7280" 
                             autoCapitalize="none"  
                             value={username}
-                            onChangeText={setUsername}
+                            onChangeText={(text) => {
+                                setUsername(text);
+                                if (text.length > 0 && text.length < 6) {
+                                    setUsernameError('El usuario debe tener al menos 6 caracteres');
+                                } else {
+                                    setUsernameError(''); 
+                                }
+                            }}
                         />                 
                     </View>
+                    {usernameError ? <Text style={styles.errorText}>{usernameError}</Text> : null}
                 </View>
                 <View style={styles.inputcontainer}>
                     <View style={styles.headerContainer}>
@@ -85,7 +114,7 @@ export const LoginScreen = ({ onLoginSuccess, onNavigateToRegister, onNavigateTo
                             <Text style={styles.forgotPasswordText}>Olvidé mi contraseña</Text>
                         </TouchableOpacity>
                     </View>
-                    <View style={styles.fieldContainer}>
+                    <View style={[styles.fieldContainer, passwordError ? styles.fieldErrorBorder : null]}>
                         <Image  source={require('../../assets/passIcon.png') } />
                         <TextInput 
                             style={styles.input}
@@ -93,15 +122,23 @@ export const LoginScreen = ({ onLoginSuccess, onNavigateToRegister, onNavigateTo
                             placeholderTextColor="#6B7280" 
                             secureTextEntry={!showPassword} // para ocultar texto con asteriscos
                             value={password}
-                            onChangeText={setPassword}
+                            onChangeText={(text) => {
+                                setPassword(text);
+                                if (text.length > 0 && text.length < 8) {
+                                    setPasswordError('La contraseña debe tener al menos 8 caracteres');
+                                } else {
+                                    setPasswordError('');
+                                }
+                            }}
                         />
                         <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
                             <Image style={styles.eyeIcon} source={require('../../assets/eyeIcon.png')} />
                         </TouchableOpacity>
                     </View>
+                    {passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : null}
                 </View>
 
-                <TouchableOpacity style={styles.loginButton} onPress={() => login(username, password)} disabled={isLoading}>
+                <TouchableOpacity style={styles.loginButton} onPress={handleLogin} disabled={isLoading}>
                     {isLoading ? (
                         <ActivityIndicator color="#ffffff" /> 
                     ) : (
@@ -273,9 +310,18 @@ const styles= StyleSheet.create({
         fontSize: 14,
     },
 
-
-
-
+    errorText: {
+        color: '#FF1A1A',
+        fontSize: 12,
+        marginTop: 5,
+        marginLeft: 5,
+        fontWeight: '500',
+    },
+    fieldErrorBorder: {
+        borderWidth: 1,
+        borderColor: '#FF1A1A',
+        backgroundColor: '#FFF5F5', 
+    }
 
     
 })
