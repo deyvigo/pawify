@@ -1,12 +1,11 @@
 package com.example.pawify.controller;
 
 import com.example.pawify.dto.in.auth.*;
-import com.example.pawify.dto.out.auth.AdminRegisterResponseDTO;
-import com.example.pawify.dto.out.auth.BuyerRegisterResponseDTO;
-import com.example.pawify.dto.out.auth.JwtDTO;
+import com.example.pawify.dto.out.auth.*;
 import com.example.pawify.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -45,9 +44,15 @@ public class AuthController {
     }
 
     @PostMapping("/recovery/request-code")
-    public ResponseEntity<Void> requestRecoveryCode(@Valid @RequestBody RecoveryCodeRequestDTO dto) {
-        authService.sendRecoveryCode(dto);
-        return ResponseEntity.accepted().build();
+    public ResponseEntity<UsernameVerificationResponseDTO> requestRecoveryCode(@Valid @RequestBody RecoveryCodeRequestDTO dto) {
+        return ResponseEntity.ok(authService.sendRecoveryCode(dto));
+    }
+
+    @PostMapping("/recovery/verify-code")
+    public ResponseEntity<VerificationCodeResponseDTO> verifyToken(
+        @Valid @RequestBody VerificationCodeRequestDTO dto
+    ) {
+        return ResponseEntity.ok(authService.verifyToken(dto.username(), dto.code()));
     }
 
     @PostMapping("/recovery/reset-password")

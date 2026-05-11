@@ -2,9 +2,7 @@ package com.example.pawify.service.implement;
 
 import com.example.pawify.config.security.JwtService;
 import com.example.pawify.dto.in.auth.*;
-import com.example.pawify.dto.out.auth.AdminRegisterResponseDTO;
-import com.example.pawify.dto.out.auth.BuyerRegisterResponseDTO;
-import com.example.pawify.dto.out.auth.JwtDTO;
+import com.example.pawify.dto.out.auth.*;
 import com.example.pawify.exception.*;
 import com.example.pawify.mapper.AdminMapper;
 import com.example.pawify.mapper.BuyerMapper;
@@ -104,10 +102,12 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     @Transactional
-    public void sendRecoveryCode(RecoveryCodeRequestDTO dto) {
+    public UsernameVerificationResponseDTO sendRecoveryCode(RecoveryCodeRequestDTO dto) {
         BuyerEntity buyer = buyerRepository.findByUsername(dto.username()).orElse(null);
 
-        if (buyer == null) return;
+        if (buyer == null) {
+            throw new ResourceNotFoundException("username doesn't exist");
+        };
 
         passwordResetTokenRepository.deleteAllByUserAndUsedFalse(buyer);
 
@@ -122,16 +122,40 @@ public class AuthServiceImpl implements AuthService {
 
         try {
             emailService.sendRecoveryCodeToEmail(buyer.getEmail(), token);
+            return new UsernameVerificationResponseDTO(
+                buyer.getEmail()
+            );
         } catch (Exception e) {
-            return;
+            return null;
         }
+    }
+
+    @Override
+    public VerificationCodeResponseDTO verifyToken(String username, String token) {
+        UserEntity userEntity = userRepository.findByUsername(username)
+            .orElseThrow(() -> new InvalidRecoveryCodeException("Username not found"));
+
+        PasswordResetTokenEntity passwordResetTokenEntity = passwordResetTokenRepository.findByUserAndUsedFalse(userEntity)
+            .orElseThrow(() -> new InvalidRecoveryCodeException("Invalid recovery token"));
+
+        if (passwordResetTokenEntity.getExpirationDate().isBefore(LocalDateTime.now())) {
+            throw new InvalidRecoveryCodeException("Token expired");
+        }
+
+        if (!passwordEncoder.matches(token, passwordResetTokenEntity.getTokenHash())) {
+            throw new InvalidRecoveryCodeException("Invalid Recovery Token");
+        }
+
+        return new VerificationCodeResponseDTO(
+            true
+        );
     }
 
     @Override
     @Transactional
     public void resetPassword(PasswordRecoveryRequestDTO dto) {
         UserEntity user = userRepository.findByUsername(dto.username())
-            .orElseThrow(()  -> new InvalidRecoveryCodeException("Invalid recovery token"));
+            .orElseThrow(()  -> new InvalidRecoveryCodeException("Username not found"));
 
         PasswordResetTokenEntity passwordResetTokenEntity = passwordResetTokenRepository.findByUserAndUsedFalse(user)
             .orElseThrow(() -> new InvalidRecoveryCodeException("Invalid recovery token"));
