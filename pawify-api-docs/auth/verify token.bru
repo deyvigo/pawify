@@ -1,18 +1,19 @@
 meta {
-  name: recovery password
+  name: verify token
   type: http
-  seq: 2
+  seq: 7
 }
 
 post {
-  url: {{actual_url}}/auth/recovery/request-code
+  url: {{actual_url}}/auth/recovery/verify-code
   body: json
   auth: inherit
 }
 
 body:json {
   {
-    "username": "userbuyer2"
+    "username": "userbuyer2",
+    "code": "fnv3e4"
   }
 }
 
