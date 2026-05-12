@@ -25,7 +25,7 @@ public class ProductEntity {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = true)
+    @Column(nullable = true, columnDefinition = "TEXT")
     private String description;
 
     @DecimalMin(value = "0.00", inclusive = true)

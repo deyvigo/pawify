@@ -28,4 +28,7 @@ public class BuyerEntity extends UserEntity {
 
     @OneToMany(mappedBy = "buyer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ReviewEntity> reviews;
+
+    @OneToMany(mappedBy = "buyer", fetch = FetchType.LAZY)
+    private List<ClaimEntity> claims;
 }

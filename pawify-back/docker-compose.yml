@@ -6,5 +6,5 @@ services:
       - "5432:5432"
     environment:
       - POSTGRES_DB=pawify-db
-      - POSTGRES_USER=paw-user
-      - POSTGRES_PASSWORD=paw-pass
+      - POSTGRES_USER=dbuser
+      - POSTGRES_PASSWORD=password
