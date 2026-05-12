@@ -8,4 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface OrderRepository extends JpaRepository<OrderEntity, Long> {
     Page<OrderEntity> findAllByBuyer(BuyerEntity buyerEntity, Pageable pageable);
+    boolean existsByTrackingCode(String trackingCode);
 }

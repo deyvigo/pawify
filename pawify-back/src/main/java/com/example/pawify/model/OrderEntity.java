@@ -22,6 +22,9 @@ public class OrderEntity {
     @Column(nullable = false)
     LocalDateTime orderAt;
 
+    @Column(nullable = false, unique = true)
+    private String trackingCode;
+
     @Column(nullable = false)
     BigDecimal totalPrice;
 

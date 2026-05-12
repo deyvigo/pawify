@@ -10,6 +10,7 @@ import com.example.pawify.mapper.OrderMapper;
 import com.example.pawify.model.*;
 import com.example.pawify.repository.OrderRepository;
 import com.example.pawify.repository.ProductRepository;
+import com.example.pawify.service.CodeGenerator;
 import com.example.pawify.service.OrderService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -32,7 +33,7 @@ public class OrderServiceImpl implements OrderService {
     private final ProductRepository productRepository;
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
-    private final DetailMapper detailMapper;
+    private final CodeGenerator codeGenerator;
 
     @Override
     @Transactional
@@ -83,8 +84,14 @@ public class OrderServiceImpl implements OrderService {
             total = total.add(subTotal);
         }
 
+        String trackingCode;
+        do {
+            trackingCode = codeGenerator.generateCode(16);
+        } while (orderRepository.existsByTrackingCode(trackingCode));
+
         order.setDetails(details);
         order.setTotalPrice(total);
+        order.setTrackingCode(trackingCode);
         OrderEntity savedOrder = orderRepository.save(order);
 
         return orderMapper.toResponseDTO(savedOrder);
