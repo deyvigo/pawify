@@ -106,4 +106,12 @@ public class OrderServiceImpl implements OrderService {
             page.hasNext()
         );
     }
+
+    @Override
+    public OrderResponseDTO getOrderByTrackingCode(String trackingCode) {
+        OrderEntity orderEntity = orderRepository.findByTrackingCode(trackingCode)
+            .orElseThrow(() -> new ResourceNotFoundException("tracking_code not found"));
+
+        return orderMapper.toResponseDTO(orderEntity);
+    }
 }

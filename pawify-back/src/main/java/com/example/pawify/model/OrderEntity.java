@@ -28,6 +28,12 @@ public class OrderEntity {
     @Column(nullable = false)
     BigDecimal totalPrice;
 
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
+
+    @Enumerated(EnumType.STRING)
+    private ShippingStatus shippingStatus;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "buyer_id", nullable = false)
     private BuyerEntity buyer;
@@ -35,8 +41,13 @@ public class OrderEntity {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<DetailEntity> details;
 
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<TrackingStatusEntity> trackings;
+
     @PrePersist
     public void prePersist() {
         this.orderAt = LocalDateTime.now();
+        this.orderStatus = OrderStatus.PAID;
+        this.shippingStatus = ShippingStatus.IN_TRANSIT;
     }
 }

@@ -8,5 +8,7 @@ public record OrderResponseDTO(
     Long id,
     BigDecimal totalPrice,
     LocalDateTime orderAt,
+    String trackingCode,
+    String shippingStatus,
     List<DetailResponseDTO> details
 ) {}

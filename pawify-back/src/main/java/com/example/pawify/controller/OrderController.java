@@ -33,4 +33,11 @@ public class OrderController {
     ) {
         return ResponseEntity.ok(orderService.getOrdersByBuyer(buyerEntity, pageable));
     }
+
+    @GetMapping("/{trackingCode}")
+    public ResponseEntity<OrderResponseDTO> getOrdersByTrackingCode(
+        @PathVariable String trackingCode
+    ) {
+        return ResponseEntity.ok(orderService.getOrderByTrackingCode(trackingCode));
+    }
 }

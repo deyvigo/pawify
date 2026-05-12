@@ -9,4 +9,5 @@ import org.springframework.data.domain.Slice;
 public interface OrderService {
     OrderResponseDTO createOrder(BuyerEntity buyerEntity, OrderCreateRequestDTO orderCreateRequestDTO);
     Slice<OrderResponseDTO> getOrdersByBuyer(BuyerEntity buyerEntity, Pageable pageable);
+    OrderResponseDTO getOrderByTrackingCode(String trackingCode);
 }
