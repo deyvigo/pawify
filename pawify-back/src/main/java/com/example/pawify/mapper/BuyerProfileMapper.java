@@ -1,6 +1,6 @@
 package com.example.pawify.mapper;
 
-import com.example.pawify.dto.out.user.BuyerImageResponseDTO;
+import com.example.pawify.dto.out.buyer.BuyerImageResponseDTO;
 import com.example.pawify.model.BuyerImageEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;

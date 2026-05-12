@@ -1,0 +1,32 @@
+meta {
+  name: update product by id (admin)
+  type: http
+  seq: 8
+}
+
+patch {
+  url: {{actual_url}}/product/18
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InVzZXJhZG1pbiIsInJvbGUiOiJBRE1JTiIsImlkIjoxLCJmaXJzdF9uYW1lIjoiVXNlciIsImxhc3RfbmFtZSI6IkFkbWluIiwiZXhwIjoxNzc4NDYzMzAxfQ.eBxS5OFjVpC6YFdz-c0bpyQ3KsiS2L9fEdTtC4iE1xA
+}
+
+body:json {
+  {
+    "name": "Correa doble para perro",
+    "description": "Permite pasear dos perros al mismo tiempo",
+    "brand": "Walkpro",
+    "category": "accesorios",
+    "sub_category": "correa",
+    "price": 20,
+    "stock": 7
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

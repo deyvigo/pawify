@@ -25,4 +25,10 @@ public class BuyerEntity extends UserEntity {
 
     @OneToOne(mappedBy = "buyer", cascade = CascadeType.ALL)
     private BuyerImageEntity profile;
+
+    @OneToMany(mappedBy = "buyer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ReviewEntity> reviews;
+
+    @OneToMany(mappedBy = "buyer", fetch = FetchType.LAZY)
+    private List<ClaimEntity> claims;
 }

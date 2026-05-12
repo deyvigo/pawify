@@ -1,0 +1,20 @@
+meta {
+  name: all orders (paginated)
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{actual_url}}/order
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InVzZXJidXllcjE0Iiwicm9sZSI6IkJVWUVSIiwiaWQiOjMwLCJmaXJzdF9uYW1lIjoiVXNlciIsImxhc3RfbmFtZSI6IkJ1eWVyIiwiZXhwIjoxNzc5MjA2NDQ0fQ.ZdRzeoPYJqM5NTpZnzUkmiN6Z4EN1l49UvR3tirdnOY"
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

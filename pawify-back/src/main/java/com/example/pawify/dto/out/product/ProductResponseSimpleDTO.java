@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public record ProductResponseDTO(
+public record ProductResponseSimpleDTO(
     Long id,
     String name,
     String description,

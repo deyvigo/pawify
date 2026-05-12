@@ -1,0 +1,114 @@
+[
+  {
+    "username": "useradmin",
+    "password": "password",
+    "first_name": "Jhon",
+    "last_name": "Admin",
+    "dni_number": "88694321"
+  },
+  {
+    "username": "useradmin1",
+    "password": "password",
+    "first_name": "Juan",
+    "last_name": "Admin",
+    "dni_number": "88697867"
+  },
+  {
+    "username": "useradmin2",
+    "password": "password",
+    "first_name": "Ana",
+    "last_name": "Admin",
+    "dni_number": "12345678"
+  },
+  {
+    "username": "useradmin3",
+    "password": "password",
+    "first_name": "Maria",
+    "last_name": "Admin",
+    "dni_number": "98765432"
+  },
+  {
+    "username": "useradmin4",
+    "password": "password",
+    "first_name": "Luis",
+    "last_name": "Admin",
+    "dni_number": "11111111"
+  },
+  {
+    "username": "useradmin5",
+    "password": "password",
+    "first_name": "Carlos",
+    "last_name": "Admin",
+    "dni_number": "22222222"
+  },
+  {
+    "username": "useradmin6",
+    "password": "password",
+    "first_name": "Pedro",
+    "last_name": "Admin",
+    "dni_number": "33333333"
+  },
+  {
+    "username": "useradmin7",
+    "password": "password",
+    "first_name": "Jose",
+    "last_name": "Admin",
+    "dni_number": "44444444"
+  },
+  {
+    "username": "useradmin8",
+    "password": "password",
+    "first_name": "Fernando",
+    "last_name": "Admin",
+    "dni_number": "55555555"
+  },
+  {
+    "username": "useradmin9",
+    "password": "password",
+    "first_name": "Daniel",
+    "last_name": "Admin",
+    "dni_number": "66666666"
+  },
+  {
+    "username": "useradmin10",
+    "password": "password",
+    "first_name": "Isabella",
+    "last_name": "Admin",
+    "dni_number": "77777777"
+  },
+  {
+    "username": "useradmin11",
+    "password": "password",
+    "first_name": "Luz",
+    "last_name": "Admin",
+    "dni_number": "88888888"
+  },
+  {
+    "username": "useradmin12",
+    "password": "password",
+    "first_name": "Fernanda",
+    "last_name": "Admin",
+    "dni_number": "99999999"
+  },
+  {
+    "username": "useradmin13",
+    "password": "password",
+    "first_name": "Mariana",
+    "last_name": "Admin",
+    "dni_number": "11111222"
+  },
+  {
+    "username": "useradmin14",
+    "password": "password",
+    "first_name": "Ana",
+    "last_name": "Admin",
+    "dni_number": "11112222"
+  },
+  {
+    "username": "useradmin15",
+    "password": "password",
+    "first_name": "Julieta",
+    "last_name": "Admin",
+    "dni_number": "33344444"
+  }
+]

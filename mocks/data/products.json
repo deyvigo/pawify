@@ -1,35 +1,9 @@
-import requests
-import json
-
-API_URL = "http://localhost:8080"
-
-admin = {
-  "username": "useradmin",
-  "password": "password",
-  "first_name": "User",
-  "last_name": "Admin",
-  "dni_number": "88697867"
-}
-
-admin_login = {
-  "username": "useradmin",
-  "password": "password"
-}
-
-def create_admin():
-  r = requests.post(f"{API_URL}/auth/register/admin", json=admin)
-  return r.json()
-
-def login_admin():
-  r = requests.post(f"{API_URL}/auth/login", json=admin_login)
-  return r.json() # { "token": "string", refresh_token: "string" }
-
-products = [
+[
   {
     "name": "Croquetas",
     "description": "Chow Chow",
     "price": 10,
-    "stock": 10,
+    "stock": 100,
     "sub_category": "Croquetas",
     "category": "Alimentación",
     "brand": "Dog Chow",
@@ -43,7 +17,7 @@ products = [
     "name": "Dispensador de comida",
     "description": "Comida para todos",
     "price": 10,
-    "stock": 10,
+    "stock": 100,
     "sub_category": "Dispensador",
     "category": "Aseo",
     "brand": "Angies Boutique",
@@ -57,7 +31,7 @@ products = [
     "name": "Collar ajustable",
     "description": "Collar resistente y cómodo para perros de todas las tallas",
     "price": 8,
-    "stock": 25,
+    "stock": 100,
     "sub_category": "Collar",
     "category": "Accesorios",
     "brand": "PetStyle",
@@ -71,7 +45,7 @@ products = [
     "name": "Correa retráctil",
     "description": "Correa extensible hasta 5 metros con sistema de bloqueo",
     "price": 15,
-    "stock": 18,
+    "stock": 100,
     "sub_category": "Collar",
     "category": "Accesorios",
     "brand": "WalkMate",
@@ -85,7 +59,7 @@ products = [
     "name": "Juguete mordedor",
     "description": "Juguete de goma resistente para reducir ansiedad y estrés",
     "price": 6,
-    "stock": 40,
+    "stock": 100,
     "sub_category": "Mordedor",
     "category": "Juguetes",
     "brand": "HappyPet",
@@ -99,7 +73,7 @@ products = [
     "name": "Cama para perro mediano",
     "description": "Cama acolchada con base antideslizante",
     "price": 25,
-    "stock": 12,
+    "stock": 100,
     "sub_category": "Cama",
     "category": "Dormitorio",
     "brand": "CozyPaws",
@@ -113,7 +87,7 @@ products = [
     "name": "Shampoo antipulgas",
     "description": "Shampoo especial para eliminar pulgas y garrapatas",
     "price": 9,
-    "stock": 30,
+    "stock": 100,
     "sub_category": "Shampoo",
     "category": "Aseo",
     "brand": "VetCare",
@@ -127,7 +101,7 @@ products = [
     "name": "Comedero doble acero inoxidable",
     "description": "Bowl doble para agua y comida, fácil de limpiar",
     "price": 12,
-    "stock": 22,
+    "stock": 100,
     "sub_category": "Plato",
     "category": "Alimentación",
     "brand": "PetKitchen",
@@ -141,7 +115,7 @@ products = [
     "name": "Transportadora para mascotas",
     "description": "Caja de transporte segura para viajes cortos y largos",
     "price": 35,
-    "stock": 8,
+    "stock": 100,
     "sub_category": "Transportador",
     "category": "Transporte",
     "brand": "SafeTravel Pet",
@@ -155,7 +129,7 @@ products = [
     "name": "Snack natural de pollo",
     "description": "Premios saludables ricos en proteína",
     "price": 5,
-    "stock": 50,
+    "stock": 100,
     "sub_category": "Snack",
     "category": "Alimentación",
     "brand": "NatureBites",
@@ -169,7 +143,7 @@ products = [
     "name": "Collar LED luminoso",
     "description": "Collar con luz LED para paseos nocturnos seguros",
     "price": 9,
-    "stock": 20,
+    "stock": 100,
     "sub_category": "Collar",
     "category": "Accesorios",
     "brand": "NightPaw",
@@ -183,7 +157,7 @@ products = [
     "name": "Plato antivoracidad",
     "description": "Comedero diseñado para evitar que el perro coma demasiado rápido",
     "price": 7,
-    "stock": 30,
+    "stock": 100,
     "sub_category": "Plato",
     "category": "Alimentación",
     "brand": "SlowEat Pet",
@@ -197,7 +171,7 @@ products = [
     "name": "Cepillo quitapelo",
     "description": "Cepillo para eliminar pelo muerto en perros y gatos",
     "price": 6,
-    "stock": 35,
+    "stock": 100,
     "sub_category": "Cepillo",
     "category": "Aseo",
     "brand": "FurClean",
@@ -211,7 +185,7 @@ products = [
     "name": "Arena para gatos",
     "description": "Arena aglomerante con control de olores",
     "price": 12,
-    "stock": 40,
+    "stock": 100,
     "sub_category": "Arena",
     "category": "Aseo",
     "brand": "CatPure",
@@ -225,7 +199,7 @@ products = [
     "name": "Rascador para gatos",
     "description": "Rascador de cartón resistente para gatos",
     "price": 11,
-    "stock": 18,
+    "stock": 100,
     "sub_category": "Rascador",
     "category": "Juguetes",
     "brand": "Scratchy",
@@ -239,7 +213,7 @@ products = [
     "name": "Pelota interactiva",
     "description": "Pelota que rebota irregularmente para estimular el juego",
     "price": 5,
-    "stock": 60,
+    "stock": 100,
     "sub_category": "Pelota",
     "category": "Juguetes",
     "brand": "PlayPet",
@@ -253,7 +227,7 @@ products = [
     "name": "Vitaminas para perros",
     "description": "Suplemento vitamínico para mejorar la salud general",
     "price": 14,
-    "stock": 25,
+    "stock": 100,
     "sub_category": "Vitamina",
     "category": "Salud",
     "brand": "VitaPet",
@@ -267,7 +241,7 @@ products = [
     "name": "Correa doble para paseo",
     "description": "Permite pasear dos perros al mismo tiempo",
     "price": 13,
-    "stock": 15,
+    "stock": 100,
     "sub_category": "Correa",
     "category": "Accesorios",
     "brand": "WalkPro",
@@ -281,7 +255,7 @@ products = [
     "name": "Casita para perros pequeños",
     "description": "Casa portátil y resistente al clima",
     "price": 28,
-    "stock": 10,
+    "stock": 100,
     "sub_category": "Casa",
     "category": "Descanso",
     "brand": "HomePaw",
@@ -295,7 +269,7 @@ products = [
     "name": "Bolsas biodegradables",
     "description": "Bolsas ecológicas para recoger desechos de mascotas",
     "price": 4,
-    "stock": 100,
+    "stock": 1000,
     "sub_category": "Bolsa",
     "category": "Aseo",
     "brand": "EcoPet",
@@ -309,7 +283,7 @@ products = [
     "name": "Arnés ajustable",
     "description": "Arnés cómodo para control de perros durante el paseo",
     "price": 11,
-    "stock": 22,
+    "stock": 100,
     "sub_category": "Collar",
     "category": "Accesorios",
     "brand": "ControlDog",
@@ -323,7 +297,7 @@ products = [
     "name": "Snack dental",
     "description": "Premios que ayudan a limpiar los dientes del perro",
     "price": 6,
-    "stock": 45,
+    "stock": 100,
     "sub_category": "Snack",
     "category": "Alimentación",
     "brand": "DentaPet",
@@ -337,7 +311,7 @@ products = [
     "name": "Fuente de agua automática",
     "description": "Dispensador de agua con filtrado continuo",
     "price": 22,
-    "stock": 14,
+    "stock": 100,
     "sub_category": "Fuente",
     "category": "Alimentación",
     "brand": "HydraPet",
@@ -348,59 +322,3 @@ products = [
     ]
   }
 ]
-
-def create_product(jwt_token, product):
-  files = []
-  file_handles = []
-  
-  try:
-    payload = {
-      "name": product["name"],
-      "description": product["description"],
-      "price": product["price"],
-      "stock": product["stock"],
-      "category": product["category"],
-      "sub_category": product["sub_category"],
-      "brand": product["brand"],
-    }
-
-    files.append((
-      "data",
-      (None, json.dumps(payload), "application/json")
-    ))
-
-    for img in product["images"]:
-      f = open(img, 'rb')
-      file_handles.append(f)
-      files.append(("images", (img, f)))
-
-    headers = {
-      "Authorization": f"Bearer {jwt_token['token']}"
-    }
-
-    r = requests.post(
-      url=f"{API_URL}/product",
-      files=files,
-      headers=headers
-    )
-
-    return r.json()
-  finally:
-    for f in file_handles:
-      f.close()
-
-
-if __name__ == "__main__":
-  print("Creating admin...")
-  admin = create_admin()
-  print("-- Admin created!: ", admin)
-  print("Login admin...")
-  token = login_admin()
-  print("-- Admin logged in!")
-  print(json.dumps(token, indent=2, ensure_ascii=False))
-  print("Creating products...")
-  for product in products:
-    print("--------------------------------------------------------------------------------")
-    product = create_product(token, product)
-    print("Product created!: ")
-    print(json.dumps(product, indent=2, ensure_ascii=False))

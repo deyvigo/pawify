@@ -2,7 +2,9 @@ package com.example.pawify.mapper;
 
 import com.example.pawify.dto.in.auth.BuyerRegisterRequestDTO;
 import com.example.pawify.dto.out.auth.BuyerRegisterResponseDTO;
-import com.example.pawify.dto.out.user.BuyerResponseSimpleDTO;
+import com.example.pawify.dto.out.buyer.BuyerPreviewResponseDTO;
+import com.example.pawify.dto.out.buyer.BuyerResponseSimpleDTO;
+import com.example.pawify.dto.out.buyer.UpdateBuyerResponseDTO;
 import com.example.pawify.model.BuyerEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -24,4 +26,6 @@ public interface BuyerMapper {
         expression = "java(buyerEntity.getAddresses() != null ? buyerEntity.getAddresses().size() : 0)"
     )
     BuyerResponseSimpleDTO toResponseSimpleDTO(BuyerEntity buyerEntity);
+    BuyerPreviewResponseDTO toResponsePreviewDTO(BuyerEntity buyerEntity);
+    UpdateBuyerResponseDTO toUpdateBuyerResponseDTO(BuyerEntity buyerEntity);
 }

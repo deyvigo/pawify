@@ -1,8 +1,7 @@
 package com.example.pawify.controller;
 
-import com.example.pawify.dto.in.product.ChangeActiveStatusDTO;
 import com.example.pawify.dto.in.product.ProductCreateRequestDTO;
-import com.example.pawify.dto.out.product.ProductResponseDTO;
+import com.example.pawify.dto.out.product.ProductResponseSimpleDTO;
 import com.example.pawify.model.UserEntity;
 import com.example.pawify.service.ProductService;
 import jakarta.validation.Valid;
@@ -27,7 +26,7 @@ public class ProductController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ProductResponseDTO> createProduct(
+    public ResponseEntity<ProductResponseSimpleDTO> createProduct(
         @Valid @RequestPart("data") ProductCreateRequestDTO productCreateRequestDTO,
         @RequestParam("images") List<MultipartFile> images,
         @AuthenticationPrincipal UserEntity userEntity
@@ -36,7 +35,7 @@ public class ProductController {
     }
 
     @GetMapping("")
-    public ResponseEntity<Slice<ProductResponseDTO>> getProducts(
+    public ResponseEntity<Slice<ProductResponseSimpleDTO>> getProducts(
         @RequestParam(required = false) String search,
         @RequestParam(required = false) String brand,
         @RequestParam(required = false) String category,
@@ -66,5 +65,21 @@ public class ProductController {
     ) {
         productService.activateProduct(shareCode);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductResponseSimpleDTO> getProductById(
+        @PathVariable Long id
+    ) {
+        return ResponseEntity.ok(productService.getProductById(id));
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PatchMapping("/{id}")
+    public ResponseEntity<ProductResponseSimpleDTO> updateProduct(
+        @PathVariable Long id,
+        @Valid @RequestBody ProductCreateRequestDTO productCreateRequestDTO
+    ) {
+        return ResponseEntity.ok(productService.updateProduct(id, productCreateRequestDTO));
     }
 }

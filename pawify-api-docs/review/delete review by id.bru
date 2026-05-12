@@ -1,0 +1,20 @@
+meta {
+  name: delete review by id
+  type: http
+  seq: 3
+}
+
+delete {
+  url: {{actual_url}}/review/2
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InVzZXJidXllcjEiLCJyb2xlIjoiQlVZRVIiLCJpZCI6NTIsImZpcnN0X25hbWUiOiJVc2VyIiwibGFzdF9uYW1lIjoiQnV5ZXIiLCJleHAiOjE3Nzg1OTUyMjl9.Bd9kTWs2NMzlxEFtOAh_nvjn5NvZQ-DeF8a3yBlcaQk
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

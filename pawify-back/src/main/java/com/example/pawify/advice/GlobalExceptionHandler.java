@@ -106,6 +106,18 @@ public class GlobalExceptionHandler {
             .body(ErrorResponseDTO.of(HttpStatus.BAD_REQUEST, "INVALID_DATA", ex.getMessage()));
     }
 
+    @ExceptionHandler(NotEnoughStockException.class)
+    public ResponseEntity<ErrorResponseDTO> handleNotEnoughStock(NotEnoughStockException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+            .body(ErrorResponseDTO.of(HttpStatus.CONFLICT, "NOT_ENOUGH_STOCK", ex.getMessage()));
+    }
+
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<ErrorResponseDTO> handleBadRequest(BadRequestException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(ErrorResponseDTO.of(HttpStatus.BAD_REQUEST, "INVALID_REQUEST", ex.getMessage()));
+    }
+
     private static String toSnakeCase(String field) {
         return field.replaceAll("([a-z])([A-Z]+)", "$1_$2").toLowerCase();
     }

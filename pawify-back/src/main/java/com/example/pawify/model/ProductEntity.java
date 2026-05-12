@@ -10,6 +10,7 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "products")
@@ -24,7 +25,7 @@ public class ProductEntity {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = true)
+    @Column(nullable = true, columnDefinition = "TEXT")
     private String description;
 
     @DecimalMin(value = "0.00", inclusive = true)
@@ -69,9 +70,11 @@ public class ProductEntity {
     @JoinColumn(name = "admin_id", nullable = false)
     private AdminEntity createdBy;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "image_id")
-    private List<ProductImageEntity> images;
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<ProductImageEntity> images;
+
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ReviewEntity> reviews;
 
     @PrePersist
     public void prePersist() {
@@ -81,5 +84,4 @@ public class ProductEntity {
         this.reviewCount = 0;
         this.rating = 0;
     }
-
 }

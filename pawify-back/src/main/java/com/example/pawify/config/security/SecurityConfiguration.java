@@ -43,8 +43,13 @@ public class SecurityConfiguration {
                 .requestMatchers(
                     "/card/**",
                     "/address/**",
-                    "/buyer/**"
+                    "/buyer/**",
+                    "/order/**",
+                    "/review/**"
                 ).hasRole("BUYER")
+                .requestMatchers(
+                    "/admin/**"
+                ).hasRole("ADMIN")
                 .anyRequest().authenticated()
             ).exceptionHandling(ex -> ex.authenticationEntryPoint(customAuthenticationEntryPoint))
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

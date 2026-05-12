@@ -1,0 +1,28 @@
+meta {
+  name: products with sort and pagination
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{actual_url}}/product?category=accesorios&size=10&sort=price,asc
+  body: none
+  auth: bearer
+}
+
+params:query {
+  category: accesorios
+  size: 10
+  sort: price,asc
+  ~search: correa
+  ~subCategory: correa
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQlVZRVIiLCJ1c2VybmFtZSI6InVzZXJidXllcjIiLCJsYXN0X25hbWUiOiJCdXllciIsImZpcnN0X25hbWUiOiJVc2VyIiwiaWQiOjIsImV4cCI6MTc3ODU5NDM2N30.1LUUutbbezrMKffFmIJjyzAfSes4RzZMpLOtfEDmBCs
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
