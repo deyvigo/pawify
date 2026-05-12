@@ -1,8 +1,8 @@
-buyers = [
+[
   {
     "username": "userbuyer1",
     "password": "password",
-    "first_name": "User",
+    "first_name": "Andrea",
     "last_name": "Buyer",
     "email": "example1@gmail.com",
     "dni_number": "12367823"
@@ -10,7 +10,7 @@ buyers = [
   {
     "username": "userbuyer2",
     "password": "password",
-    "first_name": "User",
+    "first_name": "Ariel",
     "last_name": "Buyer",
     "email": "example2@gmail.com",
     "dni_number": "48572930"
@@ -18,7 +18,7 @@ buyers = [
   {
     "username": "userbuyer3",
     "password": "password",
-    "first_name": "User",
+    "first_name": "Samuel",
     "last_name": "Buyer",
     "email": "example3@gmail.com",
     "dni_number": "39940392"
@@ -26,7 +26,7 @@ buyers = [
   {
     "username": "userbuyer4",
     "password": "password",
-    "first_name": "User",
+    "first_name": "Gabriel",
     "last_name": "Buyer",
     "email": "example4@gmail.com",
     "dni_number": "39485043"
@@ -34,7 +34,7 @@ buyers = [
   {
     "username": "userbuyer5",
     "password": "password",
-    "first_name": "User",
+    "first_name": "Tomas",
     "last_name": "Buyer",
     "email": "example5@gmail.com",
     "dni_number": "04958374"
@@ -42,7 +42,7 @@ buyers = [
   {
     "username": "userbuyer6",
     "password": "password",
-    "first_name": "User",
+    "first_name": "Bruno",
     "last_name": "Buyer",
     "email": "example6@gmail.com",
     "dni_number": "75894058"
@@ -50,7 +50,7 @@ buyers = [
   {
     "username": "userbuyer7",
     "password": "password",
-    "first_name": "User",
+    "first_name": "Adrian",
     "last_name": "Buyer",
     "email": "example7@gmail.com",
     "dni_number": "95837489"
@@ -58,7 +58,7 @@ buyers = [
   {
     "username": "userbuyer8",
     "password": "password",
-    "first_name": "User",
+    "first_name": "Elena",
     "last_name": "Buyer",
     "email": "example8@gmail.com",
     "dni_number": "87462932"
@@ -66,7 +66,7 @@ buyers = [
   {
     "username": "userbuyer9",
     "password": "password",
-    "first_name": "User",
+    "first_name": "Victoria",
     "last_name": "Buyer",
     "email": "example9@gmail.com",
     "dni_number": "94856152"
@@ -74,7 +74,7 @@ buyers = [
   {
     "username": "userbuyer10",
     "password": "password",
-    "first_name": "User",
+    "first_name": "Claudia",
     "last_name": "Buyer",
     "email": "example10@gmail.com",
     "dni_number": "13849248"
@@ -82,7 +82,7 @@ buyers = [
   {
     "username": "userbuyer11",
     "password": "password",
-    "first_name": "User",
+    "first_name": "Natalia",
     "last_name": "Buyer",
     "email": "example11@gmail.com",
     "dni_number": "03942739"
@@ -90,7 +90,7 @@ buyers = [
   {
     "username": "userbuyer12",
     "password": "password",
-    "first_name": "User",
+    "first_name": "Emilia",
     "last_name": "Buyer",
     "email": "example12@gmail.com",
     "dni_number": "94726372"
@@ -98,7 +98,7 @@ buyers = [
   {
     "username": "userbuyer13",
     "password": "password",
-    "first_name": "User",
+    "first_name": "Paula",
     "last_name": "Buyer",
     "email": "example13@gmail.com",
     "dni_number": "74857945"
@@ -106,7 +106,7 @@ buyers = [
   {
     "username": "userbuyer14",
     "password": "password",
-    "first_name": "User",
+    "first_name": "Sam",
     "last_name": "Buyer",
     "email": "example14@gmail.com",
     "dni_number": "83749203"
@@ -114,28 +114,9 @@ buyers = [
   {
     "username": "userbuyer15",
     "password": "password",
-    "first_name": "User",
+    "first_name": "Noel",
     "last_name": "Buyer",
     "email": "example15@gmail.com",
     "dni_number": "88372832"
   }
 ]
-
-import os
-import dotenv
-import json
-import requests
-dotenv.load_dotenv(dotenv_path=".env")
-
-API_URL = os.getenv("API_URL")
-
-def create_buyer(buyer):
-  r = requests.post(f"{API_URL}/auth/register/buyer", json=buyer)
-  return r.json()
-
-if __name__ == "__main__":
-  print("Creating buyers...")
-  for buyer in buyers:
-    print("-" * 30)
-    response = create_buyer(buyer)
-    print(json.dumps(response, indent=2, ensure_ascii=False))
