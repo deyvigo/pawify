@@ -9,6 +9,6 @@ import java.util.Optional;
 
 @Repository
 public interface BrandRepository extends JpaRepository<BrandEntity, Long> {
-    Optional<BrandEntity> findByName(String name);
+    Optional<BrandEntity> findByNameIgnoreCase(String name);
     List<BrandEntity> findByOrderByNameAsc();
 }

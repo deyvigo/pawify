@@ -1,0 +1,20 @@
+meta {
+  name: product by id
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{actual_url}}/product/1
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiJ9.eyJsYXN0X25hbWUiOiJBZG1pbiIsImZpcnN0X25hbWUiOiJVc2VyIiwiaWQiOjEsInJvbGUiOiJBRE1JTiIsInVzZXJuYW1lIjoidXNlcmFkbWluIiwiZXhwIjoxNzc4Mzg2NDk5fQ.s3uvVx0O6OoxhxfX2Oi8HY5Uh4lQ-ktVDY5mq9PI7VE
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

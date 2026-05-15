@@ -40,6 +40,9 @@ public abstract class UserEntity implements UserDetails {
     @JoinColumn(name = "role_id", nullable = false)
     private RoleEntity role;
 
+    @OneToMany(mappedBy = "sender", fetch = FetchType.LAZY)
+    private List<MessageEntity> messages;
+
     @Override
     @NonNull
     public Collection<? extends GrantedAuthority> getAuthorities() {

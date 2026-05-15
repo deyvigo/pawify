@@ -1,0 +1,25 @@
+meta {
+  name: all admins (paginated)
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{actual_url}}/admin/admins?size=3&page=3
+  body: none
+  auth: bearer
+}
+
+params:query {
+  size: 3
+  page: 3
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiJ9.eyJsYXN0X25hbWUiOiJBZG1pbiIsImZpcnN0X25hbWUiOiJVc2VyIiwiaWQiOjEsInJvbGUiOiJBRE1JTiIsInVzZXJuYW1lIjoidXNlcmFkbWluIiwiZXhwIjoxNzc4Mzg0NDA1fQ.O1OTITWxZ2lK-SjPmQUBTSjyJGLJBEMW3S3qqngA108
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

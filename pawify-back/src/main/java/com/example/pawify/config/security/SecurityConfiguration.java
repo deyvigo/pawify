@@ -40,6 +40,16 @@ public class SecurityConfiguration {
                     "/helloworld"
                 ).permitAll()
                 .requestMatchers(request -> "OPTIONS".equalsIgnoreCase(request.getMethod())).permitAll()
+                .requestMatchers(
+                    "/card/**",
+                    "/address/**",
+                    "/buyer/**",
+                    "/order/**",
+                    "/review/**"
+                ).hasRole("BUYER")
+                .requestMatchers(
+                    "/admin/**"
+                ).hasRole("ADMIN")
                 .anyRequest().authenticated()
             ).exceptionHandling(ex -> ex.authenticationEntryPoint(customAuthenticationEntryPoint))
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

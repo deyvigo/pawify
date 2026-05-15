@@ -1,0 +1,26 @@
+meta {
+  name: register admin
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{actual_url}}/auth/register/admin
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "username": "useradmin",
+    "password": "password",
+    "first_name": "User",
+    "last_name": "Admin",
+    "dni_number": "88697867"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

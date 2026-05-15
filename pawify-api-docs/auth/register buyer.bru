@@ -1,0 +1,27 @@
+meta {
+  name: register buyer
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{actual_url}}/auth/register/buyer
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "username": "userbuyer2",
+    "password": "password",
+    "first_name": "User",
+    "last_name": "Buyer",
+    "email": "deyvigo23@gmail.com",
+    "dni_number": "22993355"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
