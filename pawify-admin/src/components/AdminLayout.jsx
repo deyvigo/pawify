@@ -38,7 +38,7 @@ export default function AdminLayout() {
         </nav>
         <div className="sidebar-footer">
           <div className="user-info">
-            <span className="user-name">{user?.name ?? user?.email ?? 'Admin'}</span>
+            <span className="user-name">{user?.username ?? user?.email ?? 'Admin'}</span>
           </div>
           <button className="logout-btn" onClick={handleLogout}>
             Cerrar sesión
