@@ -41,6 +41,7 @@ export default function App() {
 
   const [recoveryUser, setRecoveryUser] = useState<string>('');
   const [recoveryCode, setRecoveryCode] = useState<string>('');
+  const [recoveryEmail, setRecoveryEmail] = useState<string>('');
   
 
   const ActiveScreen = screens[activeTab];
@@ -55,8 +56,9 @@ export default function App() {
               <LoginScreen 
                 onLoginSuccess={(userData: any) => setCurrentUser(userData as UserPayload)} 
                 onNavigateToRegister={() => setAuthScreen('register')} 
-                onNavigateToForgotPassword={(userToRecover: string) => {
+                onNavigateToForgotPassword={(userToRecover: string, emailToRecover: string) => {
                   setRecoveryUser(userToRecover);  
+                  setRecoveryEmail(emailToRecover);
                   setAuthScreen('recovery');       
               }}
               />
@@ -72,6 +74,7 @@ export default function App() {
               <RecoveryScreen 
                 onBackToLogin={() => setAuthScreen('login')} // Para el botón de "Volver"
                 username={recoveryUser}
+                email={recoveryEmail}
                 onCodeVerified={(code:string) => {
                     setRecoveryCode(code);
                     setAuthScreen('newPassword'); // Pasamos a la siguiente pantalla

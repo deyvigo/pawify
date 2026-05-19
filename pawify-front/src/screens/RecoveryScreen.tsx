@@ -6,20 +6,25 @@ import {
     TouchableOpacity, 
     StyleSheet, 
     Image,
-    Alert
+    Alert,
+    ActivityIndicator
 } from 'react-native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { verifyRecoveryCode } from '../services/authService';
 
 interface ForgotPasswordProps {
     onBackToLogin: () => void;
     username: string;
+    email: string;
     onCodeVerified: (code: string) => void;
 }
 
-export const RecoveryScreen = ({ onBackToLogin, username, onCodeVerified }: ForgotPasswordProps) => {
+export const RecoveryScreen = ({ onBackToLogin, username, email, onCodeVerified }: ForgotPasswordProps) => {
     // Estado: Un arreglo de 6 espacios vacíos para guardar cada dígito
     const [code, setCode] = useState<string[]>(['', '', '', '', '', '']);
+
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     // Función de Acción: Actualiza solo la field en la que el usuario está escribiendo
     const handleChangeText = (text: string, index: number) => {
@@ -30,14 +35,47 @@ export const RecoveryScreen = ({ onBackToLogin, username, onCodeVerified }: Forg
         
     };
 
-    const handleVerify = () => {
+    const handleVerify = async () => {
         const finalCode = code.join('');
         if (finalCode.length < 6) {
             Alert.alert('Atención', 'Por favor, ingresa el código completo.');
             return;
         }
-        // Solo pasamos el código a la siguiente pantalla, sin llamar al backend todavía
-        onCodeVerified(finalCode);
+        setIsLoading(true);
+
+        try {
+            // Llamamos a Spring Boot para verificar el código
+            await verifyRecoveryCode(username, finalCode);
+            
+            // Si el backend no lanza error, significa que el código es válido
+            onCodeVerified(finalCode);
+            
+        } catch (error: any) {
+            console.log("Error al verificar código:", error);
+            Alert.alert('Código Inválido', 'El código ingresado es incorrecto o ha expirado. Inténtalo nuevamente.');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    // Función para ocultar parte del correo
+    const getMaskedEmail = () => {
+        if (!email) return "cargando...";
+
+        if (!email.includes('@')) {
+            return `${email.substring(0, 2)}****@***.com`;
+        }
+
+        const [name, domain] = email.split('@');
+        
+        if (name.length <= 2) {
+            return `${name.charAt(0)}****@${domain}`;
+        }
+
+        const firstLetter = name.charAt(0);
+        const lastLetter = name.charAt(name.length - 1);
+        
+        return `${firstLetter}****${lastLetter}@${domain}`;
     };
 
     return (
@@ -68,7 +106,7 @@ export const RecoveryScreen = ({ onBackToLogin, username, onCodeVerified }: Forg
                 <Text style={styles.subtitle}>
                     Hemos enviado un código de seguridad de 6 dígitos a su correo electrónico asociado.
                 </Text>
-                <Text style={styles.emailMask}>h****o@gmail.com</Text>
+                <Text style={styles.emailMask}>{getMaskedEmail()}</Text>
 
                 <View style={styles.otpContainer}>
                     {code.map((digit, index) => (

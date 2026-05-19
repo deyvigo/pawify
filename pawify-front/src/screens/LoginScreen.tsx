@@ -7,7 +7,7 @@ import { requestRecoveryCode } from '../services/authService';
 interface LoginProps {
     onLoginSuccess: (userData: any) => void;
     onNavigateToRegister: () => void;
-    onNavigateToForgotPassword: (username: string) => void;
+    onNavigateToForgotPassword: (username: string, email: string) => void;
 }
 
 export const LoginScreen = ({ onLoginSuccess, onNavigateToRegister, onNavigateToForgotPassword }: LoginProps) => {
@@ -42,7 +42,7 @@ export const LoginScreen = ({ onLoginSuccess, onNavigateToRegister, onNavigateTo
 
         try {
             // Disparamos la petición al back
-            await requestRecoveryCode(cleanUsername); 
+            const response = await requestRecoveryCode(cleanUsername);
             
             Alert.alert(
                 'Solicitud recibida', 
@@ -50,7 +50,7 @@ export const LoginScreen = ({ onLoginSuccess, onNavigateToRegister, onNavigateTo
             );
             
             // 3. solo si la petición fue exitosa, navegamos a la pantalla de recuperación y le pasamos el username
-            onNavigateToForgotPassword(cleanUsername);
+            onNavigateToForgotPassword(cleanUsername, response.email);
             
         } catch (error) {
             console.log("ERROR REAL DEL BACKEND:", error);
