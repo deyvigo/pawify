@@ -26,30 +26,31 @@ async function request(endpoint, options = {}) {
   return text ? JSON.parse(text) : {};
 }
 
+function authHeaders() {
+  return authToken ? { Authorization: `Bearer ${authToken}` } : {};
+}
+
 export const api = {
-  get: (endpoint) =>
-    request(endpoint, {
-      method: 'GET',
-      headers: authToken ? { Authorization: `Bearer ${authToken}` } : {},
+  get: (endpoint) => 
+    request(endpoint, { 
+      method: 'GET', 
+      headers: authHeaders()
+    }),
+  post: (endpoint, body) => 
+    request(endpoint, { 
+      method: 'POST', 
+      body: JSON.stringify(body), 
+      headers: authHeaders() 
+    }),
+  put: (endpoint, body) => 
+    request(endpoint, { 
+      method: 'PUT', 
+      body: JSON.stringify(body), 
+      headers: authHeaders() 
     }),
 
-  post: (endpoint, body) =>
-    request(endpoint, {
-      method: 'POST',
-      body: JSON.stringify(body),
-      headers: authToken ? { Authorization: `Bearer ${authToken}` } : {},
-    }),
-
-  put: (endpoint, body) =>
-    request(endpoint, {
-      method: 'PUT',
-      body: JSON.stringify(body),
-      headers: authToken ? { Authorization: `Bearer ${authToken}` } : {},
-    }),
-
-  delete: (endpoint) =>
-    request(endpoint, {
-      method: 'DELETE',
-      headers: authToken ? { Authorization: `Bearer ${authToken}` } : {},
-    }),
+  delete: (endpoint) => 
+    request(endpoint, { 
+      method: 'DELETE', 
+      headers: authHeaders() }),
 };

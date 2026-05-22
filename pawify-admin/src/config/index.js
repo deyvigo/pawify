@@ -1,4 +1,4 @@
-export const API_URL = import.meta.env.VITE_API_BASE_URL || 'https://pawify-g5fb.onrender.com';
+export const API_URL = import.meta.env.VITE_API_BASE_URL;
 
 export let authToken = null;
 

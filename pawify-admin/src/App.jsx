@@ -7,6 +7,7 @@ import ProductsPage from './screens/ProductsPage';
 import OrdersPage from './screens/OrdersPage';
 import ClaimsPage from './screens/ClaimsPage';
 import AdminsPage from './screens/AdminsPage';
+import PerfilPage from './screens/PerfilPage';
 
 export default function App() {
   return (
@@ -26,6 +27,7 @@ export default function App() {
             <Route path="orders" element={<OrdersPage />} />
             <Route path="claims" element={<ClaimsPage />} />
             <Route path="admins" element={<AdminsPage />} />
+            <Route path="perfil" element={<PerfilPage />} />
           </Route>
           <Route path="*" element={<Navigate to="/products" replace />} />
         </Routes>

@@ -11,16 +11,9 @@ export function AuthProvider({ children }) {
     const token = loadAuthToken();
     if (token) {
       const payload = decodeJwt(token);
-      if (payload) {
-        setUser(payload);
-      }
+      if (payload) setUser(payload);
     }
     setIsLoading(false);
-  }, []);
-
-  const login = useCallback((userData) => {
-    console.log('userData', userData);
-    setUser(userData);
   }, []);
 
   const logout = useCallback(() => {
@@ -28,13 +21,14 @@ export function AuthProvider({ children }) {
     clearAuthToken();
   }, []);
 
-  const setSession = useCallback((token, userData) => {
+  const setSession = useCallback((token) => {
     setAuthToken(token);
-    setUser(userData);
+    const payload = decodeJwt(token);
+    if (payload) setUser(payload);
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, setSession, isLoading, isAuthenticated: !!user }}>
+    <AuthContext.Provider value={{ user, logout, setSession, isLoading, isAuthenticated: !!user }}>
       {children}
     </AuthContext.Provider>
   );

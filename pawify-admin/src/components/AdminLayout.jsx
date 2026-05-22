@@ -1,13 +1,7 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { navItems } from '../config/navigation';
 import './AdminLayout.css';
-
-const navItems = [
-  { to: '/products', label: 'Productos', icon: '📦' },
-  { to: '/orders', label: 'Pedidos', icon: '📋' },
-  { to: '/claims', label: 'Reclamos', icon: '⚠️' },
-  { to: '/admins', label: 'Administradores', icon: '👤' },
-];
 
 export default function AdminLayout() {
   const { user, logout } = useAuth();
