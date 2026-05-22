@@ -3,12 +3,12 @@ package com.example.pawify.service.implement;
 import com.example.pawify.dto.in.admin.ChangePasswordByAdminRequestDTO;
 import com.example.pawify.dto.out.admin.AdminResponseSimpleDTO;
 import com.example.pawify.dto.out.buyer.BuyerResponseSimpleDTO;
-import com.example.pawify.exception.ResourceNotFoundException;
+import com.example.pawify.exception.BadRequestException;
+import com.example.pawify.exception.UnauthorizedRequestException;
 import com.example.pawify.mapper.AdminMapper;
 import com.example.pawify.mapper.BuyerMapper;
 import com.example.pawify.model.AdminEntity;
 import com.example.pawify.model.BuyerEntity;
-import com.example.pawify.model.UserEntity;
 import com.example.pawify.repository.AdminRepository;
 import com.example.pawify.repository.BuyerRepository;
 import com.example.pawify.repository.UserRepository;
@@ -32,16 +32,20 @@ public class AdminServiceImpl implements AdminService {
     private final AdminMapper adminMapper;
 
     @Override
-    public void changePasswordFromAnyUser(
-        String username,
+    public void changePasswordByOwner(
+        AdminEntity admin,
         ChangePasswordByAdminRequestDTO dto
     ) {
-        UserEntity userToUpdate = userRepository.findByUsername(username)
-            .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        if (!passwordEncoder.matches(dto.currentPassword(), admin.getPassword())) {
+            throw new BadRequestException("old password is incorrect");
+        }
 
-        String newHashedPassword = passwordEncoder.encode(dto.newPassword());
-        userToUpdate.setPassword(newHashedPassword);
-        userRepository.save(userToUpdate);
+        if (!dto.confirmNewPassword().equals(dto.newPassword())) {
+            throw new BadRequestException("new passwords don't match");
+        }
+
+        admin.setPassword(passwordEncoder.encode(dto.newPassword()));
+        userRepository.save(admin);
     }
 
     @Override
