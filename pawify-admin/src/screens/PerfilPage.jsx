@@ -11,7 +11,7 @@ export default function PerfilPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await pass.submit(user?.username);
+    await pass.submit();
   };
 
   return (
@@ -30,8 +30,9 @@ export default function PerfilPage() {
         <form onSubmit={handleSubmit}>
           <Alert type="success">{pass.message}</Alert>
           <Alert type="error">{pass.error}</Alert>
+          <PasswordInput id="curp" label="Contraseña actual" value={pass.currentPassword} onChange={(e) => pass.setCurrentPassword(e.target.value)} />
           <PasswordInput id="np" label="Nueva contraseña" value={pass.newPassword} onChange={(e) => pass.setNewPassword(e.target.value)} />
-          <PasswordInput id="cp" label="Confirmar contraseña" value={pass.confirmPassword} onChange={(e) => pass.setConfirmPassword(e.target.value)} />
+          <PasswordInput id="cp" label="Confirmar nueva contraseña" value={pass.confirmPassword} onChange={(e) => pass.setConfirmPassword(e.target.value)} />
           <Button type="submit" loading={pass.saving ? 'Actualizando...' : false}>Actualizar contraseña</Button>
         </form>
       </div>

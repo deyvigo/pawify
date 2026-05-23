@@ -10,7 +10,7 @@ export const getAdmins = async (page = 0, size = 5) => {
   return response;
 };
 
-export const changePassword = async (username, newPassword) => {
-  const response = await api.post(`/admin/${username}/password`, { new_password: newPassword });
+export const changePassword = async (payload) => {
+  const response = await api.post('/user/password', payload);
   return response;
 };

@@ -77,16 +77,21 @@ export function useAdminList() {
 }
 
 export function useChangeAdminPassword() {
+  const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [message, setMessage] = useState(null);
   const [error, setError] = useState(null);
   const [saving, setSaving] = useState(false);
 
-  const submit = useCallback(async (username) => {
+  const submit = useCallback(async () => {
     setMessage(null);
     setError(null);
 
+    if (!currentPassword) {
+      setError('La contraseña actual es obligatoria');
+      return;
+    }
     if (!newPassword) {
       setError('La nueva contraseña es obligatoria');
       return;
@@ -98,8 +103,9 @@ export function useChangeAdminPassword() {
 
     try {
       setSaving(true);
-      await changePassword(username, newPassword);
-      setMessage(`Contraseña actualizada para "${username}"`);
+      await changePassword({ current_password: currentPassword, new_password: newPassword, confirm_new_password: confirmPassword });
+      setMessage('Contraseña actualizada exitosamente');
+      setCurrentPassword('');
       setNewPassword('');
       setConfirmPassword('');
       return true;
@@ -108,14 +114,15 @@ export function useChangeAdminPassword() {
     } finally {
       setSaving(false);
     }
-  }, [newPassword, confirmPassword]);
+  }, [currentPassword, newPassword, confirmPassword]);
 
   const reset = useCallback(() => {
+    setCurrentPassword('');
     setNewPassword('');
     setConfirmPassword('');
     setMessage(null);
     setError(null);
   }, []);
 
-  return { newPassword, setNewPassword, confirmPassword, setConfirmPassword, message, error, saving, submit, reset };
+  return { currentPassword, setCurrentPassword, newPassword, setNewPassword, confirmPassword, setConfirmPassword, message, error, saving, submit, reset };
 }
