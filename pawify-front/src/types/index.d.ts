@@ -115,3 +115,11 @@ export interface ProductFilters {
   max_price?: number;
   sort?: string;
 }
+
+export interface BuyerProfileDTO {
+  username: string;
+  first_name: string;
+  last_name: string;
+  dni_number: string;
+  profile: string | null;
+}
