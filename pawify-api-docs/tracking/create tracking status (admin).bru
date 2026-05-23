@@ -1,0 +1,16 @@
+meta {
+  name: create tracking status (admin)
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{actual_url}}/tracking-status
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

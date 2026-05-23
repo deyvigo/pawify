@@ -1,0 +1,25 @@
+meta {
+  name: get tracking status by tracking-code
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{actual_url}}/tracking-status/tg6bx9e6l4d1tnem
+  body: none
+  auth: bearer
+}
+
+params:query {
+  ~size: 2
+  ~cursor: 11
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJpZCI6MSwiZmlyc3RfbmFtZSI6Ikpob24iLCJsYXN0X25hbWUiOiJBZG1pbiIsInVzZXJuYW1lIjoidXNlcmFkbWluIiwiZXhwIjoxNzgwMTE1MTc4fQ.yuec4Wk5JWdzqa8NU2FSCGcfDFOd_wYgK6Uqx-cLT0s
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
