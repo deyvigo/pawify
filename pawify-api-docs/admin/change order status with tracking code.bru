@@ -1,0 +1,26 @@
+meta {
+  name: change order status with tracking code
+  type: http
+  seq: 3
+}
+
+patch {
+  url: {{actual_url}}/admin/order/tg6bx9e6l4d1tnem/shipping-status
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiJ9.eyJmaXJzdF9uYW1lIjoiSmhvbiIsImxhc3RfbmFtZSI6IkFkbWluIiwidXNlcm5hbWUiOiJ1c2VyYWRtaW4iLCJyb2xlIjoiQURNSU4iLCJpZCI6MSwiZXhwIjoxNzgwMTIwOTg4fQ.RRTGIWOqB7s3Wes_t2XsHmio4eBEf-ID_fZsVBvJuiM"
+}
+
+body:json {
+  {
+    "shipping_status": "IN_TRANSIT"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
