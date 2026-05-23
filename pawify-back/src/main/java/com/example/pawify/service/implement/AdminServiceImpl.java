@@ -1,13 +1,19 @@
 package com.example.pawify.service.implement;
 
+import com.example.pawify.dto.in.admin.ChangeOrderStatusShipmentRequestDTO;
 import com.example.pawify.dto.out.admin.AdminResponseSimpleDTO;
 import com.example.pawify.dto.out.buyer.BuyerResponseSimpleDTO;
+import com.example.pawify.exception.BadRequestException;
+import com.example.pawify.exception.ResourceNotFoundException;
 import com.example.pawify.mapper.AdminMapper;
 import com.example.pawify.mapper.BuyerMapper;
 import com.example.pawify.model.AdminEntity;
 import com.example.pawify.model.BuyerEntity;
+import com.example.pawify.model.OrderEntity;
+import com.example.pawify.model.ShippingStatus;
 import com.example.pawify.repository.AdminRepository;
 import com.example.pawify.repository.BuyerRepository;
+import com.example.pawify.repository.OrderRepository;
 import com.example.pawify.service.AdminService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -23,6 +29,7 @@ public class AdminServiceImpl implements AdminService {
     private final BuyerMapper buyerMapper;
     private final AdminRepository adminRepository;
     private final AdminMapper adminMapper;
+    private final OrderRepository orderRepository;
 
     @Override
     public Slice<BuyerResponseSimpleDTO> getAllBuyers(Pageable pageable) {
@@ -42,5 +49,20 @@ public class AdminServiceImpl implements AdminService {
             pageable,
             page.hasNext()
         );
+    }
+
+    @Override
+    public void changeOrderStatusByOrderId(ChangeOrderStatusShipmentRequestDTO requestDTO, String trackingCode) {
+        OrderEntity orderEntity = orderRepository.findByTrackingCode(trackingCode)
+            .orElseThrow(() -> new ResourceNotFoundException("order not found"));
+
+        ShippingStatus newStatus = requestDTO.shippingStatus();
+
+        if (!orderEntity.getShippingStatus().canTransitionTo(newStatus)) {
+            throw new BadRequestException("invalid shipping status transition");
+        }
+
+        orderEntity.setShippingStatus(newStatus);
+        orderRepository.save(orderEntity);
     }
 }
