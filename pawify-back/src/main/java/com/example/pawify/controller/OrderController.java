@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 public class OrderController {
     private final OrderService orderService;
 
+    @PreAuthorize("hasRole('BUYER')")
     @PostMapping("")
     public ResponseEntity<OrderResponseDTO> createOrder(
         @AuthenticationPrincipal BuyerEntity buyerEntity,
@@ -26,6 +28,7 @@ public class OrderController {
         return ResponseEntity.ok(orderService.createOrder(buyerEntity, orderCreateRequestDTO));
     }
 
+    @PreAuthorize("hasRole('BUYER')")
     @GetMapping("")
     public ResponseEntity<Slice<OrderResponseDTO>> getOrdersByBuyer(
         @AuthenticationPrincipal BuyerEntity buyerEntity,
