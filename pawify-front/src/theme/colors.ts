@@ -14,4 +14,5 @@ export const colors = {
   textSecondary: "#636366",
   border: "#E5E5EA",
   success: "#34C759",
+  error: "#FF3B30",
 };

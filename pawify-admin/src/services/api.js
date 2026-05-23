@@ -52,4 +52,36 @@ export const api = {
       method: 'DELETE',
       headers: authToken ? { Authorization: `Bearer ${authToken}` } : {},
     }),
+
+  patch: (endpoint, body) =>
+    request(endpoint, {
+      method: 'PATCH',
+      body: body ? JSON.stringify(body) : undefined,
+      headers: authToken ? { Authorization: `Bearer ${authToken}` } : {},
+    }),
+
+  postFormData: (endpoint, formData) => {
+    const url = `${API_URL}${endpoint}`;
+    return fetch(url, {
+      method: 'POST',
+      body: formData,
+      headers: {
+        ...(authToken ? { Authorization: `Bearer ${authToken}` } : {}),
+      },
+    }).then(async response => {
+      if (!response.ok) {
+        const text = await response.text().catch(() => '');
+        let message = `Error ${response.status}`;
+        try {
+          const parsed = JSON.parse(text);
+          message = parsed.message || message;
+        } catch {
+          message = text || message;
+        }
+        throw new Error(message);
+      }
+      const text = await response.text();
+      return text ? JSON.parse(text) : {};
+    });
+  },
 };
