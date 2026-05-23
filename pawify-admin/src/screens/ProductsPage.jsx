@@ -130,12 +130,12 @@ export default function ProductsPage() {
         }
 
         const formDataToSend = new FormData();
-        formDataToSend.append('data', JSON.stringify(payload));
+        formDataToSend.append('data', new Blob([JSON.stringify(payload)], { type: 'application/json' }));
         for (let i = 0; i < images.length; i++) {
           formDataToSend.append('images', images[i]);
         }
 
-        await api.postFormData('/product', formDataToSend);
+        await api.post('/product', formDataToSend);
         alert('Producto creado exitosamente');
       } else {
         await api.patch(`/product/${productId}`, payload);
