@@ -1,0 +1,28 @@
+meta {
+  name: update card
+  type: http
+  seq: 3
+}
+
+put {
+  url: {{actual_url}}/card/2
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiJ9.eyJsYXN0X25hbWUiOiJCdXllciIsImZpcnN0X25hbWUiOiJVc2VyIiwiaWQiOjUyLCJyb2xlIjoiQlVZRVIiLCJ1c2VybmFtZSI6InVzZXJidXllcjIiLCJleHAiOjE3NzgxODAzMDN9.vzr3NnlOrNppuRJ2pdCmJHH7N2WY9PFG6i-Uc0RbNPU
+}
+
+body:json {
+  {
+    "name": "Tarjeta 4",
+    "due_date": "2026-10",
+    "number": "1234123412341234"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

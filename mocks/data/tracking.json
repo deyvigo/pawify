@@ -1,0 +1,138 @@
+[
+  {
+    "statuses": [
+      {
+        "title": "Pedido confirmado",
+        "description": "La compra fue registrada exitosamente."
+      },
+      {
+        "title": "Preparando pedido",
+        "description": "Los productos están siendo preparados para envío."
+      },
+      {
+        "title": "Enviado",
+        "description": "El paquete salió del almacén principal."
+      },
+      {
+        "title": "En tránsito",
+        "description": "El pedido se encuentra camino al destino."
+      },
+      {
+        "title": "Entregado",
+        "description": "El cliente recibió el pedido correctamente."
+      }
+    ]
+  },
+  {
+    "statuses": [
+      {
+        "title": "Pago aprobado",
+        "description": "El pago fue validado por la plataforma."
+      },
+      {
+        "title": "Empaque completado",
+        "description": "El paquete fue embalado correctamente."
+      },
+      {
+        "title": "Retraso logístico",
+        "description": "El envío presenta demoras por alta demanda."
+      },
+      {
+        "title": "En tránsito",
+        "description": "El paquete continúa su recorrido."
+      }
+    ]
+  },
+  {
+    "statuses": [
+      {
+        "title": "Pedido recibido",
+        "description": "La orden fue recibida por el sistema."
+      },
+      {
+        "title": "Listo para despacho",
+        "description": "El pedido quedó listo para ser enviado."
+      },
+      {
+        "title": "Recogido por courier",
+        "description": "La empresa transportista recogió el paquete."
+      },
+      {
+        "title": "Centro de distribución",
+        "description": "El paquete llegó al centro logístico regional."
+      },
+      {
+        "title": "Entregado",
+        "description": "La entrega se completó exitosamente."
+      }
+    ]
+  },
+  {
+    "statuses": [
+      {
+        "title": "Compra procesada",
+        "description": "El sistema procesó la compra correctamente."
+      },
+      {
+        "title": "Preparando envío",
+        "description": "El vendedor está organizando el pedido."
+      },
+      {
+        "title": "Enviado",
+        "description": "El paquete fue enviado hacia el destino."
+      },
+      {
+        "title": "Intento de entrega",
+        "description": "No se pudo concretar la entrega en el primer intento."
+      },
+      {
+        "title": "Reprogramado",
+        "description": "La entrega fue reprogramada para otro día."
+      }
+    ]
+  },
+  {
+    "statuses": [
+      {
+        "title": "Orden confirmada",
+        "description": "La orden fue aceptada exitosamente."
+      },
+      {
+        "title": "Producto agotado",
+        "description": "Uno de los productos no tiene stock disponible."
+      },
+      {
+        "title": "Reposición en proceso",
+        "description": "El almacén está reponiendo el inventario faltante."
+      },
+      {
+        "title": "Preparando pedido",
+        "description": "El pedido volvió a preparación."
+      }
+    ]
+  },
+  {
+    "statuses": [
+      {
+        "title": "Pedido confirmado",
+        "description": "El vendedor confirmó el pedido."
+      },
+      {
+        "title": "Empaque completado",
+        "description": "Los productos fueron empaquetados."
+      },
+      {
+        "title": "En tránsito",
+        "description": "El paquete se dirige a la ciudad de destino."
+      },
+      {
+        "title": "Entrega cancelada",
+        "description": "La entrega fue cancelada por solicitud del cliente."
+      },
+      {
+        "title": "Reembolso iniciado",
+        "description": "El proceso de devolución del dinero comenzó."
+      }
+    ]
+  }
+]

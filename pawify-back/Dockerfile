@@ -7,11 +7,13 @@ COPY src ./src
 RUN mvn clean package -DskipTests
 
 FROM eclipse-temurin:21-jre-alpine
-ARG PORT=8080
 
+ARG PORT=8080
 ENV PORT=${PORT}
+
+WORKDIR /app
 
 COPY --from=build /app/target/*.jar /app/app.jar
 
 EXPOSE ${PORT}
-CMD ["sh", "-c", "java -jar /app/app.jar --server.port=${PORT} --spring.profiles.active=prod"]
+ENTRYPOINT ["sh", "-c", "java -jar /app/app.jar --server.port=${PORT} --spring.profiles.active=dev"]

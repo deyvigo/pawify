@@ -1,8 +1,7 @@
 package com.example.pawify.service;
 
-import com.example.pawify.dto.in.product.ChangeActiveStatusDTO;
 import com.example.pawify.dto.in.product.ProductCreateRequestDTO;
-import com.example.pawify.dto.out.product.ProductResponseDTO;
+import com.example.pawify.dto.out.product.ProductResponseSimpleDTO;
 import com.example.pawify.model.UserEntity;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -12,11 +11,11 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public interface ProductService {
-    ProductResponseDTO createProduct(
+    ProductResponseSimpleDTO createProduct(
         ProductCreateRequestDTO productCreateRequestDTO, List<MultipartFile> images, UserEntity userEntity
     );
 
-    Slice<ProductResponseDTO> getProducts(
+    Slice<ProductResponseSimpleDTO> getProducts(
         String search,
         String brand,
         String category,
@@ -26,5 +25,8 @@ public interface ProductService {
         Pageable pageable
     );
 
-    ProductResponseDTO changeActiveStatus(String shareCode, ChangeActiveStatusDTO newStatus);
+    void deactivateProduct(String shareCode);
+    void activateProduct(String shareCode);
+    ProductResponseSimpleDTO getProductById(Long id);
+    ProductResponseSimpleDTO updateProduct(Long id, ProductCreateRequestDTO productCreateRequestDTO);
 }

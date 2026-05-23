@@ -1,0 +1,24 @@
+meta {
+  name: create or update profile
+  type: http
+  seq: 2
+}
+
+put {
+  url: {{actual_url}}/buyer/profile
+  body: multipartForm
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiJ9.eyJsYXN0X25hbWUiOiJCdXllciIsImZpcnN0X25hbWUiOiJVc2VyIiwiaWQiOjIsInJvbGUiOiJCVVlFUiIsInVzZXJuYW1lIjoidXNlcmJ1eWVyMiIsImV4cCI6MTc3ODU2ODA4M30.EZXePfT1uQ7IXWsqIJvq1TqtQCKx95Ya56-tPO2dAuA
+}
+
+body:multipart-form {
+  image: @file(/Users/deyvigo/dev/pawify/mocks/images/profile/user-profile-1.jpg)
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

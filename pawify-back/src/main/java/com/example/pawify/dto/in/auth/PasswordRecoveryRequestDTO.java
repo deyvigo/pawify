@@ -11,5 +11,4 @@ public record PasswordRecoveryRequestDTO (
     @NotBlank(message = "new_password is required")
     @Size(min = 8, max = 20, message = "password must be between 8 and 20 characters")
     String newPassword
-) {
-}
+) {}

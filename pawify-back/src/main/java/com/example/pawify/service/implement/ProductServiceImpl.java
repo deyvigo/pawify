@@ -1,8 +1,7 @@
 package com.example.pawify.service.implement;
 
-import com.example.pawify.dto.in.product.ChangeActiveStatusDTO;
 import com.example.pawify.dto.in.product.ProductCreateRequestDTO;
-import com.example.pawify.dto.out.product.ProductResponseDTO;
+import com.example.pawify.dto.out.product.ProductResponseSimpleDTO;
 import com.example.pawify.exception.ImagesNotProvidedException;
 import com.example.pawify.exception.ResourceNotFoundException;
 import com.example.pawify.exception.UnauthorizedRequestException;
@@ -25,7 +24,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @AllArgsConstructor
@@ -41,7 +42,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public ProductResponseDTO createProduct(
+    public ProductResponseSimpleDTO createProduct(
         ProductCreateRequestDTO productCreateRequestDTO, List<MultipartFile> images, UserEntity userEntity
     ) {
         if (!userEntity.getRole().getRole().equals(RoleEnum.ADMIN)) {
@@ -62,7 +63,7 @@ public class ProductServiceImpl implements ProductService {
         productEntity.setShareCode(code);
 
         // create or find brand
-        BrandEntity brandEntity = brandRepository.findByName(productCreateRequestDTO.brand().toLowerCase())
+        BrandEntity brandEntity = brandRepository.findByNameIgnoreCase(productCreateRequestDTO.brand().toLowerCase())
             .orElse(null);
 
         if (brandEntity == null) {
@@ -74,7 +75,7 @@ public class ProductServiceImpl implements ProductService {
         productEntity.setBrand(brandEntity);
 
         //create or find category
-        CategoryEntity categoryEntity = categoryRepository.findByName(productCreateRequestDTO.category().toLowerCase())
+        CategoryEntity categoryEntity = categoryRepository.findByNameIgnoreCase(productCreateRequestDTO.category().toLowerCase())
             .orElse(null);
 
         if (categoryEntity == null) {
@@ -86,7 +87,7 @@ public class ProductServiceImpl implements ProductService {
         productEntity.setCategory(categoryEntity);
 
         // create or find subcategory
-        SubCategoryEntity subCategoryEntity = subCategoryRepository.findByName(productCreateRequestDTO.subCategory().toLowerCase())
+        SubCategoryEntity subCategoryEntity = subCategoryRepository.findByNameIgnoreCase(productCreateRequestDTO.subCategory().toLowerCase())
             .orElse(null);
 
         if (subCategoryEntity == null) {
@@ -100,12 +101,12 @@ public class ProductServiceImpl implements ProductService {
 
         ProductEntity savedProduct = productRepository.save(productEntity);
 
-        List<ImageEntity> imageEntities = new ArrayList<>();
+        Set<ProductImageEntity> imageEntities = new HashSet<>();
 
         for (MultipartFile image : images) {
             String url = cloudinaryService.uploadImage(image);
 
-            ImageEntity imageEntity = new ImageEntity();
+            ProductImageEntity imageEntity = new ProductImageEntity();
             imageEntity.setUrl(url);
             imageEntity.setProduct(savedProduct);
 
@@ -118,7 +119,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Slice<ProductResponseDTO> getProducts(
+    public Slice<ProductResponseSimpleDTO> getProducts(
         String search,
         String brand,
         String category,
@@ -156,13 +157,66 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductResponseDTO changeActiveStatus(String shareCode, ChangeActiveStatusDTO newStatus) {
+    public void deactivateProduct(String shareCode) {
         ProductEntity productEntity = productRepository.findByShareCode(shareCode)
             .orElseThrow(() -> new ResourceNotFoundException("Product with share code " + shareCode + " not found"));
-        productEntity.setActive(newStatus.active());
-        System.out.println(productEntity.isActive());
-        ProductEntity savedProduct = productRepository.save(productEntity);
-        System.out.println(savedProduct.isActive());
-        return productMapper.toResponseDTO(savedProduct);
+
+        if (!productEntity.isActive()) return;
+
+        productEntity.setActive(false);
+        productRepository.save(productEntity);
+    }
+
+    @Override
+    public void activateProduct(String shareCode) {
+        ProductEntity productEntity = productRepository.findByShareCode(shareCode)
+            .orElseThrow(() -> new ResourceNotFoundException("Product with share code " + shareCode + " not found"));
+
+        if (!productEntity.isActive()) return;
+
+        productEntity.setActive(true);
+        productRepository.save(productEntity);
+    }
+
+    @Override
+    public ProductResponseSimpleDTO getProductById(Long id) {
+        return productMapper.toResponseDTO(productRepository.findById(id).orElse(null));
+    }
+
+    @Override
+    public ProductResponseSimpleDTO updateProduct(Long id, ProductCreateRequestDTO dto) {
+        ProductEntity productInDb = productRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Product with id " + id + " not found"));
+
+        BrandEntity brandEntity = brandRepository.findByNameIgnoreCase(dto.brand())
+            .orElseGet(() -> {
+                BrandEntity newBrand = new BrandEntity();
+                newBrand.setName(dto.brand());
+                return brandRepository.save(newBrand);
+            });
+
+        CategoryEntity categoryEntity = categoryRepository.findByNameIgnoreCase(dto.category())
+            .orElseGet(() -> {
+                CategoryEntity newCategory = new CategoryEntity();
+                newCategory.setName(dto.category());
+                return categoryRepository.save(newCategory);
+            });
+
+        SubCategoryEntity subCategoryEntity = subCategoryRepository.findByNameIgnoreCase(dto.subCategory())
+            .orElseGet(() -> {
+                SubCategoryEntity newSubCategory = new SubCategoryEntity();
+                newSubCategory.setCategory(categoryEntity);
+                newSubCategory.setName(dto.subCategory());
+                return subCategoryRepository.save(newSubCategory);
+            });
+
+        productInDb.setName(dto.name());
+        productInDb.setDescription(dto.description());
+        productInDb.setBrand(brandEntity);
+        productInDb.setCategory(categoryEntity);
+        productInDb.setSubCategory(subCategoryEntity);
+        productInDb.setPrice(dto.price());
+
+        return productMapper.toResponseDTO(productRepository.save(productInDb));
     }
 }

@@ -1,0 +1,34 @@
+[
+  {
+    "content": "Buen producto",
+    "rating": 5
+  },
+  {
+    "content": "La calidad es excelente",
+    "rating": 5
+  },
+  {
+    "content": "Cumple con lo prometido",
+    "rating": 4
+  },
+  {
+    "content": "Llegó rápido y en buen estado",
+    "rating": 5
+  },
+  {
+    "content": "No era exactamente como esperaba",
+    "rating": 3
+  },
+  {
+    "content": "Muy mala experiencia",
+    "rating": 1
+  },
+  {
+    "content": "Relación calidad-precio aceptable",
+    "rating": 4
+  },
+  {
+    "content": "El producto dejó de funcionar al poco tiempo",
+    "rating": 2
+  }
+]
