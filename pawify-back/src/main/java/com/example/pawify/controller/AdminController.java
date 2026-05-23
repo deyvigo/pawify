@@ -1,16 +1,12 @@
 package com.example.pawify.controller;
 
-import com.example.pawify.dto.in.admin.ChangePasswordByAdminRequestDTO;
 import com.example.pawify.dto.out.admin.AdminResponseSimpleDTO;
 import com.example.pawify.dto.out.buyer.BuyerResponseSimpleDTO;
-import com.example.pawify.model.AdminEntity;
 import com.example.pawify.service.AdminService;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -27,14 +23,5 @@ public class AdminController {
     @GetMapping("/admins")
     public ResponseEntity<Slice<AdminResponseSimpleDTO>> getAllAdmins(Pageable pageable) {
         return ResponseEntity.ok(adminService.getAllAdmins(pageable));
-    }
-
-    @PostMapping("/password")
-    public ResponseEntity<Void> changePasswordByUsername(
-        @AuthenticationPrincipal AdminEntity admin,
-        @Valid @RequestBody ChangePasswordByAdminRequestDTO changePasswordByAdminRequestDTO
-        ) {
-        adminService.changePasswordByOwner(admin, changePasswordByAdminRequestDTO);
-        return ResponseEntity.noContent().build();
     }
 }

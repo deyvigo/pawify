@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict UxRjKgzF6c0EZJKnwPQK3tiDd951wVLoR1dQvbNZCIekVrn9XLMWr4rx7FvGKbF
+\restrict DQdXljwpnjxbWv6IPKc6SSIdyghcxegHqTfYygkRmwhgku01d5IMvcxiYH53TJs
 
 -- Dumped from database version 16.13 (Debian 16.13-1.pgdg13+1)
 -- Dumped by pg_dump version 16.13 (Debian 16.13-1.pgdg13+1)
@@ -1081,7 +1081,6 @@ COPY public.users (id, dni_number, first_name, last_name, password, username, ro
 14	11111222	Mariana	Admin	$2a$10$ubtQg.odaZruxyg5E05CeOXWJDW7OUPb6kSZX.oEiWQpZxtrNG8ie	useradmin13	1
 15	11112222	Ana	Admin	$2a$10$8ho2cQmOZKcCuw7ne6a2du/iYW3yLzXvX2nMdQz2pDsNUImekNH3G	useradmin14	1
 16	33344444	Julieta	Admin	$2a$10$HU1xng1xqTBZdHJVl0xR1OH/uF6fjf2ei9rRSoSG5WkODjxHecpJ2	useradmin15	1
-17	12367823	Andrea	Buyer	$2a$10$KE2PR8p4Y0zN8Q3.awuFYegxzjU9iLN6i5Z9Dph4FcmHx1kTX2SDa	userbuyer1	2
 18	48572930	Ariel	Buyer	$2a$10$JEUEHXM1egzDc5DfTHHbLulpl2HzFZLSrjGeCifsgw6Nue63O99BO	userbuyer2	2
 19	39940392	Samuel	Buyer	$2a$10$QzrVwDB/68FDHYYHPfDSgOHJ8/A.MJw7oQCEtXQ./z6z5K5FnL/Um	userbuyer3	2
 20	39485043	Gabriel	Buyer	$2a$10$tclNT3.3ucQNG.VnXy1zc.4Yf37rXLDa3SXXxRSF4yMuF7Q2VPJaO	userbuyer4	2
@@ -1096,7 +1095,8 @@ COPY public.users (id, dni_number, first_name, last_name, password, username, ro
 29	74857945	Paula	Buyer	$2a$10$wnvzN02o/0f7.N0UnD1DuuUxsRi75xxZJGzZ2y9AQIyILXWKcRpuy	userbuyer13	2
 30	83749203	Sam	Buyer	$2a$10$bHQlIDJJ5yyFVCgH5zeWeeF1bpo0ZYBLzwG/WiarW9UTluXQQtBv6	userbuyer14	2
 31	88372832	Noel	Buyer	$2a$10$69YWbAnyazpv.sGcHe4RUOVjx5Wp8GxCEnY5gSid26PTVARMxUlo.	userbuyer15	2
-1	88694321	Jhon	Admin	$2a$10$Glmar8XoRGWM5EKVqEtemeLwAPRSDGtyz3plpXLc5OSmN7WoOJPIW	useradmin	1
+17	12367823	Andrea	Buyer	$2a$10$tTEXrIqysDopNl9FuF7EHeJ7xb2cq21MsxJMhTkzlu6hGToJzxbQm	userbuyer1	2
+1	88694321	Jhon	Admin	$2a$10$ECj5mAeqttCFQymi.iTN/ORdBDAMtBsOA02QR1ZqbsvuXD6YuAyh.	useradmin	1
 \.
 
 
@@ -1670,5 +1670,5 @@ ALTER TABLE ONLY public.tracking_statuses
 -- PostgreSQL database dump complete
 --
 
-\unrestrict UxRjKgzF6c0EZJKnwPQK3tiDd951wVLoR1dQvbNZCIekVrn9XLMWr4rx7FvGKbF
+\unrestrict DQdXljwpnjxbWv6IPKc6SSIdyghcxegHqTfYygkRmwhgku01d5IMvcxiYH53TJs
 

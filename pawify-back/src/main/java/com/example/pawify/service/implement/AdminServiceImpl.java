@@ -1,52 +1,28 @@
 package com.example.pawify.service.implement;
 
-import com.example.pawify.dto.in.admin.ChangePasswordByAdminRequestDTO;
 import com.example.pawify.dto.out.admin.AdminResponseSimpleDTO;
 import com.example.pawify.dto.out.buyer.BuyerResponseSimpleDTO;
-import com.example.pawify.exception.BadRequestException;
-import com.example.pawify.exception.UnauthorizedRequestException;
 import com.example.pawify.mapper.AdminMapper;
 import com.example.pawify.mapper.BuyerMapper;
 import com.example.pawify.model.AdminEntity;
 import com.example.pawify.model.BuyerEntity;
 import com.example.pawify.repository.AdminRepository;
 import com.example.pawify.repository.BuyerRepository;
-import com.example.pawify.repository.UserRepository;
 import com.example.pawify.service.AdminService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
 public class AdminServiceImpl implements AdminService {
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
     private final BuyerRepository buyerRepository;
     private final BuyerMapper buyerMapper;
     private final AdminRepository adminRepository;
     private final AdminMapper adminMapper;
-
-    @Override
-    public void changePasswordByOwner(
-        AdminEntity admin,
-        ChangePasswordByAdminRequestDTO dto
-    ) {
-        if (!passwordEncoder.matches(dto.currentPassword(), admin.getPassword())) {
-            throw new BadRequestException("old password is incorrect");
-        }
-
-        if (!dto.confirmNewPassword().equals(dto.newPassword())) {
-            throw new BadRequestException("new passwords don't match");
-        }
-
-        admin.setPassword(passwordEncoder.encode(dto.newPassword()));
-        userRepository.save(admin);
-    }
 
     @Override
     public Slice<BuyerResponseSimpleDTO> getAllBuyers(Pageable pageable) {
