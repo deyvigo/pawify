@@ -34,11 +34,16 @@ public class TrackingStatusServiceImpl implements TrackingStatusService {
     }
 
     @Override
-    public Page<TrackingStatusResponseDTO> getAllByTrackingCode(String trackingCode, Long cursor, int size) {
+    public Page<TrackingStatusResponseDTO> getAllByTrackingCode(String trackingCode, Long cursor, Integer size) {
         OrderEntity orderEntity = orderRepository.findByTrackingCode(trackingCode)
             .orElseThrow(() -> new ResourceNotFoundException("order_ir not found"));
 
         List<TrackingStatusEntity> trackings;
+
+        if (size == null) {
+            size = 10;
+        }
+
         if (cursor == null) {
             trackings = trackingStatusRepository.findAllByOrderOrderByTimestampDesc(
                 orderEntity, Limit.of(size + 1)

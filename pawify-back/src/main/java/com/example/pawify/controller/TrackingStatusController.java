@@ -11,7 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/trackingstatus")
+@RequestMapping("/tracking-status")
 @AllArgsConstructor
 public class TrackingStatusController {
     private final TrackingStatusService trackingStatusService;
@@ -29,7 +29,7 @@ public class TrackingStatusController {
     @GetMapping("/{trackingCode}")
     public ResponseEntity<Page<TrackingStatusResponseDTO>> getTrackingStatusesByOrder(
         @PathVariable String trackingCode,
-        @RequestParam(name = "size", required = false) int size,
+        @RequestParam(name = "size", required = false) Integer size,
         @RequestParam(name = "cursor", required = false) Long cursor
     ) {
         return ResponseEntity.ok(
