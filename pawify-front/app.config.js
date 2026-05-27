@@ -13,9 +13,14 @@ export default {
       backgroundColor: "#ffffff",
     },
     ios: {
+      bundleIdentifier: "com.pawify.app", 
       supportsTablet: true,
+      "infoPlist": {
+      "ITSAppUsesNonExemptEncryption": false
+    }
     },
     android: {
+      package: "com.pawify.app",
       adaptiveIcon: {
         foregroundImage: "./assets/adaptive-icon.png",
         backgroundColor: "#ffffff",
@@ -28,7 +33,9 @@ export default {
     },
     plugins: ["expo-secure-store"],
     extra: {
-      API_BASE_URL: process.env.API_BASE_URL || "https://pawify-g5fb.onrender.com",
+      eas: {
+        projectId: "c4f74a0f-26a7-4626-864b-513d8078dfd6",
+      },
     },
   },
 };
