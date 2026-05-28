@@ -25,3 +25,8 @@ export const resetPassword = async (username: string, code: string, new_password
     const response = await api.post('/auth/recovery/reset-password', { username, code, new_password });
     return response;
 };
+
+export const verifyRecoveryCode = async (username: string, code: string) => {
+    const response = await api.post('/auth/recovery/verify-code', { username, code });
+    return response;
+};

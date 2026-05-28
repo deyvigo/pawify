@@ -12,6 +12,16 @@ export const useAuthentication = (onLoginSuccess: (userData: any) => void) => {
             return;
         }
 
+        if (username.trim().length < 6) {
+            Alert.alert('Atención', 'El Nombre de Usuario debe tener al menos 6 caracteres');
+            return;
+        }
+
+        if (password.trim().length < 8) {
+            Alert.alert('Atención', 'La Contraseña debe tener al menos 8 caracteres');
+            return;
+        }
+
         setIsLoading(true);
         try {
             // Llamamos al servicio auth

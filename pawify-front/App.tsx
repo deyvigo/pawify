@@ -73,6 +73,8 @@ export default function App() {
   };
 
   const productApi = useProducts(currentUser?.token);
+  const [recoveryEmail, setRecoveryEmail] = useState<string>('');
+  
 
   const ActiveScreen = screens[activeTab];
 
@@ -94,8 +96,9 @@ export default function App() {
               <LoginScreen 
                 onLoginSuccess={handleSetCurrentUser} 
                 onNavigateToRegister={() => setAuthScreen('register')} 
-                onNavigateToForgotPassword={(userToRecover: string) => {
+                onNavigateToForgotPassword={(userToRecover: string, emailToRecover: string) => {
                   setRecoveryUser(userToRecover);  
+                  setRecoveryEmail(emailToRecover);
                   setAuthScreen('recovery');       
               }}
               />
@@ -111,6 +114,7 @@ export default function App() {
               <RecoveryScreen 
                 onBackToLogin={() => setAuthScreen('login')}
                 username={recoveryUser}
+                email={recoveryEmail}
                 onCodeVerified={(code:string) => {
                     setRecoveryCode(code);
                     setAuthScreen('newPassword');

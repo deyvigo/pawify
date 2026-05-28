@@ -7,7 +7,8 @@ import {
     StyleSheet, 
     Image, 
     ScrollView, 
-    ActivityIndicator
+    ActivityIndicator,
+    Alert
 } from 'react-native';
 import { useRegister } from '../hooks/useRegister';
 
@@ -30,13 +31,53 @@ export const RegisterScreen = ({ onNavigateToLogin }: RegisterProps) => {
     const [showPassword, setShowPassword] = useState<boolean>(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
     
-    
+    //Estaddos de error visual para cada campo 
+    const [firstNameError, setFirstNameError] = useState<string>('');
+    const [lastNameError, setLastNameError] = useState<string>('');
+    const [usernameError, setUsernameError] = useState<string>('');
+    const [dniError, setDniError] = useState<string>('');
+    const [emailError, setEmailError] = useState<string>('');
+    const [passwordError, setPasswordError] = useState<string>('');
+    const [confirmPasswordError, setConfirmPasswordError] = useState<string>('');
 
 
     const { register, isLoading } = useRegister();
 
+    // Función auxiliar para validar correo
+    const isValidEmail = (emailText: string) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(emailText);
+    };
+
     const handleRegister = () => {
-    
+        // Validamos que ningún campo obligatorio esté vacío y que no haya errores pendientes en rojo
+        let hasEmptyFields = false;
+
+            if (!firstName.trim()) { setFirstNameError('Obligatorio'); hasEmptyFields = true; }
+            if (!lastName.trim()) { setLastNameError('Obligatorio'); hasEmptyFields = true; }
+            if (!username.trim()) { setUsernameError('Obligatorio'); hasEmptyFields = true; }
+            if (!dniNumber.trim()) { setDniError('Obligatorio'); hasEmptyFields = true; }
+            if (!email.trim()) { setEmailError('Obligatorio'); hasEmptyFields = true; }
+            if (!password.trim()) { setPasswordError('Obligatorio'); hasEmptyFields = true; }
+            if (!confirmPassword.trim()) { setConfirmPasswordError('Obligatorio'); hasEmptyFields = true; }
+
+            // Si encontramos alguno vacío, detenemos todo
+            if (hasEmptyFields) {
+                Alert.alert('Atención', 'Por favor, completa los campos obligatorios marcados en rojo.');
+                return;
+            }
+
+            // 2. Validamos si hay errores de formato (ej. contraseña corta, correo mal escrito)
+            if (firstNameError || lastNameError || usernameError || dniError || emailError || passwordError || confirmPasswordError) {
+                Alert.alert('Atención', 'Por favor, corrige los errores marcados en rojo antes de continuar.');
+                return;
+            }
+
+            if (!acceptTerms) {
+                Alert.alert('Atención', 'Debes aceptar los términos y condiciones.');
+                return;
+            }
+        
         const userData = {
             username,
             first_name: firstName,
@@ -84,11 +125,35 @@ export const RegisterScreen = ({ onNavigateToLogin }: RegisterProps) => {
                 <View style={styles.inputSection}>
                     <Text style={styles.label}>Nombre y Apellidos</Text>
                     <View style={styles.rowInputs} >
-                        <View style={[styles.fieldContainer, { flex: 1, marginRight: 5 }]}>
-                            <TextInput style={styles.input} placeholder="Nombres" placeholderTextColor="#A3A3A3" value={firstName} onChangeText={setFirstName} />
+                        <View style={{ flex: 1, marginRight: 5 }}>
+                            <View style={[styles.fieldContainer,firstNameError ? styles.fieldErrorBorder : null]}>
+                                <TextInput style={styles.input} placeholder="Nombres" placeholderTextColor="#A3A3A3" value={firstName} 
+                                    onChangeText={(text) => {
+                                        setFirstName(text);
+                                        if (text.trim().length === 0) {
+                                            setFirstNameError('Campo obligatorio');
+                                        } else {
+                                            setFirstNameError('');
+                                        }
+                                    }}
+                                />
+                            </View>
+                            {firstNameError ? <Text style={styles.errorText}>{firstNameError}</Text> : null}
                         </View>
-                        <View style={[styles.fieldContainer, { flex: 1, marginLeft: 5 }]}>
-                            <TextInput style={styles.input} placeholder="Apellidos" placeholderTextColor="#A3A3A3" value={lastName} onChangeText={setLastName} />
+                        <View style={ { flex: 1, marginLeft: 5 }}>
+                            <View style={[styles.fieldContainer,lastNameError ? styles.fieldErrorBorder : null]}>
+                                <TextInput style={styles.input} placeholder="Apellidos" placeholderTextColor="#A3A3A3" value={lastName} 
+                                    onChangeText={(text) => {
+                                        setLastName(text);
+                                        if (text.trim().length === 0) {
+                                            setLastNameError('Campo obligatorio');
+                                        } else {
+                                            setLastNameError('');
+                                        }
+                                    }} 
+                                />
+                            </View>
+                            {lastNameError ? <Text style={styles.errorText}>{lastNameError}</Text> : null}
                         </View>
                     </View>
                 </View>
@@ -96,25 +161,48 @@ export const RegisterScreen = ({ onNavigateToLogin }: RegisterProps) => {
                 {/* Input: Username */}
                 <View style={styles.inputSection}>
                     <Text style={styles.label}>Nombre de Usuario </Text>
-                    <View style={styles.fieldContainer}>
+                    <View style={[styles.fieldContainer, usernameError ? styles.fieldErrorBorder : null]}>
                         <Image style={styles.icon} source={require('../../assets/userIcon.png')} />
-                        <TextInput style={styles.input} placeholder="Ej. juanperez123" placeholderTextColor="#A3A3A3" autoCapitalize="none" value={username} onChangeText={setUsername} />
+                        <TextInput style={styles.input} placeholder="Ej. juanperez123" placeholderTextColor="#A3A3A3" autoCapitalize="none" value={username}
+                            onChangeText={(text) => {
+                                    setUsername(text);
+                                    if (text.length > 0 && text.length < 6) {
+                                        setUsernameError('Mínimo 6 caracteres');
+                                    } else {
+                                        setUsernameError('');
+                                    }
+                            }}
+                        />
                     </View>
+                    {usernameError ? <Text style={styles.errorText}>{usernameError}</Text> : null}
                 </View>
+
 
                 {/* Input: DNI */}
                 <View style={styles.inputSection}>
                     <Text style={styles.label}>Documento de Identidad</Text>
-                    <View style={styles.fieldContainer}>
+                    <View style={[styles.fieldContainer, dniError ? styles.fieldErrorBorder : null]}>
                         <Image style={styles.icon} source={require('../../assets/identityIcon.png')} />
-                        <TextInput style={styles.input} placeholder="12345678" placeholderTextColor="#A3A3A3" keyboardType="numeric" maxLength={8} value={dniNumber} onChangeText={setDniNumber} />
+                        <TextInput style={styles.input} placeholder="12345678" placeholderTextColor="#A3A3A3" keyboardType="numeric" maxLength={8} value={dniNumber} 
+                            onChangeText={(text) => {
+                                // Solo permite números
+                                const numericValue = text.replace(/[^0-9]/g, '');
+                                setDniNumber(numericValue);
+                                if (numericValue.length > 0 && numericValue.length < 8) {
+                                    setDniError('Debe tener 8 dígitos exactos');
+                                } else {
+                                    setDniError('');
+                                }
+                            }} 
+                        />
                     </View>
+                    {dniError ? <Text style={styles.errorText}>{dniError}</Text> : null}
                 </View>
 
                 {/* Input: Correo Electrónico */}
                 <View style={styles.inputSection}>
                     <Text style={styles.label}>Correo Electrónico</Text>
-                    <View style={styles.fieldContainer}>
+                    <View style={[styles.fieldContainer, emailError ? styles.fieldErrorBorder : null]}>
                         <Image style={styles.icon} source={require('../../assets/correoIcon.png')} />
                         <TextInput 
                             style={styles.input}
@@ -123,15 +211,23 @@ export const RegisterScreen = ({ onNavigateToLogin }: RegisterProps) => {
                             keyboardType="email-address"
                             autoCapitalize="none"  
                             value={email}
-                            onChangeText={setEmail}
+                            onChangeText={(text) => {
+                                setEmail(text);
+                                if (text.length > 0 && !isValidEmail(text)) {
+                                    setEmailError('Formato de correo inválido');
+                                } else {
+                                    setEmailError('');
+                                }
+                            }}
                         />
                     </View>
+                    {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
                 </View>
 
                 {/* Input: Contraseña */}
                 <View style={styles.inputSection}>
                     <Text style={styles.label}>Contraseña</Text>
-                    <View style={styles.fieldContainer}>
+                    <View style={[styles.fieldContainer, passwordError ? styles.fieldErrorBorder : null]}>
                         <Image style={styles.icon} source={require('../../assets/passIcon.png')} />
                         <TextInput 
                             style={styles.input}
@@ -139,19 +235,32 @@ export const RegisterScreen = ({ onNavigateToLogin }: RegisterProps) => {
                             placeholderTextColor="#A3A3A3" 
                             secureTextEntry={!showPassword} 
                             value={password}
-                            onChangeText={setPassword}
+                            onChangeText={(text) => {
+                                setPassword(text);
+                                if (text.length > 0 && text.length < 8) {
+                                    setPasswordError('Mínimo 8 caracteres');
+                                } else {
+                                    setPasswordError('');
+                                }
+                                // Si cambia la contraseña, re-validamos la confirmación
+                                if (confirmPassword.length > 0 && text !== confirmPassword) {
+                                    setConfirmPasswordError('Las contraseñas no coinciden');
+                                } else if (text === confirmPassword) {
+                                    setConfirmPasswordError('');
+                                }
+                            }}
                         />
                         <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
                             <Image style={styles.eyeIcon} source={require('../../assets/eyeIcon.png')} />
                         </TouchableOpacity>
                     </View>
-                    
+                    {passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : null}
                 </View>
 
                 {/* Input: Confirmar Contraseña */}
                 <View style={styles.inputSection}>
                     <Text style={styles.label}>Confirmar Contraseña</Text>
-                    <View style={styles.fieldContainer}>
+                    <View style={[styles.fieldContainer, confirmPasswordError ? styles.fieldErrorBorder : null]}>
                         <Image style={styles.icon} source={require('../../assets/reloadIcon.png')} />
                         <TextInput 
                             style={styles.input}
@@ -159,12 +268,20 @@ export const RegisterScreen = ({ onNavigateToLogin }: RegisterProps) => {
                             placeholderTextColor="#A3A3A3" 
                             secureTextEntry={!showConfirmPassword} 
                             value={confirmPassword}
-                            onChangeText={setConfirmPassword}
+                            onChangeText={(text) => {
+                                setConfirmPassword(text);
+                                if (text.length > 0 && text !== password) {
+                                    setConfirmPasswordError('Las contraseñas no coinciden');
+                                } else {
+                                    setConfirmPasswordError('');
+                                }
+                            }}
                         />
                         <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
                             <Image style={styles.eyeIcon} source={require('../../assets/eyeIcon.png')} />
                         </TouchableOpacity>
                     </View>
+                    {confirmPasswordError ? <Text style={styles.errorText}>{confirmPasswordError}</Text> : null}
                 </View>
 
                 {/* Checkbox de Términos y Condiciones */}
@@ -325,6 +442,19 @@ const styles = StyleSheet.create({
     eyeIcon: {
         tintColor: '#9CA3AF',
         padding: 5,
+    },
+
+    errorText: {
+        color: '#FF1A1A',
+        fontSize: 12,
+        marginTop: 5,
+        marginLeft: 5,
+        fontWeight: '500',
+    },
+    fieldErrorBorder: {
+        borderWidth: 1,
+        borderColor: '#FF1A1A',
+        backgroundColor: '#FFF5F5',
     },
 
     // --- CHECKBOX Y TÉRMINOS ---

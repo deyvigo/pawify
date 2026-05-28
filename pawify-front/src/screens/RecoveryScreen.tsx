@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
     View, 
     Text, 
@@ -6,20 +6,50 @@ import {
     TouchableOpacity, 
     StyleSheet, 
     Image,
-    Alert
+    Alert,
+    ActivityIndicator
 } from 'react-native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { verifyRecoveryCode, requestRecoveryCode } from '../services/authService';
 
 interface ForgotPasswordProps {
     onBackToLogin: () => void;
     username: string;
+    email: string;
     onCodeVerified: (code: string) => void;
 }
 
-export const RecoveryScreen = ({ onBackToLogin, username, onCodeVerified }: ForgotPasswordProps) => {
+export const RecoveryScreen = ({ onBackToLogin, username, email, onCodeVerified }: ForgotPasswordProps) => {
     // Estado: Un arreglo de 6 espacios vacíos para guardar cada dígito
     const [code, setCode] = useState<string[]>(['', '', '', '', '', '']);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+
+    // --- ESTADO PARA EL TEMPORIZADOR ---
+    const [timeLeft, setTimeLeft] = useState<number>(60); // 60 segundos (1 minuto)
+
+    // --- LÓGICA DEL TEMPORIZADOR ---
+    useEffect(() => {
+        // Si llega a 0, detenemos el contador
+        if (timeLeft <= 0) return;
+
+        // Bajamos 1 segundo cada 1000 milisegundos
+        const timerId = setInterval(() => {
+            setTimeLeft(prevTime => prevTime - 1);
+        }, 1000);
+
+        // Limpiamos el intervalo si salimos de la pantalla
+        return () => clearInterval(timerId);
+    }, [timeLeft]);
+
+    // Función para formatear el tiempo (Ej. de 60 a "1:00", de 5 a "0:05")
+    const formatTime = (seconds: number) => {
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+    };
+
+
 
     // Función de Acción: Actualiza solo la field en la que el usuario está escribiendo
     const handleChangeText = (text: string, index: number) => {
@@ -30,14 +60,67 @@ export const RecoveryScreen = ({ onBackToLogin, username, onCodeVerified }: Forg
         
     };
 
-    const handleVerify = () => {
+    const handleVerify = async () => {
         const finalCode = code.join('');
         if (finalCode.length < 6) {
             Alert.alert('Atención', 'Por favor, ingresa el código completo.');
             return;
         }
-        // Solo pasamos el código a la siguiente pantalla, sin llamar al backend todavía
-        onCodeVerified(finalCode);
+        setIsLoading(true);
+
+        try {
+            // Llamamos a Spring Boot para verificar el código
+            await verifyRecoveryCode(username, finalCode);
+            
+            // Si el backend no lanza error, significa que el código es válido
+            onCodeVerified(finalCode);
+            
+        } catch (error: any) {
+            console.log("Error al verificar código:", error);
+            Alert.alert('Código Inválido', 'El código ingresado es incorrecto o ha expirado. Inténtalo nuevamente.');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+
+    const handleResendCode = async () => {
+        setIsLoading(true);
+        try {
+            // Reutilizamos el endpoint que envía el correo
+            await requestRecoveryCode(username);
+            Alert.alert('¡Código reenviado!', 'Hemos enviado un nuevo código a tu correo electrónico.');
+            
+            // Reiniciamos el reloj a 60 segundos
+            setTimeLeft(60); 
+            // Limpiamos las cajitas para el nuevo código
+            setCode(['', '', '', '', '', '']); 
+        } catch (error) {
+            console.log("Error al reenviar:", error);
+            Alert.alert('Error', 'No pudimos reenviar el código. Por favor intenta de nuevo.');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    // Función para ocultar parte del correo
+    const getMaskedEmail = () => {
+        if (!email) return "cargando...";
+
+        if (!email.includes('@')) {
+            return `${email.substring(0, 2)}****@***.com`;
+        }
+
+        const [name, domain] = email.split('@');
+        
+        if (name.length <= 2) {
+            return `${name.charAt(0)}****@${domain}`;
+        }
+
+        const firstLetter = name.charAt(0);
+        const lastLetter = name.charAt(name.length - 1);
+        
+        return `${firstLetter}****${lastLetter}@${domain}`;
     };
 
     return (
@@ -68,7 +151,7 @@ export const RecoveryScreen = ({ onBackToLogin, username, onCodeVerified }: Forg
                 <Text style={styles.subtitle}>
                     Hemos enviado un código de seguridad de 6 dígitos a su correo electrónico asociado.
                 </Text>
-                <Text style={styles.emailMask}>h****o@gmail.com</Text>
+                <Text style={styles.emailMask}>{getMaskedEmail()}</Text>
 
                 <View style={styles.otpContainer}>
                     {code.map((digit, index) => (
@@ -86,22 +169,31 @@ export const RecoveryScreen = ({ onBackToLogin, username, onCodeVerified }: Forg
                     ))}
                 </View>
 
-                {/* boton de verificación */}
-                <TouchableOpacity style={styles.verifyButton} onPress={handleVerify}>
-                    <Text style={styles.verifyButtonText}>Verificar</Text>
+                <TouchableOpacity style={styles.verifyButton} onPress={handleVerify} disabled={isLoading}>
+                    {isLoading ? (
+                        <ActivityIndicator color="#FFFFFF" />
+                    ) : (
+                        <Text style={styles.verifyButtonText}>Verificar</Text>
+                    )}
                 </TouchableOpacity>
 
                 {/*seccion de reenvio de código */}
                 <View style={styles.resendContainer}>
                     <Text style={styles.resendText}>¿No recibiste el código?</Text>
                     
-                    <TouchableOpacity style={styles.resendAction}>
+                    <TouchableOpacity style={[styles.resendAction, timeLeft > 0 && { opacity: 0.4 }]} 
+                        onPress={handleResendCode}
+                        disabled={timeLeft > 0 || isLoading}>
                         <Image style={styles.refreshIcon} source={require('../../assets/refreshIcon.png')} />
                         <Text style={styles.resendActionText}>Reenviar código</Text>
                     </TouchableOpacity>
                     
                     <Text style={styles.timerText}>
-                        Disponible en <Text style={styles.timerBold}>1:00</Text>
+                        {timeLeft > 0 ? (
+                            <>Disponible en <Text style={styles.timerBold}>{formatTime(timeLeft)}</Text></>
+                        ) : (
+                            'Ya puedes solicitar un nuevo código'
+                        )}
                     </Text>
                 </View>
 
@@ -136,7 +228,7 @@ const styles = StyleSheet.create({
         paddingVertical: 15,
         borderBottomWidth: 1,
         borderBottomColor: '#F0F0F0', 
-        marginBottom: 20,
+        marginBottom: 5,
     },
     backButton: {
         flexDirection: 'row',
@@ -163,13 +255,13 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         paddingHorizontal: 20,
-        paddingTop: 40,
+        paddingTop: 10,
     },
 
     // icono principal estilos
     iconWrapper: {
         position: 'relative', // Para que el badge se posicione respecto a este contenedor
-        marginBottom: 30,
+        marginBottom: 20,
     },
     mainIconContainer: {
         width: 90,
@@ -236,14 +328,15 @@ const styles = StyleSheet.create({
         
     },
     otpInput: {
-        width: 45,
-        height: 45,
+        width: 48,
+        height: 50,
         backgroundColor: '#F9FAFB', 
         borderRadius: 8,
-        fontSize: 25,
+        fontSize: 20,
         fontWeight: 'bold',
         color: '#333333',
-        textAlign: 'center',        
+        textAlign: 'center', 
+        paddingVertical: 0,       
     },
 
     // --- BOTÓN VERIFICAR ---
