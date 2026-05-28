@@ -1,7 +1,7 @@
 
 import { createContext, useContext } from 'react';
 import { Product } from '../types/product';
-import { ProductResponseDTO, UserPayload } from '../types';
+import { ProductResponseDTO, UserPayload, CategoryResponseDTO, BrandResponseDTO } from '../types';
 
 
 
@@ -23,6 +23,11 @@ export interface AppContextType {
     currentUser: UserPayload | null;
     setCurrentUser: (user: UserPayload | null) => void;
     setActiveTab: (tab: TabKey) => void;
+    categories: CategoryResponseDTO[];
+    brands: BrandResponseDTO[];
+    categoriesLoading: boolean;
+    pendingFilterParams: Record<string, any> | null;
+    setPendingFilterParams: (params: Record<string, any> | null) => void;
 }
 
 export const AppContext = createContext<AppContextType>({
@@ -41,6 +46,11 @@ export const AppContext = createContext<AppContextType>({
     currentUser: null,
     setCurrentUser: () => {},
     setActiveTab: () => {},
+    categories: [],
+    brands: [],
+    categoriesLoading: true,
+    pendingFilterParams: null,
+    setPendingFilterParams: () => {},
 });
 
 export const useAppContext = () => useContext(AppContext);

@@ -16,6 +16,7 @@ import { NewPasswordScreen } from './src/screens/NewPasswordScreen';
 
 import { Product } from './src/types/product';
 import { useProducts } from './src/hooks/useProducts';
+import { useCategories } from './src/hooks/useCategories';
 import { UserPayload } from './src/types';
 import { setAuthToken, loadAuthToken, getAuthUser } from './src/config';
 import { AppContext,TabKey } from './src/context/AppContext';
@@ -38,6 +39,7 @@ export default function App() {
 
   const [recoveryUser, setRecoveryUser] = useState<string>('');
   const [recoveryCode, setRecoveryCode] = useState<string>('');
+  const [pendingFilterParams, setPendingFilterParams] = useState<Record<string, any> | null>(null);
 
   // Load token from secure store on app start
   useEffect(() => {
@@ -72,6 +74,7 @@ export default function App() {
     }
   };
 
+  const { categories, brands, loading: categoriesLoading } = useCategories(currentUser?.token);
   const productApi = useProducts(currentUser?.token);
 
   const ActiveScreen = screens[activeTab];
@@ -144,6 +147,11 @@ export default function App() {
         currentUser,
         setCurrentUser: handleSetCurrentUser,
         setActiveTab,
+        categories,
+        brands,
+        categoriesLoading,
+        pendingFilterParams,
+        setPendingFilterParams,
       }}
     >
       <SafeAreaView style={styles.container}>

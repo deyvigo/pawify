@@ -38,7 +38,7 @@ export interface SubCategoryDTO {
   name: string;
 }
 
-export interface ImageDTO {
+export interface ImageResponseDTO {
   id: number;
   url: string;
 }
@@ -58,12 +58,7 @@ export interface ProductResponseDTO {
   review_count: number;
   rating: number;
   created_at: string;
-  images: ImageDTO[];
-}
-
-export interface CategorySimpleDTO {
-  id: number;
-  name: string;
+  images: ImageResponseDTO[];
 }
 
 export interface SubCategoryResponseDTO {
@@ -71,27 +66,15 @@ export interface SubCategoryResponseDTO {
   name: string;
 }
 
-export interface ImageResponseDTO {
-  id: number;
-  url: string;
-}
-
-export interface ProductResponseDTO {
+export interface CategoryResponseDTO {
   id: number;
   name: string;
-  description: string;
-  price: number;
-  brand: BrandDTO;
-  category: CategorySimpleDTO;
-  sub_category: SubCategoryResponseDTO;
-  sold_count: number;
-  stock: number;
-  share_code: string;
-  active: boolean;
-  review_count: number;
-  rating: number;
-  created_at: string;
-  images: ImageResponseDTO[];
+  sub_categories: SubCategoryResponseDTO[];
+}
+
+export interface BrandResponseDTO {
+  id: number;
+  name: string;
 }
 
 export interface ProductsResponse {

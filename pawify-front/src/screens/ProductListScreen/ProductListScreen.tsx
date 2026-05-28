@@ -59,6 +59,8 @@ export const ProductListScreen: React.FC = () => {
     loadMore,
     currentUser,
     refresh,
+    pendingFilterParams,
+    setPendingFilterParams,
   } = useAppContext();
   
   const [searchQuery, setSearchQuery] = useState("");
@@ -75,6 +77,17 @@ export const ProductListScreen: React.FC = () => {
     }
     prevUserRef.current = currentUser;
   }, [currentUser]);
+
+  // Apply navigation-driven filters from DrawerMenu
+  useEffect(() => {
+    if (!pendingFilterParams) return;
+    const params: Record<string, any> = { sort: activeSort, search: searchQuery || undefined };
+    if (pendingFilterParams.category) params.category = pendingFilterParams.category;
+    if (pendingFilterParams.subCategory) params.subCategory = pendingFilterParams.subCategory;
+    if (pendingFilterParams.brand) params.brand = pendingFilterParams.brand;
+    loadProducts(params);
+    setPendingFilterParams(null);
+  }, [pendingFilterParams]);
 
   const cardWidth = (width - HORIZONTAL_PADDING * 2 - GAP) / 2;
   const halfRowWidth = (width - HORIZONTAL_PADDING * 2 - GAP) / 2;
@@ -122,6 +135,7 @@ export const ProductListScreen: React.FC = () => {
       maxPrice: filters.priceMax,
       brand: filters.brands.length === 1 ? filters.brands[0] : undefined,
       category: filters.categories.length === 1 ? filters.categories[0] : undefined,
+      subCategory: filters.subCategories.length === 1 ? filters.subCategories[0] : undefined,
     });
   };
 
