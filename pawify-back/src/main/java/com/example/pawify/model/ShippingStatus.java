@@ -13,7 +13,7 @@ public enum ShippingStatus {
         DELIVERED.allowedNextStatuses = Set.of();
     }
 
-    public boolean canTransitionTo(ShippingStatus nextStatus) {
+    public boolean isValidNextStatus(ShippingStatus nextStatus) {
         return allowedNextStatuses.contains(nextStatus);
     }
 }
