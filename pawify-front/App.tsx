@@ -6,21 +6,23 @@ import { BottomNavBar } from './src/components/BottomNavBar/BottomNavBar';
 import { DrawerMenu } from './src/components/DrawerMenu/DrawerMenu';
 import { ProductListScreen } from './src/screens/ProductListScreen/ProductListScreen';
 import { PurchaseScreen } from './src/screens/PurchaseScreen/PurchaseScreen';
-import { OrdersScreen } from './src/screens/OrdersScreen/OrdersScreen';
+import { OrdersScreen } from './src/screens/OrdersScreen';
 import { AccountScreen } from './src/screens/AccountScreen/AccountScreen';
 import { ProductDetailScreen } from './src/screens/ProductDetailScreen/ProductDetailScreen';
 import { LoginScreen } from './src/screens/LoginScreen';
 import { RegisterScreen } from './src/screens/RegisterScreen'; 
 import { RecoveryScreen } from './src/screens/RecoveryScreen'
 import { NewPasswordScreen } from './src/screens/NewPasswordScreen';
+import { OrderDetailScreen } from './src/screens/OrderDetailScreen';
 
 import { Product } from './src/types/product';
 import { useProducts } from './src/hooks/useProducts';
 import { UserPayload } from './src/types';
 import { setAuthToken, loadAuthToken, getAuthUser } from './src/config';
 import { AppContext,TabKey } from './src/context/AppContext';
+import { OrderResponseDTO } from './src/types/orders';
 
-const screens: Record<TabKey, React.FC> = {
+const screens: Record<TabKey, any> = {
   catalog: ProductListScreen,
   purchase: PurchaseScreen,
   orders: OrdersScreen,
@@ -31,6 +33,7 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<TabKey>('catalog');
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [selectedOrder, setSelectedOrder] = useState<OrderResponseDTO | null>(null);
 
   const [currentUser,setCurrentUser] = useState<UserPayload | null>(null);
   const [isLoadingAuth, setIsLoadingAuth] = useState(true);
@@ -154,15 +157,20 @@ export default function App() {
         <View style={styles.content}>
           {selectedProduct ? (
             <ProductDetailScreen product={selectedProduct} onBack={() => setSelectedProduct(null)} />
+          ) : selectedOrder ? (
+            <OrderDetailScreen order={selectedOrder} onBack={() => setSelectedOrder(null)} />
           ) : (
-            <ActiveScreen />
+            
+            <ActiveScreen onNavigateToDetail={setSelectedOrder} />
           )}
         </View>
         <DrawerMenu isOpen={drawerOpen} onClose={() => setDrawerOpen(false)} />
-        {!selectedProduct && (
+        
+        {!selectedProduct && !selectedOrder && (
           <BottomNavBar activeTab={activeTab} onTabPress={(tab) => {
             setActiveTab(tab);
             setSelectedProduct(null);
+            setSelectedOrder(null); // Limpiamos al cambiar de pestaña
           }} />
         )}
         <StatusBar style="dark" />
