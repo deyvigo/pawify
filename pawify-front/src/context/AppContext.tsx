@@ -31,8 +31,8 @@ export interface AppContextType {
     cartCount: number;
     cartTotal: number;
     addToCart: (product: Product, quantity?: number) => void;
-    removeFromCart: (productId: string) => void;
-    updateQuantity: (productId: string, quantity: number) => void;
+    removeFromCart: (productId: number) => void;
+    updateQuantity: (productId: number, quantity: number) => void;
     clearCart: () => void;
     checkoutActive: boolean;
     setCheckoutActive: (active: boolean) => void;

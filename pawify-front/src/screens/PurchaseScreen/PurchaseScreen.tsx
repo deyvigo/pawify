@@ -49,7 +49,7 @@ export const PurchaseScreen: React.FC = () => {
 
       <ScrollView style={styles.list} contentContainerStyle={styles.listContent}>
         {cartItems.map((item) => (
-          <View key={item.product.id} style={styles.cartItem}>
+          <View key={item.product.productId} style={styles.cartItem}>
             <Image source={{ uri: item.product.image }} style={styles.itemImage} />
             <View style={styles.itemInfo}>
               <Text style={styles.itemName} numberOfLines={2}>{item.product.name}</Text>
@@ -57,14 +57,14 @@ export const PurchaseScreen: React.FC = () => {
               <View style={styles.quantityRow}>
                 <TouchableOpacity
                   style={styles.qtyBtn}
-                  onPress={() => updateQuantity(item.product.id, item.quantity - 1)}
+                  onPress={() => updateQuantity(item.product.productId, item.quantity - 1)}
                 >
                   <Text style={styles.qtyBtnText}>-</Text>
                 </TouchableOpacity>
                 <Text style={styles.qtyText}>{item.quantity}</Text>
                 <TouchableOpacity
                   style={styles.qtyBtn}
-                  onPress={() => updateQuantity(item.product.id, item.quantity + 1)}
+                  onPress={() => updateQuantity(item.product.productId, item.quantity + 1)}
                 >
                   <Text style={styles.qtyBtnText}>+</Text>
                 </TouchableOpacity>
@@ -77,7 +77,7 @@ export const PurchaseScreen: React.FC = () => {
               <Text style={styles.itemUnitDetail}>
                 {item.quantity} x S/{item.product.price.toFixed(2)}
               </Text>
-              <TouchableOpacity onPress={() => removeFromCart(item.product.id)}>
+              <TouchableOpacity onPress={() => removeFromCart(item.product.productId)}>
                 <Text style={styles.removeText}>Eliminar</Text>
               </TouchableOpacity>
             </View>

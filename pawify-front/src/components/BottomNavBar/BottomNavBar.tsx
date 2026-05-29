@@ -2,20 +2,24 @@ import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { colors } from "../../theme/colors";
 import { useAppContext } from "../../context/AppContext";
+import { CatalogIcon } from "../icons/CatalogIcon";
+import { PurchaseIcon } from "../icons/PurchaseIcon";
+import { OrdersIcon } from "../icons/OrdersIcon";
+import { AccountIcon } from "../icons/AccountIcon";
 
 type TabKey = "catalog" | "purchase" | "orders" | "account";
 
 interface TabConfig {
   key: TabKey;
-  icon: string;
+  icon: React.FC<{ color: string; size: number }>;
   label: string;
 }
 
 const tabs: TabConfig[] = [
-  { key: "catalog", icon: "🛍️", label: "Catálogo" },
-  { key: "purchase", icon: "🛒", label: "Compra" },
-  { key: "orders", icon: "📦", label: "Pedidos" },
-  { key: "account", icon: "👤", label: "Cuenta" },
+  { key: "catalog", icon: CatalogIcon, label: "Catálogo" },
+  { key: "purchase", icon: PurchaseIcon, label: "Compra" },
+  { key: "orders", icon: OrdersIcon, label: "Pedidos" },
+  { key: "account", icon: AccountIcon, label: "Cuenta" },
 ];
 
 interface BottomNavBarProps {
@@ -45,16 +49,13 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({
             ]}
           >
             <View style={styles.iconContainer}>
-              <Text
-                style={[styles.icon, activeTab === tab.key && styles.activeIcon]}
-              >
-                {tab.icon}
-              </Text>
+              <tab.icon
+                color={activeTab === tab.key ? colors.primary : colors.gray}
+                size={24}
+              />
               {tab.key === "purchase" && cartCount > 0 && (
                 <View style={styles.badge}>
-                  <Text style={styles.badgeText}>
-                    {cartCount > 99 ? "99+" : cartCount}
-                  </Text>
+                  <Text style={styles.badgeText}>{cartCount}</Text>
                 </View>
               )}
             </View>
@@ -123,13 +124,6 @@ const styles = StyleSheet.create({
     shadowColor: colors.primary,
     shadowOffset: { width: 0, height: 0 },
     borderRadius: 10,
-  },
-  icon: {
-    fontSize: 22,
-    color: colors.gray,
-  },
-  activeIcon: {
-    color: colors.primary,
   },
   label: {
     fontSize: 11,

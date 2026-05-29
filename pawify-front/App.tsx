@@ -90,11 +90,11 @@ export default function App() {
 
   const addToCart = useCallback((product: Product, quantity: number = 1) => {
     setCartItems(prev => {
-      const existing = prev.find(item => item.product.id === product.id);
+      const existing = prev.find(item => item.product.productId === product.productId);
       let updated: CartItem[];
       if (existing) {
         updated = prev.map(item =>
-          item.product.id === product.id
+          item.product.productId === product.productId
             ? { ...item, quantity: item.quantity + quantity }
             : item
         );
@@ -106,19 +106,19 @@ export default function App() {
     });
   }, []);
 
-  const removeFromCart = useCallback((productId: string) => {
+  const removeFromCart = useCallback((productId: number) => {
     setCartItems(prev => {
-      const updated = prev.filter(item => item.product.id !== productId);
+      const updated = prev.filter(item => item.product.productId !== productId);
       saveCartToStorage(updated);
       return updated;
     });
   }, []);
 
-  const updateQuantity = useCallback((productId: string, quantity: number) => {
+  const updateQuantity = useCallback((productId: number, quantity: number) => {
     if (quantity < 1) return;
     setCartItems(prev => {
       const updated = prev.map(item =>
-        item.product.id === productId ? { ...item, quantity } : item
+        item.product.productId === productId ? { ...item, quantity } : item
       );
       saveCartToStorage(updated);
       return updated;

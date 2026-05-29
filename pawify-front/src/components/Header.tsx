@@ -1,7 +1,8 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
 import { colors } from "../theme/colors";
 import { Ionicons } from "@expo/vector-icons";
+import { MenuIcon } from "./icons/MenuIcon";
 
 interface HeaderProps {
   onActionPress: () => void;
@@ -13,18 +14,14 @@ export const Header: React.FC<HeaderProps> = ({ onActionPress, variant = "catalo
     <View style={styles.container}>
       <TouchableOpacity onPress={onActionPress} style={styles.actionButton}>
         {variant === "catalog" ? (
-          <View style={styles.hamburgerContainer}>
-            <View style={styles.hamburgerLine} />
-            <View style={[styles.hamburgerLine, styles.middleLine]} />
-            <View style={styles.hamburgerLine} />
-          </View>
+          <MenuIcon color={colors.black} size={28} />
         ) : (
           <Ionicons name="arrow-back" size={28} color={colors.black} />
         )}
       </TouchableOpacity>
       
       <View style={styles.logoContainer}>
-        <Text style={styles.logoEmoji}>🐾</Text>
+        <Image style={styles.logoImage} source={require("../../assets/logopawify.png")} />
         <Text style={styles.appName}>Pawify</Text>
       </View>
       
@@ -49,28 +46,15 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  hamburgerContainer: {
-    width: 28,
-    height: 20,
-    justifyContent: "center",
-    gap: 5,
-  },
-  hamburgerLine: {
-    width: "100%",
-    height: 3,
-    backgroundColor: colors.black,
-    borderRadius: 2,
-  },
-  middleLine: {
-    width: "75%",
-  },
   logoContainer: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 6,
+    gap: 8,
   },
-  logoEmoji: {
-    fontSize: 24,
+  logoImage: {
+    width: 28,
+    height: 28,
+    resizeMode: "contain",
   },
   appName: {
     fontSize: 22,

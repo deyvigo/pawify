@@ -91,7 +91,6 @@ export interface ProductsResponse {
 
 export interface CartItem {
   product: {
-    id: string;
     productId: number;
     name: string;
     image: string;

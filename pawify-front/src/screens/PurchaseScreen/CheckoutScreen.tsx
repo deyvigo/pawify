@@ -262,7 +262,7 @@ export const CheckoutScreen: React.FC<CheckoutScreenProps> = ({ onBack, onSucces
         <Text style={[styles.sectionTitle, { marginTop: 24 }]}>Resumen</Text>
         <View style={styles.summaryCard}>
           {cartItems.map(item => (
-            <View key={item.product.id} style={styles.summaryRow}>
+            <View key={item.product.productId} style={styles.summaryRow}>
               <Text style={styles.summaryName} numberOfLines={1}>
                 {item.quantity}x {item.product.name}
               </Text>

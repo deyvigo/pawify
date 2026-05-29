@@ -10,6 +10,8 @@ import {
     ActivityIndicator
 } from 'react-native';
 import { useRegister } from '../hooks/useRegister';
+import { EyeIcon } from '../components/icons/EyeIcon';
+import { EyeOffIcon } from '../components/icons/EyeOffIcon';
 
 interface RegisterProps {
     onNavigateToLogin: () => void;
@@ -142,7 +144,7 @@ export const RegisterScreen = ({ onNavigateToLogin }: RegisterProps) => {
                             onChangeText={setPassword}
                         />
                         <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-                            <Image style={styles.eyeIcon} source={require('../../assets/eyeIcon.png')} />
+                            {showPassword ? <EyeOffIcon color="#6B7280" size={22} /> : <EyeIcon color="#6B7280" size={22} />}
                         </TouchableOpacity>
                     </View>
                     
@@ -162,7 +164,7 @@ export const RegisterScreen = ({ onNavigateToLogin }: RegisterProps) => {
                             onChangeText={setConfirmPassword}
                         />
                         <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
-                            <Image style={styles.eyeIcon} source={require('../../assets/eyeIcon.png')} />
+                            {showConfirmPassword ? <EyeOffIcon color="#6B7280" size={22} /> : <EyeIcon color="#6B7280" size={22} />}
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -320,11 +322,6 @@ const styles = StyleSheet.create({
         marginLeft: 10,
         color: '#333333',
         fontSize: 15,
-    },
-
-    eyeIcon: {
-        tintColor: '#9CA3AF',
-        padding: 5,
     },
 
     // --- CHECKBOX Y TÉRMINOS ---

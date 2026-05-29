@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, TextInput, StyleSheet } from 'react-native';
 import { colors } from '../theme/colors';
+import { SearchIcon } from './icons/SearchIcon';
 
 interface SearchBarProps {
   value: string;
@@ -16,7 +17,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   return (
     <View style={styles.container}>
       <View style={styles.searchIcon}>
-        <Text style={styles.iconText}>⌕</Text>
+        <SearchIcon color={colors.gray} size={20} />
       </View>
       <TextInput
         style={styles.input}
@@ -43,9 +44,6 @@ const styles = StyleSheet.create({
   },
   searchIcon: {
     marginRight: 8,
-  },
-  iconText: {
-    fontSize: 16,
   },
   input: {
     flex: 1,
