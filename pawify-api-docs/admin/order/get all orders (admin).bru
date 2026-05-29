@@ -1,18 +1,21 @@
 meta {
-  name: all buyers (paginated)
+  name: get all orders (admin)
   type: http
-  seq: 2
+  seq: 4
 }
 
 get {
-  url: {{actual_url}}/admin/buyers
+  url: {{actual_url}}/admin/order?size=15&sort=trackingCode,desc
   body: none
   auth: bearer
 }
 
 params:query {
-  ~size: 2
-  ~page: 3
+  size: 15
+  sort: trackingCode,desc
+  ~sort: orderAt,asc
+  ~sort: totalPrice,desc
+  ~trackingCode: 
 }
 
 auth:bearer {
