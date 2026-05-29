@@ -89,6 +89,83 @@ export interface ProductsResponse {
   last: boolean;
 }
 
+export interface CartItem {
+  product: {
+    id: string;
+    productId: number;
+    name: string;
+    image: string;
+    images: string[];
+    price: number;
+    rating: number;
+    sold: number;
+    description: string;
+    stock: number;
+    share_code: string;
+    active: boolean;
+    brand?: string;
+    category?: string;
+    sub_category?: string;
+    pet?: string;
+  };
+  quantity: number;
+}
+
+export interface AddressCreateRequestDTO {
+  name: string;
+  reference: string;
+  latitude: number;
+  longitude: number;
+}
+
+export interface AddressResponseDTO {
+  id: number;
+  name: string;
+  reference: string;
+  latitude: number;
+  longitude: number;
+}
+
+export interface CardCreateRequestDTO {
+  name: string;
+  number: string;
+  due_date: string;
+}
+
+export interface CardResponseDTO {
+  id: number;
+  name: string;
+  number: string;
+  due_date: string;
+}
+
+export interface DetailCreateRequestDTO {
+  product_id: number;
+  quantity: number;
+}
+
+export interface OrderCreateRequestDTO {
+  details: DetailCreateRequestDTO[];
+}
+
+export interface DetailResponseDTO {
+  id: number;
+  product_name: string;
+  quantity: number;
+  price: number;
+  total: number;
+  product_image: string;
+}
+
+export interface OrderResponseDTO {
+  id: number;
+  total_price: number;
+  order_at: string;
+  tracking_code: string;
+  shipping_status: string;
+  details: DetailResponseDTO[];
+}
+
 export interface ProductFilters {
   search?: string;
   brand?: string;

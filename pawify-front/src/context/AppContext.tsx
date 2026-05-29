@@ -1,9 +1,8 @@
 
 import { createContext, useContext } from 'react';
 import { Product } from '../types/product';
-import { ProductResponseDTO, UserPayload, CategoryResponseDTO, BrandResponseDTO } from '../types';
-
-
+import { ProductResponseDTO, UserPayload, CategoryResponseDTO, BrandResponseDTO, CartItem } from '../types';
+import { OrderResponseDTO } from '../types';
 
 export type TabKey = 'catalog' | 'purchase' | 'orders' | 'account';
 
@@ -28,6 +27,15 @@ export interface AppContextType {
     categoriesLoading: boolean;
     pendingFilterParams: Record<string, any> | null;
     setPendingFilterParams: (params: Record<string, any> | null) => void;
+    cartItems: CartItem[];
+    cartCount: number;
+    cartTotal: number;
+    addToCart: (product: Product, quantity?: number) => void;
+    removeFromCart: (productId: string) => void;
+    updateQuantity: (productId: string, quantity: number) => void;
+    clearCart: () => void;
+    checkoutActive: boolean;
+    setCheckoutActive: (active: boolean) => void;
 }
 
 export const AppContext = createContext<AppContextType>({
@@ -51,6 +59,15 @@ export const AppContext = createContext<AppContextType>({
     categoriesLoading: true,
     pendingFilterParams: null,
     setPendingFilterParams: () => {},
+    cartItems: [],
+    cartCount: 0,
+    cartTotal: 0,
+    addToCart: () => {},
+    removeFromCart: () => {},
+    updateQuantity: () => {},
+    clearCart: () => {},
+    checkoutActive: false,
+    setCheckoutActive: () => {},
 });
 
 export const useAppContext = () => useContext(AppContext);

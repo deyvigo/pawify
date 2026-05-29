@@ -4,7 +4,6 @@ import {
   StyleSheet,
   ScrollView,
   useWindowDimensions,
-  Alert,
   TouchableWithoutFeedback,
   ActivityIndicator,
 } from "react-native";
@@ -32,6 +31,7 @@ const HORIZONTAL_PADDING = 16;
 
 const mapProduct = (p: ProductResponseDTO): ProductType => ({
   id: p.share_code || String(p.id),
+  productId: p.id,
   name: p.name,
   image: p.images?.[0]?.url || "https://picsum.photos/seed/default/300/300",
   images: p.images?.map(img => img.url) || [],
@@ -61,6 +61,7 @@ export const ProductListScreen: React.FC = () => {
     refresh,
     pendingFilterParams,
     setPendingFilterParams,
+    addToCart,
   } = useAppContext();
   
   const [searchQuery, setSearchQuery] = useState("");
@@ -93,7 +94,7 @@ export const ProductListScreen: React.FC = () => {
   const halfRowWidth = (width - HORIZONTAL_PADDING * 2 - GAP) / 2;
 
   const handleAddToCart = (product: ProductType) => {
-    Alert.alert("Agregado", `${product.name} se agregó al carrito`);
+    addToCart(product);
   };
 
   const handleProductPress = (product: ProductType) => {

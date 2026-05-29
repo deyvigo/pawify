@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { colors } from "../../theme/colors";
+import { useAppContext } from "../../context/AppContext";
 
 type TabKey = "catalog" | "purchase" | "orders" | "account";
 
@@ -26,6 +27,8 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({
   activeTab,
   onTabPress,
 }) => {
+  const { cartCount } = useAppContext();
+
   return (
     <View style={styles.container}>
       {tabs.map((tab) => (
@@ -41,11 +44,20 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({
               activeTab === tab.key && styles.activeTabInner,
             ]}
           >
-            <Text
-              style={[styles.icon, activeTab === tab.key && styles.activeIcon]}
-            >
-              {tab.icon}
-            </Text>
+            <View style={styles.iconContainer}>
+              <Text
+                style={[styles.icon, activeTab === tab.key && styles.activeIcon]}
+              >
+                {tab.icon}
+              </Text>
+              {tab.key === "purchase" && cartCount > 0 && (
+                <View style={styles.badge}>
+                  <Text style={styles.badgeText}>
+                    {cartCount > 99 ? "99+" : cartCount}
+                  </Text>
+                </View>
+              )}
+            </View>
             <Text
               style={[
                 styles.label,
@@ -78,6 +90,26 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+  },
+  iconContainer: {
+    position: 'relative',
+  },
+  badge: {
+    position: 'absolute',
+    top: -6,
+    right: -10,
+    backgroundColor: colors.primary,
+    borderRadius: 10,
+    minWidth: 18,
+    height: 18,
+    paddingHorizontal: 4,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  badgeText: {
+    color: colors.white,
+    fontSize: 10,
+    fontWeight: '700',
   },
   tabInner: {
     alignItems: "center",

@@ -8,11 +8,13 @@ import {
   ScrollView,
   SafeAreaView,
   Dimensions,
+  Alert,
 } from "react-native";
 import { colors } from "../../theme/colors";
 import { StarRating } from "../../components/StarRating";
 import { Product } from "../../types/product";
 import { Header } from "../../components/Header";
+import { useAppContext } from "../../context/AppContext";
 
 const pawLogo = require("../../../assets/pawlogo.png");
 const pawTxtLogo = require("../../../assets/pawtxtlogo.png");
@@ -33,6 +35,7 @@ export const ProductDetailScreen: React.FC<ProductDetailScreenProps> = ({
   const [quantity, setQuantity] = useState(1);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const scrollRef = useRef<ScrollView>(null);
+  const { addToCart } = useAppContext();
 
   const handleDecrease = () => {
     if (quantity > 1) setQuantity(quantity - 1);
@@ -201,7 +204,13 @@ export const ProductDetailScreen: React.FC<ProductDetailScreenProps> = ({
           </TouchableOpacity>
         </View>
         
-        <TouchableOpacity style={styles.addToCartBtn}>
+        <TouchableOpacity
+          style={styles.addToCartBtn}
+          onPress={() => {
+            addToCart(product, quantity);
+            Alert.alert("Agregado", `${quantity}x ${product.name} agregado al carrito`);
+          }}
+        >
           <Text style={styles.cartIcon}>🛒</Text>
           <Text style={styles.addToCartText}>Añadir al carrito</Text>
         </TouchableOpacity>
