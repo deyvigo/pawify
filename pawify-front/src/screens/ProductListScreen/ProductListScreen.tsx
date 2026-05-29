@@ -11,13 +11,12 @@ import {
 import { colors } from "../../theme/colors";
 import { Header, SearchBar, FilterButton, ProductCard } from "../../components";
 import { SortMenu } from "../../components/SortMenu/SortMenu";
-import {
-  FilterMenu,
-  FilterState,
-} from "../../components/FilterMenu/FilterMenu";
+import {  FilterMenu,  FilterState,} from "../../components/FilterMenu/FilterMenu";
 import { useAppContext } from '../../context/AppContext';
 import { ProductResponseDTO, Product } from "../../types";
 import { Product as ProductType } from "../../types/product";
+import { FilterIcon } from "../../components/icons/FilterIcon";
+import { SortIcon } from "../../components/icons/SortIcon";
 
 export type SortOption =
   | "price-asc"
@@ -30,22 +29,28 @@ export type SortOption =
 const GAP = 10;
 const HORIZONTAL_PADDING = 16;
 
-const mapProduct = (p: ProductResponseDTO): ProductType => ({
-  id: p.share_code || String(p.id),
-  name: p.name,
-  image: p.images?.[0]?.url || "https://picsum.photos/seed/default/300/300",
-  images: p.images?.map(img => img.url) || [],
-  price: p.price,
-  rating: p.rating,
-  sold: p.sold_count,
-  description: p.description,
-  stock: p.stock,
-  share_code: p.share_code,
-  active: p.active,
-  brand: p.brand?.name,
-  category: p.category?.name,
-  sub_category: p.sub_category?.name,
-});
+const sortImages = (images: { id: number; url: string }[]) =>
+  [...images].sort((a, b) => a.id - b.id);
+
+const mapProduct = (p: ProductResponseDTO): ProductType => {
+  const sortedImages = sortImages(p.images || []);
+  return {
+    id: p.share_code || String(p.id),
+    name: p.name,
+    image: sortedImages[0]?.url || "https://picsum.photos/seed/default/300/300",
+    images: sortedImages.map(img => img.url),
+    price: p.price,
+    rating: p.rating,
+    sold: p.sold_count,
+    description: p.description,
+    stock: p.stock,
+    share_code: p.share_code,
+    active: p.active,
+    brand: p.brand?.name,
+    category: p.category?.name,
+    sub_category: p.sub_category?.name,
+  };
+};
 
 export const ProductListScreen: React.FC = () => {
   const { 
@@ -67,6 +72,7 @@ export const ProductListScreen: React.FC = () => {
   const [showSort, setShowSort] = useState(false);
   const [showFilter, setShowFilter] = useState(false);
   const [activeSort, setActiveSort] = useState<SortOption>("name-az");
+  const [appliedFilters, setAppliedFilters] = useState<Record<string, any>>({});
   const { width } = useWindowDimensions();
   const prevUserRef = React.useRef(currentUser);
 
@@ -85,6 +91,7 @@ export const ProductListScreen: React.FC = () => {
     if (pendingFilterParams.category) params.category = pendingFilterParams.category;
     if (pendingFilterParams.subCategory) params.subCategory = pendingFilterParams.subCategory;
     if (pendingFilterParams.brand) params.brand = pendingFilterParams.brand;
+    setAppliedFilters(params);
     loadProducts(params);
     setPendingFilterParams(null);
   }, [pendingFilterParams]);
@@ -123,12 +130,12 @@ export const ProductListScreen: React.FC = () => {
   const handleSortSelect = (sort: SortOption) => {
     setActiveSort(sort);
     setShowSort(false);
-    loadProducts({ sort, search: searchQuery || undefined });
+    loadProducts({ ...appliedFilters, sort, search: searchQuery || undefined, page: 0 });
   };
 
   const handleFilterApply = (filters: FilterState) => {
     setShowFilter(false);
-    loadProducts({
+    const params: Record<string, any> = {
       sort: activeSort,
       search: searchQuery || undefined,
       minPrice: filters.priceMin,
@@ -136,7 +143,9 @@ export const ProductListScreen: React.FC = () => {
       brand: filters.brands.length === 1 ? filters.brands[0] : undefined,
       category: filters.categories.length === 1 ? filters.categories[0] : undefined,
       subCategory: filters.subCategories.length === 1 ? filters.subCategories[0] : undefined,
-    });
+    };
+    setAppliedFilters(params);
+    loadProducts(params);
   };
 
   // Only trigger loadProducts if searchQuery or activeSort changes AND we are already mounted
@@ -145,8 +154,10 @@ export const ProductListScreen: React.FC = () => {
     if (searchQuery.length > 0 || activeSort !== "name-az") {
       const timeout = setTimeout(() => {
         loadProducts({
+          ...appliedFilters,
           search: searchQuery || undefined,
           sort: activeSort,
+          page: 0,
         });
       }, 400);
       return () => clearTimeout(timeout);
@@ -162,8 +173,8 @@ export const ProductListScreen: React.FC = () => {
       <Header onActionPress={openDrawer} />
       <SearchBar value={searchQuery} onChangeText={setSearchQuery} />
       <View style={styles.filterRow}>
-        <FilterButton label="Filtro" icon="ᯤ" onPress={handleFilter} />
-        <FilterButton label="Ordenar" icon="▼" onPress={handleSort} />
+        <FilterButton label="Filtro" icon={<FilterIcon size={16} />} onPress={handleFilter} />
+        <FilterButton label="Ordenar" icon={<SortIcon size={16} />} onPress={handleSort} />
       </View>
       
       {showFilter && (
@@ -179,9 +190,14 @@ export const ProductListScreen: React.FC = () => {
       
       {showSort && (
         <View style={styles.sortOverlay}>
-          <View style={[styles.sortSpacer, { width: halfRowWidth }]} />
-          <View style={[styles.sortMenuWrapper, { width: halfRowWidth }]}>
-            <SortMenu activeSort={activeSort} onSortSelect={handleSortSelect} />
+          <TouchableWithoutFeedback onPress={() => setShowSort(false)}>
+            <View style={StyleSheet.absoluteFill} />
+          </TouchableWithoutFeedback>
+          <View style={styles.sortRow}>
+            <View style={[styles.sortSpacer, { width: halfRowWidth }]} />
+            <View style={[styles.sortMenuWrapper, { width: halfRowWidth }]}>
+              <SortMenu activeSort={activeSort} onSortSelect={handleSortSelect} />
+            </View>
           </View>
         </View>
       )}
@@ -252,13 +268,17 @@ const styles = StyleSheet.create({
   },
   sortOverlay: {
     position: "absolute",
-    top: 150,
+    top: 0,
     left: 0,
     right: 0,
+    bottom: 0,
+    zIndex: 10,
+    paddingTop: 150,
+  },
+  sortRow: {
     flexDirection: "row",
     gap: GAP,
     paddingHorizontal: HORIZONTAL_PADDING,
-    zIndex: 10,
   },
   sortSpacer: {},
   sortMenuWrapper: {},

@@ -12,6 +12,8 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { resetPassword } from '../services/authService';
+import { EyeIcon } from '../components/icons/EyeIcon';
+import { EyeOffIcon } from '../components/icons/EyeOffIcon';
 
 interface NewPasswordProps {
     username: string;
@@ -103,7 +105,7 @@ export const NewPasswordScreen = ({ username, code, onBackToRecovery, onPassword
                             onChangeText={setNewPassword}
                         />
                         <TouchableOpacity onPress={() => setShowNewPassword(!showNewPassword)}>
-                            <Image style={styles.eyeIcon} source={require('../../assets/eyeIcon.png')} />
+                            {showNewPassword ? <EyeOffIcon color="#6B7280" size={22} /> : <EyeIcon color="#6B7280" size={22} />}
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -123,7 +125,7 @@ export const NewPasswordScreen = ({ username, code, onBackToRecovery, onPassword
                             onChangeText={setConfirmPassword}
                         />
                         <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
-                            <Image style={styles.eyeIcon} source={require('../../assets/eyeIcon.png')} />
+                            {showConfirmPassword ? <EyeOffIcon color="#6B7280" size={22} /> : <EyeIcon color="#6B7280" size={22} />}
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -272,11 +274,6 @@ const styles = StyleSheet.create({
         color: '#333333', 
         fontSize: 15,
     },
-    eyeIcon: {
-        tintColor: '#9CA3AF',
-        padding: 5,
-    },
-
     //Tarjeta de requisitos de contraseña
     requirementsContainer: {
         alignItems: 'center',
