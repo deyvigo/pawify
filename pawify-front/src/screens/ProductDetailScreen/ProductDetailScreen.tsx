@@ -8,18 +8,139 @@ import {
   ScrollView,
   SafeAreaView,
   Dimensions,
+  Modal,
+  TextInput,
+  ActivityIndicator,
+  Alert,
 } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { colors } from "../../theme/colors";
 import { StarRating } from "../../components/StarRating";
+import { InteractiveStarRating } from "../../components/InteractiveStarRating";
 import { Product } from "../../types/product";
 import { Header } from "../../components/Header";
+import { useAppContext } from "../../context/AppContext";
 
 const pawLogo = require("../../../assets/pawlogo.png");
 const pawTxtLogo = require("../../../assets/pawtxtlogo.png");
 
 const { width } = Dimensions.get("window");
 
-// Removed local Product interface
+interface LocalReview {
+  id: string;
+  content: string;
+  rating: number;
+  created_at: string;
+  buyer: {
+    first_name: string;
+    last_name: string;
+  };
+}
+
+interface ReviewModalProps {
+  visible: boolean;
+  onClose: () => void;
+  onSubmit: (content: string, rating: number) => void;
+}
+
+const ReviewModal: React.FC<ReviewModalProps> = ({ visible, onClose, onSubmit }) => {
+  const [content, setContent] = useState("");
+  const [rating, setRating] = useState(0);
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSubmit = () => {
+    if (!content.trim()) {
+      Alert.alert("Error", "Por favor escribe una descripcion");
+      return;
+    }
+    if (rating === 0) {
+      Alert.alert("Error", "Por favor selecciona una calificacion");
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      onSubmit(content.trim(), rating);
+      setContent("");
+      setRating(0);
+      onClose();
+    } catch (err) {
+      Alert.alert("Error", err instanceof Error ? err.message : "Error al enviar resena");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleClose = () => {
+    setContent("");
+    setRating(0);
+    onClose();
+  };
+
+  return (
+    <Modal visible={visible} animationType="slide" transparent>
+      <View style={styles.modalOverlay}>
+        <View style={styles.modalContent}>
+          <View style={styles.modalHeader}>
+            <Text style={styles.modalTitle}>Nueva Resena</Text>
+            <TouchableOpacity onPress={handleClose}>
+              <Ionicons name="close" size={24} color={colors.textPrimary} />
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.modalBody}>
+            <Text style={styles.inputLabel}>Calificacion</Text>
+            <InteractiveStarRating rating={rating} onRatingChange={setRating} size={36} />
+
+            <Text style={[styles.inputLabel, { marginTop: 20 }]}>Tu resena</Text>
+            <TextInput
+              style={styles.textArea}
+              placeholder="Escribe tu experiencia con el producto..."
+              value={content}
+              onChangeText={setContent}
+              multiline
+              numberOfLines={4}
+              textAlignVertical="top"
+            />
+
+            <TouchableOpacity
+              style={[styles.submitButton, submitting && styles.submitButtonDisabled]}
+              onPress={handleSubmit}
+              disabled={submitting}
+            >
+              {submitting ? (
+                <ActivityIndicator size="small" color={colors.white} />
+              ) : (
+                <Text style={styles.submitButtonText}>Enviar Resena</Text>
+              )}
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    </Modal>
+  );
+};
+
+interface ReviewItemProps {
+  review: LocalReview;
+}
+
+const ReviewItem: React.FC<ReviewItemProps> = ({ review }) => (
+  <View style={styles.reviewItem}>
+    <View style={styles.reviewHeader}>
+      <View>
+        <Text style={styles.reviewerName}>
+          {review.buyer.first_name} {review.buyer.last_name}
+        </Text>
+        <Text style={styles.reviewDate}>
+          {new Date(review.created_at).toLocaleDateString()}
+        </Text>
+      </View>
+      <StarRating rating={review.rating} size={12} />
+    </View>
+    <Text style={styles.reviewText}>{review.content}</Text>
+  </View>
+);
 
 interface ProductDetailScreenProps {
   product: Product;
@@ -30,9 +151,13 @@ export const ProductDetailScreen: React.FC<ProductDetailScreenProps> = ({
   product,
   onBack,
 }) => {
+  const { currentUser } = useAppContext();
   const [quantity, setQuantity] = useState(1);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [showReviewModal, setShowReviewModal] = useState(false);
+  const [reviews, setReviews] = useState<LocalReview[]>([]);
   const scrollRef = useRef<ScrollView>(null);
+  const { addToCart } = useAppContext();
 
   const handleDecrease = () => {
     if (quantity > 1) setQuantity(quantity - 1);
@@ -58,13 +183,29 @@ export const ProductDetailScreen: React.FC<ProductDetailScreenProps> = ({
     }
   };
 
+  const handleAddReview = (content: string, rating: number) => {
+    const firstName = currentUser?.first_name || "Usuario";
+    const lastName = currentUser?.last_name || "";
+
+    const newReview: LocalReview = {
+      id: Date.now().toString(),
+      content,
+      rating,
+      created_at: new Date().toISOString(),
+      buyer: {
+        first_name: firstName,
+        last_name: lastName,
+      },
+    };
+
+    setReviews((prev) => [newReview, ...prev]);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header */}
       <Header onActionPress={onBack} variant="detail" />
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        {/* Image Carousel */}
         <View style={styles.carouselContainer}>
           <ScrollView
             ref={scrollRef}
@@ -82,7 +223,6 @@ export const ProductDetailScreen: React.FC<ProductDetailScreenProps> = ({
             ))}
           </ScrollView>
           
-          {/* Carousel Arrows */}
           <TouchableOpacity
             style={[styles.carouselArrowLeft, activeImageIndex === 0 && { opacity: 0.3 }]}
             onPress={scrollPrev}
@@ -101,7 +241,6 @@ export const ProductDetailScreen: React.FC<ProductDetailScreenProps> = ({
             <Text style={styles.arrowText}>{">"}</Text>
           </TouchableOpacity>
 
-          {/* Carousel Indicators */}
           <View style={styles.indicators}>
             {product.images.map((_, index) => (
               <View
@@ -115,7 +254,6 @@ export const ProductDetailScreen: React.FC<ProductDetailScreenProps> = ({
           </View>
         </View>
 
-        {/* Product Info */}
         <View style={styles.infoContainer}>
           <View style={styles.titleRow}>
             <Text style={styles.title}>{product.name}</Text>
@@ -142,11 +280,10 @@ export const ProductDetailScreen: React.FC<ProductDetailScreenProps> = ({
           <Text style={styles.sectionTitle}>Descripcion</Text>
           <Text style={styles.description}>
             {product.description}. Este producto de alta calidad de la marca {product.brand || "Pawify"} 
-            ha sido diseñado pensando en el bienestar y la comodidad de tu mascota. 
-            Fabricado con materiales duraderos y seguros para garantizar una larga vida útil y la mejor experiencia para tu compañero fiel.
+            ha sido disenado pensando en el bienestar y la comodidad de tu mascota. 
+            Fabricado con materiales duraderos y seguros para garantizar una larga vida util y la mejor experiencia para tu companero fiel.
           </Text>
 
-          {/* Tags Section */}
           <View style={styles.tagsContainer}>
             {product.category && (
               <View style={styles.tag}>
@@ -165,31 +302,24 @@ export const ProductDetailScreen: React.FC<ProductDetailScreenProps> = ({
             )}
           </View>
 
-          <Text style={styles.sectionTitle}>Reseñas</Text>
+          <View style={styles.reviewsHeader}>
+            <Text style={styles.sectionTitle}>Resenas</Text>
+            <TouchableOpacity style={styles.addReviewButton} onPress={() => setShowReviewModal(true)}>
+              <Ionicons name="add" size={20} color={colors.white} />
+            </TouchableOpacity>
+          </View>
           <View style={styles.reviewsContainer}>
-            <View style={styles.reviewItem}>
-              <View style={styles.reviewHeader}>
-                <Text style={styles.reviewerName}>Juan Perez</Text>
-                <StarRating rating={5} size={10} />
-              </View>
-              <Text style={styles.reviewText}>
-                Excelente producto, a mi mascota le encantó desde el primer día. Muy recomendado!
-              </Text>
-            </View>
-            <View style={styles.reviewItem}>
-              <View style={styles.reviewHeader}>
-                <Text style={styles.reviewerName}>Maria Garcia</Text>
-                <StarRating rating={4} size={10} />
-              </View>
-              <Text style={styles.reviewText}>
-                Muy buena calidad y el envío fue rápido. El tamaño es perfecto.
-              </Text>
-            </View>
+            {reviews.length === 0 ? (
+              <Text style={styles.noReviewsText}>Sin resenas aun</Text>
+            ) : (
+              reviews.map((review) => (
+                <ReviewItem key={review.id} review={review} />
+              ))
+            )}
           </View>
         </View>
       </ScrollView>
 
-      {/* Footer / Add to Cart */}
       <View style={styles.footer}>
         <View style={styles.quantityContainer}>
           <TouchableOpacity onPress={handleDecrease} style={styles.quantityBtn}>
@@ -201,11 +331,23 @@ export const ProductDetailScreen: React.FC<ProductDetailScreenProps> = ({
           </TouchableOpacity>
         </View>
         
-        <TouchableOpacity style={styles.addToCartBtn}>
+        <TouchableOpacity
+          style={styles.addToCartBtn}
+          onPress={() => {
+            addToCart(product, quantity);
+            Alert.alert("Agregado", `${quantity}x ${product.name} agregado al carrito`);
+          }}
+        >
           <Text style={styles.cartIcon}>🛒</Text>
-          <Text style={styles.addToCartText}>Añadir al carrito</Text>
+          <Text style={styles.addToCartText}>Anadir al carrito</Text>
         </TouchableOpacity>
       </View>
+
+      <ReviewModal
+        visible={showReviewModal}
+        onClose={() => setShowReviewModal(false)}
+        onSubmit={handleAddReview}
+      />
     </SafeAreaView>
   );
 };
@@ -214,38 +356,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.white,
-  },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 20,
-    height: 60,
-  },
-  headerButton: {
-    width: 40,
-    height: 40,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  backArrow: {
-    fontSize: 24,
-    color: colors.textPrimary,
-  },
-  logoContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  logoIcon: {
-    width: 30,
-    height: 30,
-    marginRight: 8,
-    borderRadius: 15,
-  },
-  // Redundant header styles removed
-  heartIcon: {
-    fontSize: 24,
-    color: colors.textPrimary,
   },
   scrollContent: {
     paddingBottom: 100,
@@ -364,7 +474,7 @@ const styles = StyleSheet.create({
     color: colors.primary,
   },
   activeBadge: {
-    backgroundColor: colors.success + "20", // 20% opacity
+    backgroundColor: colors.success + "20",
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 12,
@@ -406,6 +516,21 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
     textTransform: "capitalize",
   },
+  reviewsHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 10,
+    marginTop: 10,
+  },
+  addReviewButton: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: colors.primary,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   reviewsContainer: {
     marginTop: 5,
   },
@@ -426,10 +551,21 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: colors.textPrimary,
   },
+  reviewDate: {
+    fontSize: 11,
+    color: colors.gray,
+    marginTop: 2,
+  },
   reviewText: {
     fontSize: 13,
     color: colors.textSecondary,
     lineHeight: 18,
+  },
+  noReviewsText: {
+    fontSize: 14,
+    color: colors.textSecondary,
+    textAlign: "center",
+    paddingVertical: 20,
   },
   footer: {
     position: "absolute",
@@ -487,5 +623,62 @@ const styles = StyleSheet.create({
     color: colors.white,
     fontSize: 16,
     fontWeight: "bold",
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "flex-end",
+  },
+  modalContent: {
+    backgroundColor: colors.white,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    maxHeight: "80%",
+  },
+  modalHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: colors.textPrimary,
+  },
+  modalBody: {
+    padding: 20,
+  },
+  inputLabel: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: colors.textPrimary,
+    marginBottom: 8,
+  },
+  textArea: {
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: 12,
+    padding: 12,
+    fontSize: 14,
+    minHeight: 120,
+    color: colors.textPrimary,
+  },
+  submitButton: {
+    backgroundColor: colors.primary,
+    borderRadius: 12,
+    padding: 16,
+    alignItems: "center",
+    marginTop: 20,
+  },
+  submitButtonDisabled: {
+    opacity: 0.6,
+  },
+  submitButtonText: {
+    color: colors.white,
+    fontSize: 16,
+    fontWeight: "600",
   },
 });

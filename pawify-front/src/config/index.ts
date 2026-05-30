@@ -18,11 +18,16 @@ export async function setAuthToken(token: string | null) {
 }
 
 export async function loadAuthToken(): Promise<string | null> {
-  const storedToken = await getToken();
-  if (storedToken) {
-    authToken = storedToken;
+  try {
+    const storedToken = await getToken();
+    if (storedToken) {
+      authToken = storedToken;
+    }
+    return authToken;
+  } catch (error) {
+    console.error('Error loading auth token:', error);
+    return null;
   }
-  return authToken;
 }
 
 export function getAuthUser(): UserPayload | null {
