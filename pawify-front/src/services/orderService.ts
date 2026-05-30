@@ -17,3 +17,5 @@ export const getOrderByTrackingCode = async (trackingCode: string): Promise<Orde
     const response = await api.get(`/order/${trackingCode}`);
     return response as unknown as OrderResponseDTO;
 };
+
+

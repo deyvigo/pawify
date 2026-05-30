@@ -1,70 +1,23 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Animated } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { colors } from '../../theme/colors';
+import { useAppContext } from '../../context/AppContext';
+import { capitalize, titleCase } from '../../utils/format';
 
 interface DrawerMenuProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-interface SubCategory {
-  name: string;
-  count?: number;
-}
-
-interface MainCategory {
-  name: string;
-  icon: string;
-  subCategories: SubCategory[];
-}
-
-const categories: MainCategory[] = [
-  {
-    name: 'Perro',
-    icon: '🐕',
-    subCategories: [
-      { name: 'Alimento', count: 45 },
-      { name: 'Juguetes', count: 23 },
-      { name: 'Higiene', count: 18 },
-      { name: 'Camas', count: 12 },
-      { name: 'Collares', count: 15 },
-      { name: 'Ropa', count: 8 },
-    ],
-  },
-  {
-    name: 'Gato',
-    icon: '🐈',
-    subCategories: [
-      { name: 'Alimento', count: 38 },
-      { name: 'Juguetes', count: 20 },
-      { name: 'Arena', count: 10 },
-      { name: 'Camas', count: 14 },
-      { name: 'Rascadores', count: 7 },
-    ],
-  },
-  {
-    name: 'Otros',
-    icon: '🐾',
-    subCategories: [
-      { name: 'Peces', count: 12 },
-      { name: 'Aves', count: 8 },
-      { name: 'Roedores', count: 6 },
-      { name: 'Reptiles', count: 4 },
-    ],
-  },
-];
-
-const brands = ['Royal Canin', 'Purina', 'Pedigree', 'Whiskas', 'Pro Plan', 'Hill\'s', 'Eukanuba', 'Acana', 'Orijen'];
-
-const SectionHeader: React.FC<{ title: string; icon: string; isExpanded: boolean; onPress: () => void }> = ({ title, icon, isExpanded, onPress }) => (
+const SectionHeader: React.FC<{ title: string; isExpanded: boolean; onPress: () => void }> = ({ title, isExpanded, onPress }) => (
   <TouchableOpacity style={styles.sectionHeader} onPress={onPress}>
-    <Text style={styles.sectionIcon}>{icon}</Text>
     <Text style={styles.sectionTitle}>{title}</Text>
     <Text style={[styles.chevron, isExpanded && styles.chevronOpen]}>{isExpanded ? '▾' : '▸'}</Text>
   </TouchableOpacity>
 );
 
 export const DrawerMenu: React.FC<DrawerMenuProps> = ({ isOpen, onClose }) => {
+  const { categories, brands, categoriesLoading, setPendingFilterParams, setActiveTab } = useAppContext();
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({});
 
   const toggleSection = (name: string) => {
@@ -72,12 +25,14 @@ export const DrawerMenu: React.FC<DrawerMenuProps> = ({ isOpen, onClose }) => {
   };
 
   const handleSubCategoryPress = (category: string, sub: string) => {
-    console.log(`Selected: ${category} > ${sub}`);
+    setPendingFilterParams({ category, subCategory: sub });
+    setActiveTab('catalog');
     onClose();
   };
 
   const handleBrandPress = (brand: string) => {
-    console.log(`Selected brand: ${brand}`);
+    setPendingFilterParams({ brand });
+    setActiveTab('catalog');
     onClose();
   };
 
@@ -94,51 +49,64 @@ export const DrawerMenu: React.FC<DrawerMenuProps> = ({ isOpen, onClose }) => {
           </TouchableOpacity>
         </View>
         <ScrollView style={styles.scrollContent} showsVerticalScrollIndicator={false}>
-          {categories.map((cat) => (
-            <View key={cat.name} style={styles.categorySection}>
-              <SectionHeader
-                title={cat.name}
-                icon={cat.icon}
-                isExpanded={!!expandedSections[cat.name]}
-                onPress={() => toggleSection(cat.name)}
-              />
-              {expandedSections[cat.name] && (
-                <View style={styles.subCategories}>
-                  {cat.subCategories.map((sub) => (
-                    <TouchableOpacity
-                      key={sub.name}
-                      style={styles.subCategoryItem}
-                      onPress={() => handleSubCategoryPress(cat.name, sub.name)}
-                    >
-                      <Text style={styles.subCategoryText}>{sub.name}</Text>
-                      {sub.count !== undefined && (
-                        <Text style={styles.subCategoryCount}>({sub.count})</Text>
-                      )}
-                    </TouchableOpacity>
-                  ))}
-                </View>
-              )}
+          {categoriesLoading ? (
+            <View style={styles.loadingContainer}>
+              <Text style={styles.loadingText}>Cargando...</Text>
             </View>
-          ))}
+          ) : categories.length === 0 ? (
+            <View style={styles.loadingContainer}>
+              <Text style={styles.loadingText}>No hay categorías</Text>
+            </View>
+          ) : (
+            categories.map((cat) => (
+              <View key={cat.id} style={styles.categorySection}>
+                <SectionHeader
+                  title={capitalize(cat.name)}
+                  isExpanded={!!expandedSections[cat.name]}
+                  onPress={() => toggleSection(cat.name)}
+                />
+                {expandedSections[cat.name] && (
+                  <View style={styles.subCategories}>
+                    {(cat.sub_categories?.length ?? 0) === 0 ? (
+                      <Text style={styles.noSubText}>Sin subcategorías</Text>
+                    ) : (
+                      (cat.sub_categories || []).map((sub) => (
+                        <TouchableOpacity
+                          key={sub.id}
+                          style={styles.subCategoryItem}
+                          onPress={() => handleSubCategoryPress(cat.name, sub.name)}
+                        >
+                          <Text style={styles.subCategoryText}>{capitalize(sub.name)}</Text>
+                        </TouchableOpacity>
+                      ))
+                    )}
+                  </View>
+                )}
+              </View>
+            ))
+          )}
 
           <View style={styles.categorySection}>
             <SectionHeader
               title="Marcas"
-              icon="🏷️"
               isExpanded={!!expandedSections['Marcas']}
               onPress={() => toggleSection('Marcas')}
             />
             {expandedSections['Marcas'] && (
               <View style={styles.subCategories}>
-                {brands.map((brand) => (
-                  <TouchableOpacity
-                    key={brand}
-                    style={styles.subCategoryItem}
-                    onPress={() => handleBrandPress(brand)}
-                  >
-                    <Text style={styles.subCategoryText}>{brand}</Text>
-                  </TouchableOpacity>
-                ))}
+                {brands.length === 0 ? (
+                  <Text style={styles.noSubText}>No hay marcas</Text>
+                ) : (
+                  brands.map((brand) => (
+                    <TouchableOpacity
+                      key={brand.id}
+                      style={styles.subCategoryItem}
+                      onPress={() => handleBrandPress(brand.name)}
+                    >
+                      <Text style={styles.subCategoryText}>{titleCase(brand.name)}</Text>
+                    </TouchableOpacity>
+                  ))
+                )}
               </View>
             )}
           </View>
@@ -198,12 +166,9 @@ const styles = StyleSheet.create({
   sectionHeader: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: 20,
     paddingVertical: 16,
-    gap: 12,
-  },
-  sectionIcon: {
-    fontSize: 20,
   },
   sectionTitle: {
     flex: 1,
@@ -234,8 +199,17 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: colors.textSecondary,
   },
-  subCategoryCount: {
+  loadingContainer: {
+    padding: 20,
+    alignItems: 'center',
+  },
+  loadingText: {
+    fontSize: 14,
+    color: colors.gray,
+  },
+  noSubText: {
     fontSize: 13,
     color: colors.gray,
+    fontStyle: 'italic',
   },
 });
