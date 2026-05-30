@@ -1,10 +1,25 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity } from 'react-native';
-import { colors } from '../../theme/colors';
-import { useAppContext } from '../../context/AppContext';
+import React from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  Image,
+  TouchableOpacity,
+} from "react-native";
+import { colors } from "../../theme/colors";
+import { useAppContext } from "../../context/AppContext";
 
 export const PurchaseScreen: React.FC = () => {
-  const { cartItems, cartTotal, cartCount, removeFromCart, updateQuantity, setCheckoutActive, setActiveTab } = useAppContext();
+  const {
+    cartItems,
+    cartTotal,
+    cartCount,
+    removeFromCart,
+    updateQuantity,
+    setCheckoutActive,
+    setActiveTab,
+  } = useAppContext();
 
   if (cartItems.length === 0) {
     return (
@@ -12,7 +27,10 @@ export const PurchaseScreen: React.FC = () => {
         <View style={styles.cartHeader}>
           <View style={styles.cartHeaderBtn} />
           <View style={styles.cartHeaderLogo}>
-            <Text style={styles.cartHeaderEmoji}>🐾</Text>
+            <Image
+              style={styles.cartHeaderLogoImage}
+              source={require("../../../assets/logopawify.png")}
+            />
             <Text style={styles.cartHeaderTitle}>Pawify</Text>
           </View>
           <View style={styles.cartHeaderBtn} />
@@ -23,7 +41,10 @@ export const PurchaseScreen: React.FC = () => {
           <Text style={styles.emptySubtitle}>
             Explora el catálogo y agrega productos para empezar a comprar
           </Text>
-          <TouchableOpacity style={styles.browseBtn} onPress={() => setActiveTab('catalog')}>
+          <TouchableOpacity
+            style={styles.browseBtn}
+            onPress={() => setActiveTab("catalog")}
+          >
             <Text style={styles.browseBtnText}>Ver catálogo</Text>
           </TouchableOpacity>
         </View>
@@ -36,7 +57,10 @@ export const PurchaseScreen: React.FC = () => {
       <View style={styles.cartHeader}>
         <View style={styles.cartHeaderBtn} />
         <View style={styles.cartHeaderLogo}>
-          <Text style={styles.cartHeaderEmoji}>🐾</Text>
+          <Image
+            style={styles.cartHeaderLogoImage}
+            source={require("../../../assets/logopawify.png")}
+          />
           <Text style={styles.cartHeaderTitle}>Pawify</Text>
         </View>
         <View style={styles.cartHeaderBtn} />
@@ -44,27 +68,43 @@ export const PurchaseScreen: React.FC = () => {
 
       <View style={styles.headerInfo}>
         <Text style={styles.screenTitle}>Carrito de compras</Text>
-        <Text style={styles.itemCount}>{cartCount} {cartCount === 1 ? 'producto' : 'productos'}</Text>
+        <Text style={styles.itemCount}>
+          {cartCount} {cartCount === 1 ? "producto" : "productos"}
+        </Text>
       </View>
 
-      <ScrollView style={styles.list} contentContainerStyle={styles.listContent}>
+      <ScrollView
+        style={styles.list}
+        contentContainerStyle={styles.listContent}
+      >
         {cartItems.map((item) => (
           <View key={item.product.productId} style={styles.cartItem}>
-            <Image source={{ uri: item.product.image }} style={styles.itemImage} />
+            <Image
+              source={{ uri: item.product.image }}
+              style={styles.itemImage}
+            />
             <View style={styles.itemInfo}>
-              <Text style={styles.itemName} numberOfLines={2}>{item.product.name}</Text>
-              <Text style={styles.itemUnitPrice}>S/{item.product.price.toFixed(2)} c/u</Text>
+              <Text style={styles.itemName} numberOfLines={2}>
+                {item.product.name}
+              </Text>
+              <Text style={styles.itemUnitPrice}>
+                S/{item.product.price.toFixed(2)} c/u
+              </Text>
               <View style={styles.quantityRow}>
                 <TouchableOpacity
                   style={styles.qtyBtn}
-                  onPress={() => updateQuantity(item.product.productId, item.quantity - 1)}
+                  onPress={() =>
+                    updateQuantity(item.product.productId, item.quantity - 1)
+                  }
                 >
                   <Text style={styles.qtyBtnText}>-</Text>
                 </TouchableOpacity>
                 <Text style={styles.qtyText}>{item.quantity}</Text>
                 <TouchableOpacity
                   style={styles.qtyBtn}
-                  onPress={() => updateQuantity(item.product.productId, item.quantity + 1)}
+                  onPress={() =>
+                    updateQuantity(item.product.productId, item.quantity + 1)
+                  }
                 >
                   <Text style={styles.qtyBtnText}>+</Text>
                 </TouchableOpacity>
@@ -77,7 +117,9 @@ export const PurchaseScreen: React.FC = () => {
               <Text style={styles.itemUnitDetail}>
                 {item.quantity} x S/{item.product.price.toFixed(2)}
               </Text>
-              <TouchableOpacity onPress={() => removeFromCart(item.product.productId)}>
+              <TouchableOpacity
+                onPress={() => removeFromCart(item.product.productId)}
+              >
                 <Text style={styles.removeText}>Eliminar</Text>
               </TouchableOpacity>
             </View>
@@ -87,7 +129,9 @@ export const PurchaseScreen: React.FC = () => {
 
       <View style={styles.footer}>
         <View style={styles.summaryLine}>
-          <Text style={styles.summaryLineText}>Subtotal ({cartCount} items)</Text>
+          <Text style={styles.summaryLineText}>
+            Subtotal ({cartCount} items)
+          </Text>
           <Text style={styles.summaryLinePrice}>S/{cartTotal.toFixed(2)}</Text>
         </View>
         <View style={styles.totalRow}>
@@ -112,8 +156,8 @@ const styles = StyleSheet.create({
   },
   emptyContainer: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     paddingHorizontal: 32,
   },
   emptyIcon: {
@@ -122,20 +166,20 @@ const styles = StyleSheet.create({
   },
   emptyTitle: {
     fontSize: 20,
-    fontWeight: '700',
+    fontWeight: "700",
     color: colors.textPrimary,
     marginBottom: 8,
   },
   emptySubtitle: {
     fontSize: 14,
     color: colors.textSecondary,
-    textAlign: 'center',
+    textAlign: "center",
     lineHeight: 20,
   },
   cartHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     paddingHorizontal: 16,
     paddingTop: 40,
     paddingVertical: 15,
@@ -144,25 +188,27 @@ const styles = StyleSheet.create({
   cartHeaderBtn: {
     width: 40,
     height: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   cartHeaderLogo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
   },
-  cartHeaderEmoji: {
-    fontSize: 24,
+  cartHeaderLogoImage: {
+    width: 28,
+    height: 28,
+    resizeMode: "contain",
   },
   cartHeaderTitle: {
     fontSize: 22,
-    fontWeight: '700',
+    fontWeight: "700",
     color: colors.primary,
   },
   headerInfo: {
-    flexDirection: 'row',
-    alignItems: 'baseline',
+    flexDirection: "row",
+    alignItems: "baseline",
     paddingHorizontal: 20,
     paddingTop: 8,
     paddingBottom: 20,
@@ -173,13 +219,13 @@ const styles = StyleSheet.create({
   },
   screenTitle: {
     fontSize: 22,
-    fontWeight: '700',
+    fontWeight: "700",
     color: colors.textPrimary,
   },
   itemCount: {
     fontSize: 14,
     color: colors.gray,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   browseBtn: {
     backgroundColor: colors.primary,
@@ -191,7 +237,7 @@ const styles = StyleSheet.create({
   browseBtnText: {
     color: colors.white,
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   list: {
     flex: 1,
@@ -202,20 +248,20 @@ const styles = StyleSheet.create({
     paddingBottom: 16,
   },
   cartItem: {
-    flexDirection: 'row',
+    flexDirection: "row",
     backgroundColor: colors.white,
     borderRadius: 16,
     padding: 14,
     marginBottom: 10,
-    alignItems: 'center',
+    alignItems: "center",
     borderWidth: 1,
-    borderColor: '#F0F0F0',
+    borderColor: "#F0F0F0",
   },
   itemImage: {
     width: 76,
     height: 76,
     borderRadius: 12,
-    backgroundColor: '#F8F8F8',
+    backgroundColor: "#F8F8F8",
   },
   itemInfo: {
     flex: 1,
@@ -223,60 +269,60 @@ const styles = StyleSheet.create({
   },
   itemName: {
     fontSize: 15,
-    fontWeight: '600',
+    fontWeight: "600",
     color: colors.textPrimary,
     marginBottom: 4,
   },
   itemUnitPrice: {
     fontSize: 12,
-    fontWeight: '500',
+    fontWeight: "500",
     color: colors.gray,
     marginBottom: 10,
   },
   quantityRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   qtyBtn: {
     width: 30,
     height: 30,
     borderRadius: 15,
-    backgroundColor: '#FFF0F0',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#FFF0F0",
+    alignItems: "center",
+    justifyContent: "center",
   },
   qtyBtnText: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: "600",
     color: colors.primary,
   },
   qtyText: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
     marginHorizontal: 14,
     minWidth: 20,
-    textAlign: 'center',
+    textAlign: "center",
   },
   itemRight: {
-    alignItems: 'flex-end',
+    alignItems: "flex-end",
     marginLeft: 10,
   },
   itemSubtotal: {
     fontSize: 17,
-    fontWeight: '700',
+    fontWeight: "700",
     color: colors.textPrimary,
     marginBottom: 2,
   },
   itemUnitDetail: {
     fontSize: 11,
-    fontWeight: '500',
+    fontWeight: "500",
     color: colors.gray,
     marginBottom: 10,
   },
   removeText: {
     fontSize: 12,
-    color: '#FF6B6B',
-    fontWeight: '500',
+    color: "#FF6B6B",
+    fontWeight: "500",
   },
   footer: {
     paddingHorizontal: 20,
@@ -284,50 +330,50 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
     backgroundColor: colors.white,
     borderTopWidth: 1,
-    borderTopColor: '#F0F0F0',
+    borderTopColor: "#F0F0F0",
   },
   summaryLine: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 4,
   },
   summaryLineText: {
     fontSize: 13,
     color: colors.gray,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   summaryLinePrice: {
     fontSize: 13,
     color: colors.gray,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   totalRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 20,
     paddingTop: 12,
   },
   totalLabel: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
     color: colors.textPrimary,
   },
   totalPrice: {
     fontSize: 24,
-    fontWeight: '700',
+    fontWeight: "700",
     color: colors.primary,
   },
   checkoutBtn: {
     backgroundColor: colors.primary,
     borderRadius: 14,
     paddingVertical: 17,
-    alignItems: 'center',
+    alignItems: "center",
   },
   checkoutBtnText: {
     color: colors.white,
     fontSize: 17,
-    fontWeight: '700',
+    fontWeight: "700",
   },
 });
