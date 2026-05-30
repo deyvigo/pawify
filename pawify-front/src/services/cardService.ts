@@ -1,4 +1,5 @@
 import { api } from "./api";
+import { CardResponseDTO, CardCreateRequestDTO } from '../types';
 
 export interface CardDTO {
   id: number;
@@ -13,14 +14,20 @@ export interface CardCreateRequest {
   due_date: string;
 }
 
-export const getCards = async (): Promise<CardDTO[]> => {
-  return api.get<CardDTO[]>('/card');
-};
-
-export const createCard = async (data: CardCreateRequest): Promise<CardDTO> => {
-  return api.post<CardDTO>('/card', data);
-};
 
 export const updateCard = async (id: number, data: CardCreateRequest): Promise<CardDTO> => {
   return api.patch<CardDTO>(`/card/${id}`, data);
 };
+
+
+export async function getCards(): Promise<CardResponseDTO[]> {
+  return api.get<CardResponseDTO[]>('/card');
+}
+
+export async function createCard(data: CardCreateRequestDTO): Promise<CardResponseDTO> {
+  return api.post<CardResponseDTO>('/card', data);
+}
+
+export async function deactivateCard(id: number): Promise<void> {
+  await api.patch(`/card/${id}/deactivate`);
+}

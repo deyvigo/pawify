@@ -21,6 +21,9 @@ import { Product } from "../../types/product";
 import { Header } from "../../components/Header";
 import { useAppContext } from "../../context/AppContext";
 
+const pawLogo = require("../../../assets/pawlogo.png");
+const pawTxtLogo = require("../../../assets/pawtxtlogo.png");
+
 const { width } = Dimensions.get("window");
 
 interface LocalReview {
@@ -154,6 +157,7 @@ export const ProductDetailScreen: React.FC<ProductDetailScreenProps> = ({
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [reviews, setReviews] = useState<LocalReview[]>([]);
   const scrollRef = useRef<ScrollView>(null);
+  const { addToCart } = useAppContext();
 
   const handleDecrease = () => {
     if (quantity > 1) setQuantity(quantity - 1);
@@ -327,7 +331,13 @@ export const ProductDetailScreen: React.FC<ProductDetailScreenProps> = ({
           </TouchableOpacity>
         </View>
         
-        <TouchableOpacity style={styles.addToCartBtn}>
+        <TouchableOpacity
+          style={styles.addToCartBtn}
+          onPress={() => {
+            addToCart(product, quantity);
+            Alert.alert("Agregado", `${quantity}x ${product.name} agregado al carrito`);
+          }}
+        >
           <Text style={styles.cartIcon}>🛒</Text>
           <Text style={styles.addToCartText}>Anadir al carrito</Text>
         </TouchableOpacity>

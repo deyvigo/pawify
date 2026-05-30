@@ -1,20 +1,25 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { colors } from "../../theme/colors";
+import { useAppContext } from "../../context/AppContext";
+import { CatalogIcon } from "../icons/CatalogIcon";
+import { PurchaseIcon } from "../icons/PurchaseIcon";
+import { OrdersIcon } from "../icons/OrdersIcon";
+import { AccountIcon } from "../icons/AccountIcon";
 
 type TabKey = "catalog" | "purchase" | "orders" | "account";
 
 interface TabConfig {
   key: TabKey;
-  icon: string;
+  icon: React.FC<{ color: string; size: number }>;
   label: string;
 }
 
 const tabs: TabConfig[] = [
-  { key: "catalog", icon: "🛍️", label: "Catálogo" },
-  { key: "purchase", icon: "🛒", label: "Compra" },
-  { key: "orders", icon: "📦", label: "Pedidos" },
-  { key: "account", icon: "👤", label: "Cuenta" },
+  { key: "catalog", icon: CatalogIcon, label: "Catálogo" },
+  { key: "purchase", icon: PurchaseIcon, label: "Compra" },
+  { key: "orders", icon: OrdersIcon, label: "Pedidos" },
+  { key: "account", icon: AccountIcon, label: "Cuenta" },
 ];
 
 interface BottomNavBarProps {
@@ -26,6 +31,8 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({
   activeTab,
   onTabPress,
 }) => {
+  const { cartCount } = useAppContext();
+
   return (
     <View style={styles.container}>
       {tabs.map((tab) => (
@@ -41,11 +48,17 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({
               activeTab === tab.key && styles.activeTabInner,
             ]}
           >
-            <Text
-              style={[styles.icon, activeTab === tab.key && styles.activeIcon]}
-            >
-              {tab.icon}
-            </Text>
+            <View style={styles.iconContainer}>
+              <tab.icon
+                color={activeTab === tab.key ? colors.primary : colors.gray}
+                size={24}
+              />
+              {tab.key === "purchase" && cartCount > 0 && (
+                <View style={styles.badge}>
+                  <Text style={styles.badgeText}>{cartCount}</Text>
+                </View>
+              )}
+            </View>
             <Text
               style={[
                 styles.label,
@@ -79,6 +92,26 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  iconContainer: {
+    position: 'relative',
+  },
+  badge: {
+    position: 'absolute',
+    top: -6,
+    right: -10,
+    backgroundColor: colors.primary,
+    borderRadius: 10,
+    minWidth: 18,
+    height: 18,
+    paddingHorizontal: 4,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  badgeText: {
+    color: colors.white,
+    fontSize: 10,
+    fontWeight: '700',
+  },
   tabInner: {
     alignItems: "center",
     paddingVertical: 6,
@@ -91,13 +124,6 @@ const styles = StyleSheet.create({
     shadowColor: colors.primary,
     shadowOffset: { width: 0, height: 0 },
     borderRadius: 10,
-  },
-  icon: {
-    fontSize: 22,
-    color: colors.gray,
-  },
-  activeIcon: {
-    color: colors.primary,
   },
   label: {
     fontSize: 11,

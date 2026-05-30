@@ -122,6 +122,7 @@ export function useProducts(authKey?: string): UseProductsReturn {
   }, [loadProducts, currentParams]);
 
   useEffect(() => {
+    if (!authKey) return;
     loadProducts();
   }, [authKey]);
 

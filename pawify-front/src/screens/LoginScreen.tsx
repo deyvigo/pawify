@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity ,Image, ActivityIndicator,Alert} from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity ,Image, ActivityIndicator,Alert } from 'react-native';
 
 import { useAuthentication } from '../hooks/useAuthentication';
 import { requestRecoveryCode } from '../services/authService';
+import { EyeIcon } from '../components/icons/EyeIcon';
+import { EyeOffIcon } from '../components/icons/EyeOffIcon';
 
 interface LoginProps {
     onLoginSuccess: (userData: any) => void;
@@ -132,7 +134,7 @@ export const LoginScreen = ({ onLoginSuccess, onNavigateToRegister, onNavigateTo
                             }}
                         />
                         <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-                            <Image style={styles.eyeIcon} source={require('../../assets/eyeIcon.png')} />
+                            {showPassword ? <EyeOffIcon color="#6B7280" size={22} /> : <EyeIcon color="#6B7280" size={22} />}
                         </TouchableOpacity>
                     </View>
                     {passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : null}
@@ -257,11 +259,6 @@ const styles= StyleSheet.create({
         flex: 1,
         marginLeft: 10,
 
-    },
-
-    eyeIcon: {
-        tintColor: '#9CA3AF',
-        padding: 5,
     },
 
     headerContainer: {
