@@ -1,5 +1,5 @@
 export interface DetailCreateRequestDTO {
-    productId: number;
+    product_id: number;
     quantity: number;
 }
 
@@ -10,19 +10,19 @@ export interface OrderCreateRequestDTO {
 // --- DTOs de Respuesta (GET) ---
 export interface DetailResponseDTO {
     id: number;
-    productName: string;
+    product_name: string; 
     quantity: number;
     price: number;
     total: number;
-    productImage: string;
+    product_image: string; 
 }
 
 export interface OrderResponseDTO {
     id: number;
-    totalPrice: number;
-    orderAt: string; 
-    trackingCode: string;
-    shippingStatus: 'PENDING' | 'PROCESSING' | 'SHIPPED' | 'DELIVERED' | 'CANCELLED' | string;
+    total_price: number; 
+    order_at: string; 
+    tracking_code: string;
+    shipping_status: string; 
     details: DetailResponseDTO[];
 }
 

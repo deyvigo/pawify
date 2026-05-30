@@ -15,6 +15,39 @@ export const OrderDetailScreen = ({ order, onBack }: OrderDetailProps) => {
         return date.toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' });
     };
 
+    const translateStatus = (status: string) => {
+        const safeStatus = status || 'PAID';
+        switch (safeStatus.toUpperCase()) {
+            case 'PAID':
+                return 'Pagado';
+            case 'PROCESSING':
+                return 'Procesando';
+            case 'IN_TRANSIT':
+                return 'En tránsito'; 
+            case 'DELIVERED':
+                return 'Entregado';
+            case 'CANCELLED':
+                return 'Cancelado';
+            default:
+                return safeStatus;
+        }
+    };
+
+
+    const getStatusWeight = (status: string) => {
+        const safeStatus = status || 'PAID';
+        switch (safeStatus.toUpperCase()) {
+            case 'DELIVERED':   return 3; 
+            case 'IN_TRANSIT':  return 2;
+            case 'PROCESSING': return 1; 
+            case 'PAID': 
+            default:            return 0; 
+        }
+    };
+
+    const currentProgressWeight = getStatusWeight(order.shipping_status);
+    const timelineSteps = ['Pedido Recibido', 'Procesando', 'Enviado', 'Entregado'];
+
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
@@ -30,33 +63,55 @@ export const OrderDetailScreen = ({ order, onBack }: OrderDetailProps) => {
                 {/* Tarjeta 1: Info Básica */}
                 <View style={styles.card}>
                     <Text style={styles.cardSubtitle}>ID DEL PEDIDO</Text>
-                    <Text style={styles.orderId}>#{order.trackingCode}</Text>
-                    <Text style={styles.orderDate}>📅 Realizado el {formatDate(order.orderAt)}</Text>
+                    <Text style={styles.orderId}>#{order.tracking_code}</Text>
+                    <Text style={styles.orderDate}>📅 Realizado el {formatDate(order.order_at)}</Text>
                 </View>
 
                 {/* Tarjeta 2: Banner de Estado */}
                 <View style={styles.statusBanner}>
                     <Image source={require('../../assets/boxIcon.png')} style={styles.statusIcon} />
                     <Text style={styles.statusBannerSubtitle}>ESTADO</Text>
-                    <Text style={styles.statusBannerTitle}>{order.shippingStatus}</Text>
+                    <Text style={styles.statusBannerTitle}>{translateStatus(order.shipping_status)}</Text>
                 </View>
 
-                {/* Tarjeta 3: Seguimiento (Mockeado basado en el diseño) */}
+                {/* Tarjeta 3: Seguimiento  */}
                 <View style={styles.card}>
                     <Text style={styles.sectionTitle}>SEGUIMIENTO DEL ENVÍO</Text>
                     <View style={styles.timelineContainer}>
-                        {['Pedido Recibido', 'Procesando', 'Enviado', 'Entregado'].map((step, index) => (
-                            <View key={index} style={styles.timelineRow}>
-                                <View style={styles.timelineDotContainer}>
-                                    <View style={[styles.timelineDot, index < 3 ? styles.timelineDotActive : styles.timelineDotInactive]} />
-                                    {index < 3 && <View style={styles.timelineLine} />}
+                        {timelineSteps.map((step, index) => {
+                            // Un paso está completado si su índice es menor o igual al progreso actual
+                            const isStepDone = index <= currentProgressWeight;
+                            // La línea se pinta si el progreso actual ya superó este paso
+                            const isLineDone = index < currentProgressWeight;
+
+                            return (
+                                <View key={index} style={styles.timelineRow}>
+                                    <View style={styles.timelineDotContainer}>
+                                        <View style={[
+                                            styles.timelineDot, 
+                                            isStepDone ? styles.timelineDotActive : styles.timelineDotInactive
+                                        ]} />
+                                        {index < 3 && (
+                                            <View style={[
+                                                styles.timelineLine, 
+                                                isLineDone ? styles.timelineLineActive : styles.timelineLineInactive
+                                            ]} />
+                                        )}
+                                    </View>
+                                    <View style={styles.timelineTextContainer}>
+                                        <Text style={[
+                                            styles.timelineStepText, 
+                                            !isStepDone && { color: '#9CA3AF' }
+                                        ]}>
+                                            {step}
+                                        </Text>
+                                        <Text style={styles.timelineTimeText}>
+                                            {index === 0 && order.order_at ? formatDate(order.order_at) : isStepDone ? 'Completado' : 'Pendiente'}
+                                        </Text>
+                                    </View>
                                 </View>
-                                <View style={styles.timelineTextContainer}>
-                                    <Text style={[styles.timelineStepText, index >= 3 && {color: '#9CA3AF'}]}>{step}</Text>
-                                    <Text style={styles.timelineTimeText}>{index < 3 ? '14 Oct, 09:30 AM' : 'Pendiente'}</Text>
-                                </View>
-                            </View>
-                        ))}
+                            );
+                        })}
                     </View>
                 </View>
 
@@ -65,14 +120,14 @@ export const OrderDetailScreen = ({ order, onBack }: OrderDetailProps) => {
                     <Text style={styles.sectionTitle}>ARTÍCULOS EN ESTE PEDIDO</Text>
                     {order.details.map((item) => (
                         <View key={item.id} style={styles.itemRow}>
-                            <Image source={{ uri: item.productImage || 'https://via.placeholder.com/150' }} style={styles.itemImage} />
+                            <Image source={{ uri: item.product_image || 'https://via.placeholder.com/150' }} style={styles.itemImage} />
                             <View style={styles.itemInfo}>
-                                <Text style={styles.itemName}>{item.productName}</Text>
+                                <Text style={styles.itemName}>{item.product_name}</Text>
                                 <Text style={styles.itemSubText}>Cantidad: {item.quantity}</Text>
                             </View>
                             <View style={styles.itemPriceContainer}>
-                                <Text style={styles.itemTotal}>${item.total.toFixed(2)}</Text>
-                                <Text style={styles.itemUnit}>${item.price.toFixed(2)} c/u</Text>
+                                <Text style={styles.itemTotal}>S/{item.total.toFixed(2)}</Text>
+                                <Text style={styles.itemUnit}>S/{item.price.toFixed(2)} c/u</Text>
                             </View>
                         </View>
                     ))}
@@ -82,7 +137,7 @@ export const OrderDetailScreen = ({ order, onBack }: OrderDetailProps) => {
                 <View style={styles.summaryCard}>
                     <View style={styles.summaryRow}>
                         <Text style={styles.summaryText}>Subtotal</Text>
-                        <Text style={styles.summaryText}>${order.totalPrice.toFixed(2)}</Text>
+                        <Text style={styles.summaryText}>${order.total_price.toFixed(2)}</Text>
                     </View>
                     <View style={styles.summaryRow}>
                         <Text style={styles.summaryText}>Envío</Text>
@@ -91,7 +146,7 @@ export const OrderDetailScreen = ({ order, onBack }: OrderDetailProps) => {
                     <View style={styles.divider} />
                     <View style={styles.summaryRow}>
                         <Text style={styles.summaryTotalText}>Total</Text>
-                        <Text style={styles.summaryTotalText}>${order.totalPrice.toFixed(2)}</Text>
+                        <Text style={styles.summaryTotalText}>S/{order.total_price.toFixed(2)}</Text>
                     </View>
                 </View>
 
@@ -113,7 +168,7 @@ const styles = StyleSheet.create({
     orderId: { fontSize: 18, fontWeight: 'bold', color: '#111827', marginBottom: 10 },
     orderDate: { fontSize: 13, color: '#4B5563' },
     statusBanner: { backgroundColor: '#B91C1C', borderRadius: 16, padding: 20, alignItems: 'center', marginBottom: 15 },
-    statusIcon: { width: 32, height: 32, tintColor: '#FFFFFF', marginBottom: 10 },
+    statusIcon: { width: 20, height: 20, tintColor: '#FFFFFF', marginBottom: 10 },
     statusBannerSubtitle: { color: '#FECACA', fontSize: 12, fontWeight: 'bold', marginBottom: 2 },
     statusBannerTitle: { color: '#FFFFFF', fontSize: 18, fontWeight: 'bold' },
     sectionTitle: { fontSize: 12, color: '#6B7280', fontWeight: 'bold', marginBottom: 20, letterSpacing: 1 },
@@ -123,7 +178,19 @@ const styles = StyleSheet.create({
     timelineDot: { width: 18, height: 18, borderRadius: 9, zIndex: 2 },
     timelineDotActive: { backgroundColor: '#B91C1C' },
     timelineDotInactive: { backgroundColor: '#E5E7EB' },
-    timelineLine: { width: 2, height: 40, backgroundColor: '#B91C1C', position: 'absolute', top: 18, zIndex: 1 },
+    timelineLine: { 
+        width: 2, 
+        height: 42, 
+        position: 'absolute', 
+        top: 16, 
+        zIndex: 1 
+    },
+    timelineLineActive: { 
+        backgroundColor: '#B91C1C' // Rojo oscuro cuando el paso ya se completó
+    },
+    timelineLineInactive: { 
+        backgroundColor: '#E5E7EB' // Gris claro si el paso sigue pendiente
+    },
     timelineTextContainer: { paddingBottom: 25 },
     timelineStepText: { fontSize: 14, fontWeight: 'bold', color: '#111827' },
     timelineTimeText: { fontSize: 12, color: '#6B7280', marginTop: 2 },

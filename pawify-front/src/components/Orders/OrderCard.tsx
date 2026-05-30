@@ -10,26 +10,35 @@ interface OrderCardProps {
 export const OrderCard = ({ order, onPressDetail }: OrderCardProps) => {
     
     const getStatusStyle = (status: string) => {
-        switch(status.toUpperCase()) {
-            case 'DELIVERED': return { bg: '#E5E7EB', text: '#4B5563', label: 'Entregado' };
-            case 'SHIPPED': return { bg: '#FF1A1A', text: '#FFFFFF', label: 'En camino' };
-            default: return { bg: '#FCE7F3', text: '#991B1B', label: 'Procesando' };
-        }
+                // Protección: Si status viene vacío o undefined, asumimos PENDING
+                const safeStatus = status || 'PENDING'; 
+                
+                switch(safeStatus.toUpperCase()) {
+                    case 'DELIVERED': 
+                        return { bg: '#E5E7EB', text: '#4B5563', label: 'Entregado' };
+                    case 'IN_TRANSIT':
+                    case 'SHIPPED': 
+                        return { bg: '#FF1A1A', text: '#FFFFFF', label: 'En camino' };
+                    // Cualquier otro estado (PAID, PENDING, PROCESSING) mostrará 'Procesando'
+                    default: 
+                        return { bg: '#FCE7F3', text: '#991B1B', label: 'Procesando' };
+                }
     };
 
     const formatDate = (dateString: string) => {
-        const date = new Date(dateString);
-        return date.toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' });
+            if (!dateString) return 'Fecha desconocida';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' });
     };
 
-    const statusConfig = getStatusStyle(order.shippingStatus);
+    const statusConfig = getStatusStyle(order.shipping_status);
 
     return (
         <View style={styles.orderCard}>
             <View style={styles.cardHeader}>
                 <View>
-                    <Text style={styles.orderId}>ID: #{order.trackingCode}</Text>
-                    <Text style={styles.orderDate}>{formatDate(order.orderAt)}</Text>
+                    <Text style={styles.orderId}>ID: #{order.tracking_code}</Text>
+                    <Text style={styles.orderDate}>{formatDate(order.order_at)}</Text>
                 </View>
                 <View style={[styles.statusBadge, { backgroundColor: statusConfig.bg }]}>
                     <Text style={[styles.statusText, { color: statusConfig.text }]}>• {statusConfig.label}</Text>
@@ -41,7 +50,7 @@ export const OrderCard = ({ order, onPressDetail }: OrderCardProps) => {
                     {order.details.slice(0, 2).map((detail, index) => (
                         <Image 
                             key={index} 
-                            source={{ uri: detail.productImage || 'https://via.placeholder.com/150' }} 
+                            source={{ uri: detail.product_image || 'https://via.placeholder.com/150' }} 
                             style={[styles.productThumbnail, index > 0 && { marginLeft: -15 }]} 
                         />
                     ))}
@@ -53,7 +62,7 @@ export const OrderCard = ({ order, onPressDetail }: OrderCardProps) => {
                 </View>
                 <View style={styles.priceContainer}>
                     <Text style={styles.productCount}>{order.details.length} productos</Text>
-                    <Text style={styles.totalPrice}>S/ {order.totalPrice.toFixed(2)}</Text>
+                    <Text style={styles.totalPrice}>S/ {order.total_price.toFixed(2)}</Text>
                 </View>
             </View>
 

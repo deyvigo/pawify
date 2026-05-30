@@ -5,7 +5,7 @@ export const EmptyOrders = () => {
     return (
         <View style={styles.container}>
             <View style={styles.iconCircle}>
-                <Image source={require('../../../assets/boxIcon.png')} style={styles.icon} />
+                <Image source={require('../../../assets/boxIcon1.png')} style={styles.icon} />
             </View>
             <Text style={styles.title}>Aún no tienes pedidos</Text>
             <Text style={styles.subtitle}>
@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         paddingHorizontal: 30,
-        marginTop: 60,
+        marginTop: 20,
     },
     iconCircle: {
         width: 100,
@@ -33,8 +33,8 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     icon: {
-        width: 50,
-        height: 50,
+        width: 35,
+        height: 35,
         tintColor: '#B91C1C',
     },
     title: {
