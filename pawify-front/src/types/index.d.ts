@@ -121,5 +121,7 @@ export interface BuyerProfileDTO {
   first_name: string;
   last_name: string;
   dni_number: string;
+  count_cards: number;
+  count_addresses: number;
   profile: string | null;
 }
