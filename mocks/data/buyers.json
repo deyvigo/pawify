@@ -1,6 +1,6 @@
 [
   {
-    "username": "userbuyer1",
+    "username": "buyer1",
     "password": "password",
     "first_name": "Andrea",
     "last_name": "Buyer",
@@ -8,7 +8,7 @@
     "dni_number": "12367823"
   },
   {
-    "username": "userbuyer2",
+    "username": "buyer2",
     "password": "password",
     "first_name": "Ariel",
     "last_name": "Buyer",
@@ -16,7 +16,7 @@
     "dni_number": "48572930"
   },
   {
-    "username": "userbuyer3",
+    "username": "buyer3",
     "password": "password",
     "first_name": "Samuel",
     "last_name": "Buyer",
@@ -24,7 +24,7 @@
     "dni_number": "39940392"
   },
   {
-    "username": "userbuyer4",
+    "username": "buyer4",
     "password": "password",
     "first_name": "Gabriel",
     "last_name": "Buyer",
@@ -32,7 +32,7 @@
     "dni_number": "39485043"
   },
   {
-    "username": "userbuyer5",
+    "username": "buyer5",
     "password": "password",
     "first_name": "Tomas",
     "last_name": "Buyer",
@@ -40,7 +40,7 @@
     "dni_number": "04958374"
   },
   {
-    "username": "userbuyer6",
+    "username": "buyer6",
     "password": "password",
     "first_name": "Bruno",
     "last_name": "Buyer",
@@ -48,7 +48,7 @@
     "dni_number": "75894058"
   },
   {
-    "username": "userbuyer7",
+    "username": "buyer7",
     "password": "password",
     "first_name": "Adrian",
     "last_name": "Buyer",
@@ -56,7 +56,7 @@
     "dni_number": "95837489"
   },
   {
-    "username": "userbuyer8",
+    "username": "buyer8",
     "password": "password",
     "first_name": "Elena",
     "last_name": "Buyer",
@@ -64,7 +64,7 @@
     "dni_number": "87462932"
   },
   {
-    "username": "userbuyer9",
+    "username": "buyer9",
     "password": "password",
     "first_name": "Victoria",
     "last_name": "Buyer",
@@ -72,7 +72,7 @@
     "dni_number": "94856152"
   },
   {
-    "username": "userbuyer10",
+    "username": "buyer10",
     "password": "password",
     "first_name": "Claudia",
     "last_name": "Buyer",
@@ -80,7 +80,7 @@
     "dni_number": "13849248"
   },
   {
-    "username": "userbuyer11",
+    "username": "buyer11",
     "password": "password",
     "first_name": "Natalia",
     "last_name": "Buyer",
@@ -88,7 +88,7 @@
     "dni_number": "03942739"
   },
   {
-    "username": "userbuyer12",
+    "username": "buyer12",
     "password": "password",
     "first_name": "Emilia",
     "last_name": "Buyer",
@@ -96,7 +96,7 @@
     "dni_number": "94726372"
   },
   {
-    "username": "userbuyer13",
+    "username": "buyer13",
     "password": "password",
     "first_name": "Paula",
     "last_name": "Buyer",
@@ -104,7 +104,7 @@
     "dni_number": "74857945"
   },
   {
-    "username": "userbuyer14",
+    "username": "buyer14",
     "password": "password",
     "first_name": "Sam",
     "last_name": "Buyer",
@@ -112,7 +112,7 @@
     "dni_number": "83749203"
   },
   {
-    "username": "userbuyer15",
+    "username": "buyer15",
     "password": "password",
     "first_name": "Noel",
     "last_name": "Buyer",
