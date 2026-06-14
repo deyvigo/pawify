@@ -1,0 +1,44 @@
+services:
+  db:
+    image: postgres:16
+    container_name: pawify-db
+    env_file:
+      - .env
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dbuser -d pawify-db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - ./database/init:/docker-entrypoint-initdb.d
+    networks:
+      - internal
+
+  backend:
+    build: .
+    container_name: pawify-backend
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - .env
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=web"
+      - "traefik.http.routers.pawify.rule=Host(`pawify.deyvigo.online`)"
+      - "traefik.http.routers.pawify.entrypoints=websecure"
+      - "traefik.http.routers.pawify.tls.certresolver=myresolver"
+      - "traefik.http.services.pawify.loadbalancer.server.port=8080"
+      - "traefik.http.routers.pawify-http.rule=Host(`pawify.deyvigo.online`)"
+      - "traefik.http.routers.pawify-http.entrypoints=web"
+      - "traefik.http.routers.pawify-http.middlewares=redirect-to-https"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+    networks:
+      - web
+      - internal
+
+networks:
+  web:
+    external: true
+  internal:
+    driver: bridge

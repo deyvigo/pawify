@@ -24,7 +24,7 @@ public class OrderController {
     public ResponseEntity<OrderResponseDTO> createOrder(
         @AuthenticationPrincipal BuyerEntity buyerEntity,
         @Valid @RequestBody OrderCreateRequestDTO orderCreateRequestDTO
-        ) {
+    ) {
         return ResponseEntity.ok(orderService.createOrder(buyerEntity, orderCreateRequestDTO));
     }
 

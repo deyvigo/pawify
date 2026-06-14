@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict 2xl3wYDRaCKtowo3oKInAtuy3VgXR1oHgRxMhpxFhBHBlSQGfDPdbUGNPA1ySHG
+\restrict bg66AjmRBsj9PKnnm3CeQZLyg6FobYGKWqddSFgwddYFBbsKdabOrZWSC3IGhs8
 
 -- Dumped from database version 16.13 (Debian 16.13-1.pgdg13+1)
 -- Dumped by pg_dump version 16.13 (Debian 16.13-1.pgdg13+1)
@@ -1312,22 +1312,22 @@ COPY public.messages (id, content, send_at, claim_id, sender_id) FROM stdin;
 99	Hola, mensaje nuevo 99	2026-06-14 04:41:45.66521+00	242	25
 100	Hola, mensaje nuevo 100	2026-06-14 04:41:56.033022+00	248	25
 101	Hola, mensaje nuevo 101	2026-06-14 04:42:18.053487+00	240	25
-102	Hola, mensaje nuevo 101	2026-06-14 04:45:26.210746+00	10	21
-103	Hola, mensaje nuevo 103	2026-06-14 05:18:59.56092+00	10	21
-104	Hola, mensaje nuevo 104	2026-06-14 05:19:26.981811+00	10	21
-105	Hola, mensaje nuevo 105	2026-06-14 05:19:41.174666+00	10	21
-106	Hola, mensaje nuevo 106	2026-06-14 05:21:44.495294+00	10	21
-107	Hola, mensaje nuevo 107	2026-06-14 05:21:58.509621+00	10	21
-108	Hola, mensaje nuevo 108	2026-06-14 05:23:55.625218+00	10	21
-109	Hola, mensaje nuevo 109	2026-06-14 05:24:07.964976+00	248	21
-111	Hola, mensaje nuevo 111	2026-06-14 05:27:15.991296+00	23	22
-110	Hola, mensaje nuevo 110	2026-06-14 05:26:11.021779+00	11	21
-112	Hola, mensaje nuevo 112	2026-06-14 05:27:23.41189+00	10	22
 113	Hola, mensaje nuevo 113	2026-06-14 05:42:02.284941+00	17	12
 114	Hola, mensaje nuevo 114	2026-06-14 05:43:31.239538+00	17	12
 115	Hola, mensaje nuevo 115	2026-06-14 05:46:36.458034+00	193	22
 116	Hola, mensaje nuevo 116	2026-06-14 05:47:51.212063+00	193	22
 117	Hola, mensaje nuevo 117	2026-06-14 05:48:56.713434+00	47	13
+109	Hola, mensaje nuevo 109	2026-06-14 05:24:07.964976+00	248	25
+107	Hola, mensaje nuevo 107	2026-06-14 05:21:58.509621+00	10	1
+103	Hola, mensaje nuevo 103	2026-06-14 05:18:59.56092+00	10	1
+108	Hola, mensaje nuevo 108	2026-06-14 05:23:55.625218+00	10	11
+105	Hola, mensaje nuevo 105	2026-06-14 05:19:41.174666+00	10	11
+110	Hola, mensaje nuevo 110	2026-06-14 05:26:11.021779+00	11	1
+112	Hola, mensaje nuevo 112	2026-06-14 05:27:23.41189+00	10	1
+111	Hola, mensaje nuevo 111	2026-06-14 05:27:15.991296+00	23	12
+104	Hola, mensaje nuevo 104	2026-06-14 05:19:26.981811+00	10	1
+106	Hola, mensaje nuevo 106	2026-06-14 05:21:44.495294+00	10	11
+102	Hola, mensaje nuevo 101	2026-06-14 04:45:26.210746+00	10	11
 \.
 
 
@@ -3280,5 +3280,5 @@ ALTER TABLE ONLY public.tracking_statuses
 -- PostgreSQL database dump complete
 --
 
-\unrestrict 2xl3wYDRaCKtowo3oKInAtuy3VgXR1oHgRxMhpxFhBHBlSQGfDPdbUGNPA1ySHG
+\unrestrict bg66AjmRBsj9PKnnm3CeQZLyg6FobYGKWqddSFgwddYFBbsKdabOrZWSC3IGhs8
 
