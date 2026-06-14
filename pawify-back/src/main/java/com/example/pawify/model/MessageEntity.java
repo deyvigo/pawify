@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Entity
 @Table(name = "messages")
@@ -21,7 +21,7 @@ public class MessageEntity {
     private String content;
 
     @Column(nullable = false)
-    private LocalDateTime sendAt;
+    private Instant sendAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "claim_id", nullable = false)
@@ -33,6 +33,6 @@ public class MessageEntity {
 
     @PrePersist
     protected void onCreate() {
-        this.sendAt = LocalDateTime.now();
+        this.sendAt = Instant.now();
     }
 }

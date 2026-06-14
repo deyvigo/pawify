@@ -53,10 +53,22 @@ if __name__ == "__main__":
   order_ids = []
   detail_ids = {}
   for buyer_token in buyer_tokens:
-    response = create_order(buyer_token, product_ids)
-    print(json.dumps(response, indent=2, ensure_ascii=False))
-    order_ids.append(response["id"])
-    detail_ids[buyer_token] = [ detail["id"] for detail in response["details"] ]
+    random_int = random.randint(5, 15)
+    detail_ids[buyer_token] = []
+    for i in range(random_int):
+      response = create_order(buyer_token, product_ids)
+      print(json.dumps(response, indent=2, ensure_ascii=False))
+      order_ids.append(response["id"])
+      detail_ids[buyer_token].extend(  # ← extend en vez de =
+        [detail["id"] for detail in response["details"]]
+      )
+  
+  print("Creating claims...")
+  print("-" * 30)
+  for buyer_token, buyer_detail_ids in detail_ids.items():
+    for detail_id in buyer_detail_ids:
+      response = create_order_claim(buyer_token, detail_id)
+      print(json.dumps(response, indent=2, ensure_ascii=False))
 
   print("Creating reviews...")
   print("-" * 30)

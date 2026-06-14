@@ -1,0 +1,28 @@
+meta {
+  name: get all orders (admin)
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{actual_url}}/admin/order?size=15&sort=trackingCode,desc
+  body: none
+  auth: bearer
+}
+
+params:query {
+  size: 15
+  sort: trackingCode,desc
+  ~sort: orderAt,asc
+  ~sort: totalPrice,desc
+  ~trackingCode: 
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InVzZXJhZG1pbiIsInJvbGUiOiJBRE1JTiIsImlkIjoxLCJmaXJzdF9uYW1lIjoiSmhvbiIsImxhc3RfbmFtZSI6IkFkbWluIiwiZXhwIjoxNzgwMTUyMDM1fQ.FkCCWksBWkYoihsIxglAWMHc7PZeKif2gsAFOZQb4EM
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

@@ -136,7 +136,7 @@ def create_tracking_history(jwt_token, order_id, statuses):
     }
 
     response = requests.post(
-      url=f"{API_URL}/trackingstatus",
+      url=f"{API_URL}/tracking-status",
       json=tracking_history_data,
       headers={
         "Authorization": f"Bearer {jwt_token}"
@@ -145,3 +145,16 @@ def create_tracking_history(jwt_token, order_id, statuses):
     tracking_history_response.append(response.json())
 
   return tracking_history_response
+
+def create_order_claim(jwt_token, detail_id):
+  response = requests.post(
+    url=f"{API_URL}/claim",
+    json={
+      "detail_id": detail_id
+    },
+    headers={
+      "Authorization": f"Bearer {jwt_token}"
+    }
+  )
+
+  return response.json()

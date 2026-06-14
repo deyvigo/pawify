@@ -6,6 +6,7 @@ import com.example.pawify.model.UserEntity;
 import com.example.pawify.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.MediaType;
@@ -30,12 +31,12 @@ public class ProductController {
         @Valid @RequestPart("data") ProductCreateRequestDTO productCreateRequestDTO,
         @RequestParam("images") List<MultipartFile> images,
         @AuthenticationPrincipal UserEntity userEntity
-        ) {
+    ) {
         return ResponseEntity.ok(productService.createProduct(productCreateRequestDTO, images, userEntity));
     }
 
     @GetMapping("")
-    public ResponseEntity<Slice<ProductResponseSimpleDTO>> getProducts(
+    public ResponseEntity<Page<ProductResponseSimpleDTO>> getProducts(
         @RequestParam(required = false) String search,
         @RequestParam(required = false) String brand,
         @RequestParam(required = false) String category,
