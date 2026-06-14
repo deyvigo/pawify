@@ -5,18 +5,18 @@ meta {
 }
 
 get {
-  url: {{actual_url}}/admin/buyers
+  url: {{actual_url}}/admin/buyers?size=2
   body: none
   auth: bearer
 }
 
 params:query {
-  ~size: 2
+  size: 2
   ~page: 3
 }
 
 auth:bearer {
-  token: eyJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InVzZXJhZG1pbiIsInJvbGUiOiJBRE1JTiIsImlkIjoxLCJmaXJzdF9uYW1lIjoiSmhvbiIsImxhc3RfbmFtZSI6IkFkbWluIiwiZXhwIjoxNzgwMTUyMDM1fQ.FkCCWksBWkYoihsIxglAWMHc7PZeKif2gsAFOZQb4EM
+  token: eyJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFkbWluMSIsInJvbGUiOiJBRE1JTiIsImlkIjoxLCJmaXJzdF9uYW1lIjoiSnVhbiIsImxhc3RfbmFtZSI6IkFkbWluIiwiZXhwIjoxNzgyMDIxMTA4fQ.GDr2MKCxixcgDNXWQKQEAQe4FmhhnyEOcxdpGTGvbKg
 }
 
 settings {

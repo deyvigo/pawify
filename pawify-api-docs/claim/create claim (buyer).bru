@@ -1,17 +1,23 @@
 meta {
-  name: all orders (buyer) (paginated)
+  name: create claim (buyer)
   type: http
-  seq: 2
+  seq: 1
 }
 
-get {
-  url: {{actual_url}}/order
-  body: none
+post {
+  url: {{actual_url}}/claim
+  body: json
   auth: bearer
 }
 
 auth:bearer {
   token: eyJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InVzZXJidXllcjMiLCJyb2xlIjoiQlVZRVIiLCJpZCI6MTksImZpcnN0X25hbWUiOiJTYW11ZWwiLCJsYXN0X25hbWUiOiJCdXllciIsImV4cCI6MTc4MTk3NTc4Mn0.iUWghpT4Q_EJsnjc3n53r_GcvwanCBSaenlZor1H1wQ
+}
+
+body:json {
+  {
+    "detail_id": 5
+  }
 }
 
 settings {
