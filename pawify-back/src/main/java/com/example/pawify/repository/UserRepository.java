@@ -1,5 +1,6 @@
 package com.example.pawify.repository;
 
+import com.example.pawify.model.MessageEntity;
 import com.example.pawify.model.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

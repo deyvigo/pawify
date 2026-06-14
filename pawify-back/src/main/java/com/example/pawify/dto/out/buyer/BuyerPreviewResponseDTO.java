@@ -6,5 +6,4 @@ public record BuyerPreviewResponseDTO(
     String firstName,
     String lastName,
     BuyerImageResponseDTO profile
-) {
-}
+) {}

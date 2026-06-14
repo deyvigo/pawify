@@ -1,5 +1,6 @@
 package com.example.pawify.service.implement;
 
+import com.example.pawify.dto.CursorInternalDTO;
 import com.example.pawify.dto.in.order.TrackingStatusCreateRequestDTO;
 import com.example.pawify.dto.out.Page;
 import com.example.pawify.dto.out.order.TrackingStatusResponseDTO;
@@ -10,6 +11,7 @@ import com.example.pawify.model.TrackingStatusEntity;
 import com.example.pawify.repository.OrderRepository;
 import com.example.pawify.repository.TrackingStatusRepository;
 import com.example.pawify.service.TrackingStatusService;
+import com.example.pawify.utils.CursorUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Limit;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,7 @@ public class TrackingStatusServiceImpl implements TrackingStatusService {
     private final OrderRepository orderRepository;
     private final TrackingStatusMapper trackingStatusMapper;
     private final TrackingStatusRepository trackingStatusRepository;
+    private final CursorUtil cursorUtil;
 
     @Override
     public TrackingStatusResponseDTO createTrackingStatus(TrackingStatusCreateRequestDTO requestDTO) {
@@ -34,34 +37,24 @@ public class TrackingStatusServiceImpl implements TrackingStatusService {
     }
 
     @Override
-    public Page<TrackingStatusResponseDTO> getAllByTrackingCode(String trackingCode, Long cursor, Integer size) {
+    public Page<TrackingStatusResponseDTO> getAllByTrackingCode(String trackingCode, String cursor, Integer size) {
         OrderEntity orderEntity = orderRepository.findByTrackingCode(trackingCode)
             .orElseThrow(() -> new ResourceNotFoundException("order_ir not found"));
 
-        List<TrackingStatusEntity> trackings;
+        CursorInternalDTO cursorInternal = cursor == null ? null : cursorUtil.decode(cursor);
 
-        if (size == null) {
-            size = 10;
-        }
-
-        if (cursor == null) {
-            trackings = trackingStatusRepository.findAllByOrderOrderByTimestampDesc(
-                orderEntity, Limit.of(size + 1)
-            );
-        } else {
-            trackings = trackingStatusRepository.findAllByOrderAndIdLessThanOrderByTimestampDesc(
-                orderEntity, cursor, Limit.of(size + 1)
-            );
-        }
+        List<TrackingStatusEntity> trackings = trackingStatusRepository.getTrackingStatusByTrackingCode(
+            trackingCode, cursorInternal, size + 1
+        );
 
         boolean hasNext = trackings.size() > size;
         if (hasNext) {
             trackings.removeLast();
         }
 
-        Long nextCursor = trackings.isEmpty()
-            ? null
-            : trackings.getLast().getId();
+        String nextCursor = hasNext
+            ? cursorUtil.encode(new CursorInternalDTO(trackings.getLast().getTimestamp(), trackings.getLast().getId()))
+            : null;
 
         return new Page<>(
             trackings.stream().map(trackingStatusMapper::fromEntityToDTO).toList(),

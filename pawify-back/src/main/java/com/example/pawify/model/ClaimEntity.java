@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.Instant;
 import java.util.List;
 
 @Entity
@@ -17,7 +18,8 @@ public class ClaimEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
+    @OneToOne(optional = false)
+    @JoinColumn(name = "detail_id", nullable = false, unique = true)
     private DetailEntity detail;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -30,4 +32,17 @@ public class ClaimEntity {
 
     @OneToMany(mappedBy = "claim", fetch = FetchType.LAZY)
     private List<MessageEntity> messages;
+
+    @Column(nullable = false)
+    private Instant lastModified;
+
+    private String lastMessage;
+
+    @Enumerated(EnumType.STRING)
+    private LastMessageSender lastMessageSender;
+
+    @PrePersist
+    public void prePersist() {
+        this.lastModified = Instant.now();
+    }
 }

@@ -30,7 +30,7 @@ public class TrackingStatusController {
     public ResponseEntity<Page<TrackingStatusResponseDTO>> getTrackingStatusesByOrder(
         @PathVariable String trackingCode,
         @RequestParam(name = "size", required = false) Integer size,
-        @RequestParam(name = "cursor", required = false) Long cursor
+        @RequestParam(name = "cursor", required = false) String cursor
     ) {
         return ResponseEntity.ok(
             trackingStatusService.getAllByTrackingCode(

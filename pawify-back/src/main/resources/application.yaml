@@ -11,6 +11,7 @@ spring:
   jackson:
     property-naming-strategy: SNAKE_CASE
 
+
 security:
   jwt:
     secret-key: ${JWT_SECRET_KEY}
@@ -32,8 +33,4 @@ sendgrid:
 
 logging:
   level:
-    org:
-      springframework:
-        web:
-          servlet:
-            DispatcherServlet: DEBUG
+    org.springframework.web.servlet.DispatcherServlet: DEBUG

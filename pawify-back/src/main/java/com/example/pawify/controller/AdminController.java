@@ -27,12 +27,12 @@ public class AdminController {
     private final ProductService productService;
 
     @GetMapping("/buyers")
-    public ResponseEntity<Slice<BuyerResponseSimpleDTO>> getAllBuyers(Pageable pageable) {
+    public ResponseEntity<Page<BuyerResponseSimpleDTO>> getAllBuyers(Pageable pageable) {
         return ResponseEntity.ok(adminService.getAllBuyers(pageable));
     }
 
     @GetMapping("/admins")
-    public ResponseEntity<Slice<AdminResponseSimpleDTO>> getAllAdmins(Pageable pageable) {
+    public ResponseEntity<Page<AdminResponseSimpleDTO>> getAllAdmins(Pageable pageable) {
         return ResponseEntity.ok(adminService.getAllAdmins(pageable));
     }
 

@@ -13,8 +13,8 @@ import org.springframework.data.domain.Slice;
 import java.math.BigDecimal;
 
 public interface AdminService {
-    Slice<BuyerResponseSimpleDTO> getAllBuyers(Pageable pageable);
-    Slice<AdminResponseSimpleDTO> getAllAdmins(Pageable pageable);
+    Page<BuyerResponseSimpleDTO> getAllBuyers(Pageable pageable);
+    Page<AdminResponseSimpleDTO> getAllAdmins(Pageable pageable);
     void changeOrderStatusByOrderId(ChangeOrderStatusShipmentRequestDTO newShippingStatus, String trackingCode);
     Page<OrderSimpleResponseDTO> getAllOrders(Pageable pageable, String trackingCode);
     AdminResponseSimpleDTO getAdmin(AdminEntity adminEntity);

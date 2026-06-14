@@ -41,23 +41,15 @@ public class AdminServiceImpl implements AdminService {
     private final ProductMapper productMapper;
 
     @Override
-    public Slice<BuyerResponseSimpleDTO> getAllBuyers(Pageable pageable) {
+    public Page<BuyerResponseSimpleDTO> getAllBuyers(Pageable pageable) {
         Page<BuyerEntity> page = buyerRepository.findAll(pageable);
-        return new SliceImpl<>(
-            page.map(buyerMapper::toResponseSimpleDTO).getContent(),
-            pageable,
-            page.hasNext()
-        );
+        return page.map(buyerMapper::toResponseSimpleDTO);
     }
 
     @Override
-    public Slice<AdminResponseSimpleDTO> getAllAdmins(Pageable pageable) {
+    public Page<AdminResponseSimpleDTO> getAllAdmins(Pageable pageable) {
         Page<AdminEntity> page = adminRepository.findAll(pageable);
-        return new SliceImpl<>(
-            page.map(adminMapper::toResponseSimpleDTO).getContent(),
-            pageable,
-            page.hasNext()
-        );
+        return page.map(adminMapper::toResponseSimpleDTO);
     }
 
     @Override
