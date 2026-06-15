@@ -1,5 +1,6 @@
 package com.example.pawify.controller;
 
+import com.example.pawify.dto.in.order.OrderCreateRequestDTO;
 import com.example.pawify.dto.in.payment.PaymentRequestDTO;
 import com.example.pawify.dto.out.payment.PaymentIntentResponseDTO;
 import com.example.pawify.dto.out.payment.PublishableKeyDTO;
@@ -25,7 +26,7 @@ public class StripeController {
     @PostMapping("/payment-intent")
     public ResponseEntity<PaymentIntentResponseDTO> createIntent(
         @AuthenticationPrincipal BuyerEntity buyer,
-        @Valid @RequestBody PaymentRequestDTO request
+        @Valid @RequestBody OrderCreateRequestDTO request
     ) {
         return ResponseEntity.ok(stripeService.createPaymentIntent(buyer, request));
     }

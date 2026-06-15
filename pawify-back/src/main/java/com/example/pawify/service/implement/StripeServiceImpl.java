@@ -1,9 +1,11 @@
 package com.example.pawify.service.implement;
 
-import com.example.pawify.dto.in.payment.PaymentRequestDTO;
+import com.example.pawify.dto.in.order.OrderCreateRequestDTO;
+import com.example.pawify.dto.out.order.OrderResponseDTO;
 import com.example.pawify.dto.out.payment.PaymentIntentResponseDTO;
 import com.example.pawify.dto.out.payment.PublishableKeyDTO;
 import com.example.pawify.model.BuyerEntity;
+import com.example.pawify.service.OrderService;
 import com.example.pawify.service.StripeService;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Customer;
@@ -20,8 +22,14 @@ import java.math.BigDecimal;
 
 @Service
 public class StripeServiceImpl implements StripeService {
+    private final OrderService orderService;
+
     @Value("${stripe.publishable-key}")
     private String publishableKey;
+
+    public StripeServiceImpl(OrderService orderService) {
+        this.orderService = orderService;
+    }
 
     @Override
     public PublishableKeyDTO getPublishableKey() {
@@ -29,7 +37,9 @@ public class StripeServiceImpl implements StripeService {
     }
 
     @Override
-    public PaymentIntentResponseDTO createPaymentIntent(BuyerEntity buyer, PaymentRequestDTO request) {
+    public PaymentIntentResponseDTO createPaymentIntent(BuyerEntity buyer, OrderCreateRequestDTO request) {
+        OrderResponseDTO orderCreated = orderService.createOrder(buyer, request);
+
         try {
             CustomerCreateParams customerParams = CustomerCreateParams.builder()
                 .setEmail(buyer.getEmail())
@@ -43,10 +53,15 @@ public class StripeServiceImpl implements StripeService {
 
             EphemeralKey ephemeralKey = EphemeralKey.create(ephemeralParams);
 
+            Long amountInCents = orderCreated.totalPrice()
+                .multiply(BigDecimal.valueOf(100))
+                .longValue();
+
             PaymentIntentCreateParams params = PaymentIntentCreateParams.builder()
-                .setAmount(request.amount().multiply(BigDecimal.valueOf(100)).longValue())
+                .setAmount(amountInCents)
                 .setCurrency("PEN")
                 .setCustomer(customer.getId())
+                .putMetadata("order_id", String.valueOf(orderCreated.id()))
                 .addPaymentMethodType("card")
                 .build();
 
