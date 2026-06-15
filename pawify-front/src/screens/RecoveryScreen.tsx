@@ -1,0 +1,435 @@
+import React, { useState, useEffect } from 'react';
+import { 
+    View, 
+    Text, 
+    TextInput, 
+    TouchableOpacity, 
+    StyleSheet, 
+    Image,
+    Alert,
+    ActivityIndicator
+} from 'react-native';
+
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { verifyRecoveryCode, requestRecoveryCode } from '../services/authService';
+
+interface ForgotPasswordProps {
+    onBackToLogin: () => void;
+    username: string;
+    email: string;
+    onCodeVerified: (code: string) => void;
+}
+
+export const RecoveryScreen = ({ onBackToLogin, username, email, onCodeVerified }: ForgotPasswordProps) => {
+    // Estado: Un arreglo de 6 espacios vacíos para guardar cada dígito
+    const [code, setCode] = useState<string[]>(['', '', '', '', '', '']);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+
+    // --- ESTADO PARA EL TEMPORIZADOR ---
+    const [timeLeft, setTimeLeft] = useState<number>(60); // 60 segundos (1 minuto)
+
+    // --- LÓGICA DEL TEMPORIZADOR ---
+    useEffect(() => {
+        // Si llega a 0, detenemos el contador
+        if (timeLeft <= 0) return;
+
+        // Bajamos 1 segundo cada 1000 milisegundos
+        const timerId = setInterval(() => {
+            setTimeLeft(prevTime => prevTime - 1);
+        }, 1000);
+
+        // Limpiamos el intervalo si salimos de la pantalla
+        return () => clearInterval(timerId);
+    }, [timeLeft]);
+
+    // Función para formatear el tiempo (Ej. de 60 a "1:00", de 5 a "0:05")
+    const formatTime = (seconds: number) => {
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+    };
+
+
+
+    // Función de Acción: Actualiza solo la field en la que el usuario está escribiendo
+    const handleChangeText = (text: string, index: number) => {
+        // Creamos una copia del arreglo actual para no modificar el estado directamente 
+        const newCode = [...code];
+        newCode[index] = text;
+        setCode(newCode);
+        
+    };
+
+    const handleVerify = async () => {
+        const finalCode = code.join('');
+        if (finalCode.length < 6) {
+            Alert.alert('Atención', 'Por favor, ingresa el código completo.');
+            return;
+        }
+        setIsLoading(true);
+
+        try {
+            // Llamamos a Spring Boot para verificar el código
+            await verifyRecoveryCode(username, finalCode);
+            
+            // Si el backend no lanza error, significa que el código es válido
+            onCodeVerified(finalCode);
+            
+        } catch (error: any) {
+            console.log("Error al verificar código:", error);
+            Alert.alert('Código Inválido', 'El código ingresado es incorrecto o ha expirado. Inténtalo nuevamente.');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+
+    const handleResendCode = async () => {
+        setIsLoading(true);
+        try {
+            // Reutilizamos el endpoint que envía el correo
+            await requestRecoveryCode(username);
+            Alert.alert('¡Código reenviado!', 'Hemos enviado un nuevo código a tu correo electrónico.');
+            
+            // Reiniciamos el reloj a 60 segundos
+            setTimeLeft(60); 
+            // Limpiamos las cajitas para el nuevo código
+            setCode(['', '', '', '', '', '']); 
+        } catch (error) {
+            console.log("Error al reenviar:", error);
+            Alert.alert('Error', 'No pudimos reenviar el código. Por favor intenta de nuevo.');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    // Función para ocultar parte del correo
+    const getMaskedEmail = () => {
+        if (!email) return "cargando...";
+
+        if (!email.includes('@')) {
+            return `${email.substring(0, 2)}****@***.com`;
+        }
+
+        const [name, domain] = email.split('@');
+        
+        if (name.length <= 2) {
+            return `${name.charAt(0)}****@${domain}`;
+        }
+
+        const firstLetter = name.charAt(0);
+        const lastLetter = name.charAt(name.length - 1);
+        
+        return `${firstLetter}****${lastLetter}@${domain}`;
+    };
+
+    return (
+        <SafeAreaView style={styles.container}>
+            {/*header */}
+            <View style={styles.header}>
+                <TouchableOpacity style={styles.backButton} onPress={onBackToLogin}>
+                    <Image style={styles.backIcon} source={require('../../assets/arrowLeftIcon.png')} />
+                    <Text style={styles.headerTitle}>Recuperar cuenta</Text>
+                </TouchableOpacity>
+                <Text style={styles.headerLogo}>Pawify</Text>
+            </View>
+
+            <View style={styles.content}>
+                
+                {/*icono principal */}
+                <View style={styles.iconWrapper}>
+                    <View style={styles.mainIconContainer}>
+                        <Image style={styles.emailIcon} source={require('../../assets/emailIcon.png')} />
+                    </View>
+                    <View style={styles.badgeIconContainer}>
+                        <Image style={styles.badgeIcon} source={require('../../assets/verifyIcon.png')} />
+                    </View>
+                </View>
+
+                {/* textos */}
+                <Text style={styles.title}>Verifica tu código</Text>
+                <Text style={styles.subtitle}>
+                    Hemos enviado un código de seguridad de 6 dígitos a su correo electrónico asociado.
+                </Text>
+                <Text style={styles.emailMask}>{getMaskedEmail()}</Text>
+
+                <View style={styles.otpContainer}>
+                    {code.map((digit, index) => (
+                        <TextInput
+                            key={index}
+                            style={styles.otpInput}
+                            keyboardType="default"
+                            autoCapitalize="none"
+                            maxLength={1}
+                            placeholder="•"
+                            placeholderTextColor="#9CA3AF"
+                            value={digit}
+                            onChangeText={(text) => handleChangeText(text, index)}
+                        />
+                    ))}
+                </View>
+
+                <TouchableOpacity style={styles.verifyButton} onPress={handleVerify} disabled={isLoading}>
+                    {isLoading ? (
+                        <ActivityIndicator color="#FFFFFF" />
+                    ) : (
+                        <Text style={styles.verifyButtonText}>Verificar</Text>
+                    )}
+                </TouchableOpacity>
+
+                {/*seccion de reenvio de código */}
+                <View style={styles.resendContainer}>
+                    <Text style={styles.resendText}>¿No recibiste el código?</Text>
+                    
+                    <TouchableOpacity style={[styles.resendAction, timeLeft > 0 && { opacity: 0.4 }]} 
+                        onPress={handleResendCode}
+                        disabled={timeLeft > 0 || isLoading}>
+                        <Image style={styles.refreshIcon} source={require('../../assets/refreshIcon.png')} />
+                        <Text style={styles.resendActionText}>Reenviar código</Text>
+                    </TouchableOpacity>
+                    
+                    <Text style={styles.timerText}>
+                        {timeLeft > 0 ? (
+                            <>Disponible en <Text style={styles.timerBold}>{formatTime(timeLeft)}</Text></>
+                        ) : (
+                            'Ya puedes solicitar un nuevo código'
+                        )}
+                    </Text>
+                </View>
+
+                {/*tarjeta informativa */}
+                <View style={styles.securityCard}>
+                    <View style={styles.shieldIconContainer}>
+                        <Image style={styles.shieldIcon} source={require('../../assets/shieldIcon.png')} />
+                    </View>
+                    <View style={styles.securityTextContainer}>
+                        <Text style={styles.securityTitle}>Tu seguridad es nuestra prioridad</Text>
+                        <Text style={styles.securitySubtitle}>Nunca compartas este código con nadie.</Text>
+                    </View>
+                </View>
+
+            </View>
+        </SafeAreaView>
+    );
+};
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#FFFFFF',
+    },
+    
+
+    header: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingHorizontal: 20,
+        paddingVertical: 15,
+        borderBottomWidth: 1,
+        borderBottomColor: '#F0F0F0', 
+        marginBottom: 5,
+    },
+    backButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    backIcon: {
+        width: 20,
+        height: 20,
+        tintColor: '#FF1A1A', 
+        marginRight: 10,
+    },
+    headerTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: '#333333',
+    },
+    headerLogo: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: '#FF1A1A',
+    },
+
+    content: {
+        flex: 1,
+        alignItems: 'center',
+        paddingHorizontal: 20,
+        paddingTop: 10,
+    },
+
+    // icono principal estilos
+    iconWrapper: {
+        position: 'relative', // Para que el badge se posicione respecto a este contenedor
+        marginBottom: 20,
+    },
+    mainIconContainer: {
+        width: 90,
+        height: 90,
+        borderRadius: 45, 
+        backgroundColor: '#FDEAEB', 
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    emailIcon: {
+        width: 40,
+        height: 40,
+        tintColor: '#FF1A1A',
+        resizeMode: 'contain',
+    },
+
+    badgeIconContainer: {
+        borderRadius:'50%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: 35,
+        height: 35,
+        backgroundColor: '#FFFFFF',
+        elevation: 3, 
+        position: 'absolute',
+        bottom: -30,
+        right: -15,
+    },
+    badgeIcon: {
+        width: 25,
+        height: 25,
+    },
+
+    // estilo de texto
+    title: {
+        fontSize: 22,
+        fontWeight: 'bold',
+        color: '#333333',
+        marginBottom: 10,
+        marginTop: 20,
+    },
+    subtitle: {
+        fontSize: 14,
+        color: '#666666',
+        textAlign: 'center',
+        lineHeight: 20,
+        paddingHorizontal: 10,
+        marginBottom: 15,
+    },
+    emailMask: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#FF1A1A',
+        marginBottom: 30,
+    },
+
+    // inputs de OTP estilos
+    otpContainer: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        gap: 10, // Separación entre cajitas
+        width: '100%',
+        marginBottom: 30,
+        
+    },
+    otpInput: {
+        width: 48,
+        height: 50,
+        backgroundColor: '#F9FAFB', 
+        borderRadius: 8,
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: '#333333',
+        textAlign: 'center', 
+        paddingVertical: 0,       
+    },
+
+    // --- BOTÓN VERIFICAR ---
+    verifyButton: {
+        backgroundColor: '#FF1A1A',
+        width: '85%',
+        height: 55,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 12,
+        marginBottom: 30,
+    },
+    verifyButtonText: {
+        color: '#FFFFFF',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+
+    // estilo de apartado de reeenviado
+    resendContainer: {
+        alignItems: 'center',
+        marginBottom: 40,
+    },
+    resendText: {
+        fontSize: 14,
+        color: '#666666',
+        marginBottom: 10,
+    },
+    resendAction: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 10,
+    },
+    refreshIcon: {
+        width: 16,
+        height: 16,
+        tintColor: '#FF1A1A',
+        marginRight: 6,
+    },
+    resendActionText: {
+        color: '#FF1A1A',
+        fontSize: 14,
+        fontWeight: 'bold',
+    },
+    timerText: {
+        fontSize: 12,
+        color: '#999999',
+    },
+    timerBold: {
+        fontWeight: 'bold',
+        color: '#666666',
+    },
+
+    //Estilo de tarjeta de seguridad
+    securityCard: {
+        flexDirection: 'row',
+        backgroundColor: '#FFFFFF',
+        width: '85%',
+        padding: 15,
+        borderRadius: 12,
+        borderWidth: 1,
+        borderColor: '#F0F0F0', // Borde sutil gris
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.05,
+        shadowRadius: 5,
+        elevation: 2,
+    },
+    shieldIconContainer: {
+        width: 40,
+        height: 40,
+        backgroundColor: '#F5F5F5',
+        borderRadius: 8,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginRight: 15,
+    },
+    shieldIcon: {
+        tintColor: '#666666',
+    },
+    securityTextContainer: {
+        flex: 1, 
+    },
+    securityTitle: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#333333',
+        marginBottom: 7,
+    },
+    securitySubtitle: {
+        fontSize: 13,
+        color: '#5E3F3C',
+        lineHeight: 18,
+    }
+});

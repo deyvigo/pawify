@@ -1,0 +1,64 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #1e1e2e;
+  --color-secondary: #181825;
+  --color-primary-accent: #2a2d3e;
+  --color-primary-border: #3b3e52;
+  --color-subtitle: #8a8fa8;
+  --color-white: #e2e2f0;
+  --color-black: #000;
+  --color-active: #b4befe;
+  --color-start: #cba6f7;
+  --color-end: #b4befe;
+  --color-error: #f5c2c7;
+  --color-green: #a6e3a1;
+  --color-active-status: #a6e3a1;
+  --color-inactive-status: #9399b2;
+  --text-tiny: 0.7rem;
+  --text-tiny--line-height: 1rem;
+}
+
+:root {
+  --color-border-primary: #b4befe;
+  --color-border-secondary: #3b3e52;
+  --color-border-tertiary: #2a2d3e;
+  --color-background-primary: #1e1e2e;
+  --color-background-secondary: #2a2d3e;
+  --color-text-primary: #e2e2f0;
+  --color-text-tertiary: #8a8fa8;
+  --border-radius-lg: 0.75rem;
+  --border-radius-md: 0.5rem;
+
+  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
+  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
+  --mono: ui-monospace, Consolas, monospace;
+
+  font: 18px/145% var(--sans);
+  letter-spacing: 0.18px;
+  color-scheme: dark;
+  color: var(--color-text-primary);
+  background: var(--color-background-primary);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  @media (max-width: 1024px) {
+    font-size: 16px;
+  }
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+body {
+  width: 100dvw;
+  height: 100dvh;
+  margin: 0;
+}

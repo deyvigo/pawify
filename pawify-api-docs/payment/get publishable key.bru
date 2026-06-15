@@ -1,0 +1,15 @@
+meta {
+  name: get publishable key
+  type: http
+  seq: 1
+}
+
+get {
+  url: /stripe/publishable-key
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

@@ -48,7 +48,6 @@
 			<artifactId>spring-boot-starter-websocket</artifactId>
 		</dependency>
 
-
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-api</artifactId>
@@ -113,6 +112,12 @@
 		<dependency>
 			<groupId>com.sendgrid</groupId>
 			<artifactId>sendgrid-java</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.stripe</groupId>
+			<artifactId>stripe-java</artifactId>
+			<version>33.0.0</version>
 		</dependency>
 	</dependencies>
 

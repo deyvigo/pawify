@@ -30,6 +30,14 @@ cloudinary:
 sendgrid:
   api-key: ${SENDGRID_API_KEY}
 
+stripe:
+  publishable-key: ${STRIPE_PUBLISHABLE_KEY}
+  secret-key: ${STRIPE_SECRET_KEY}
+  webhook-secret: ${STRIPE_WEBHOOK_SECRET}
+
+server:
+  address: 0.0.0.0
+
 logging:
   level:
     org.springframework.web.servlet.DispatcherServlet: DEBUG
