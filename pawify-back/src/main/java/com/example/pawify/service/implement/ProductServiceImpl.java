@@ -87,8 +87,9 @@ public class ProductServiceImpl implements ProductService {
         productEntity.setCategory(categoryEntity);
 
         // create or find subcategory
-        SubCategoryEntity subCategoryEntity = subCategoryRepository.findByNameIgnoreCase(productCreateRequestDTO.subCategory().toLowerCase())
-            .orElse(null);
+        SubCategoryEntity subCategoryEntity = subCategoryRepository.findByNameIgnoreCaseAndCategory_Name(
+            productCreateRequestDTO.subCategory().toLowerCase(), categoryEntity.getName()
+        ).orElse(null);
 
         if (subCategoryEntity == null) {
             SubCategoryEntity subCategory = new SubCategoryEntity();
@@ -119,7 +120,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Slice<ProductResponseSimpleDTO> getProducts(
+    public Page<ProductResponseSimpleDTO> getProducts(
         String search,
         String brand,
         String category,
@@ -149,11 +150,7 @@ public class ProductServiceImpl implements ProductService {
         specs = specs.and(ProductSpecification.isActive());
 
         Page<ProductEntity> page = productRepository.findAll(specs, pageable);
-        return new SliceImpl<>(
-            page.map(productMapper::toResponseDTO).getContent(),
-            pageable,
-            page.hasNext()
-        );
+        return page.map(productMapper::toResponseDTO);
     }
 
     @Override
@@ -172,7 +169,7 @@ public class ProductServiceImpl implements ProductService {
         ProductEntity productEntity = productRepository.findByShareCode(shareCode)
             .orElseThrow(() -> new ResourceNotFoundException("Product with share code " + shareCode + " not found"));
 
-        if (!productEntity.isActive()) return;
+        if (productEntity.isActive()) return;
 
         productEntity.setActive(true);
         productRepository.save(productEntity);
@@ -202,7 +199,7 @@ public class ProductServiceImpl implements ProductService {
                 return categoryRepository.save(newCategory);
             });
 
-        SubCategoryEntity subCategoryEntity = subCategoryRepository.findByNameIgnoreCase(dto.subCategory())
+        SubCategoryEntity subCategoryEntity = subCategoryRepository.findByNameIgnoreCaseAndCategory_Name(dto.subCategory(), categoryEntity.getName())
             .orElseGet(() -> {
                 SubCategoryEntity newSubCategory = new SubCategoryEntity();
                 newSubCategory.setCategory(categoryEntity);
@@ -216,6 +213,7 @@ public class ProductServiceImpl implements ProductService {
         productInDb.setCategory(categoryEntity);
         productInDb.setSubCategory(subCategoryEntity);
         productInDb.setPrice(dto.price());
+        productInDb.setStock(dto.stock());
 
         return productMapper.toResponseDTO(productRepository.save(productInDb));
     }

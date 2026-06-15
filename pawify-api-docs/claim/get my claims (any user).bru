@@ -1,0 +1,20 @@
+meta {
+  name: get my claims (any user)
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{actual_url}}/claim/mine
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJpZCI6MSwiZmlyc3RfbmFtZSI6Ikpob24iLCJsYXN0X25hbWUiOiJBZG1pbiIsInVzZXJuYW1lIjoidXNlcmFkbWluIiwiZXhwIjoxNzgxOTI2ODcyfQ.Aek6y35Jhm7ENVxPn2Hx4Cz86NasVrtqKe_Dgr8G9zw
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

@@ -1,8 +1,11 @@
 package com.example.pawify.service.implement;
 
 import com.example.pawify.dto.out.product.CategoryResponseDTO;
+import com.example.pawify.dto.out.product.SubCategoryResponseDTO;
 import com.example.pawify.mapper.CategoryMapper;
+import com.example.pawify.mapper.SubCategoryMapper;
 import com.example.pawify.repository.CategoryRepository;
+import com.example.pawify.repository.SubCategoryRepository;
 import com.example.pawify.service.CategoryService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,11 +17,22 @@ import java.util.List;
 public class CategoryServiceImpl implements CategoryService {
     private final CategoryMapper categoryMapper;
     private final CategoryRepository categoryRepository;
+    private final SubCategoryRepository subCategoryRepository;
+    private final SubCategoryMapper subCategoryMapper;
 
     @Override
     public List<CategoryResponseDTO> findAllOrderedByNameAsc() {
-        return categoryRepository.findByOrderByNameAsc().stream()
+        return categoryRepository.findByOrderByNameAsc()
+            .stream()
             .map(categoryMapper::toDTO)
+            .toList();
+    }
+
+    @Override
+    public List<SubCategoryResponseDTO> findAllSubCategoriesByCategoryNameAsc(String categoryName) {
+        return subCategoryRepository.findAllByCategory_NameOrderByNameAsc(categoryName)
+            .stream()
+            .map(subCategoryMapper::toDTO)
             .toList();
     }
 }

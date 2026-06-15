@@ -29,3 +29,7 @@ cloudinary:
 
 sendgrid:
   api-key: ${SENDGRID_API_KEY}
+
+logging:
+  level:
+    org.springframework.web.servlet.DispatcherServlet: DEBUG

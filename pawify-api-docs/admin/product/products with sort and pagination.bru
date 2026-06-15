@@ -1,0 +1,29 @@
+meta {
+  name: products with sort and pagination
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{actual_url}}/admin/product?page=0&sort=brand.name,desc
+  body: none
+  auth: bearer
+}
+
+params:query {
+  page: 0
+  sort: brand.name,desc
+  ~size: 15
+  ~category: accesorios
+  ~search: correa
+  ~subCategory: correa
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiJ9.eyJmaXJzdF9uYW1lIjoiSnVhbiIsImxhc3RfbmFtZSI6IkFkbWluIiwidXNlcm5hbWUiOiJ1c2VyYWRtaW4xIiwicm9sZSI6IkFETUlOIiwiaWQiOjIsImV4cCI6MTc4MDI5NjM5OX0.Y9NENa7M6IxzCV9OV2GSP8B9HzlRP3UQN1zOrvQFXPs
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

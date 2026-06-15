@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Entity
@@ -24,7 +25,7 @@ public class TrackingStatusEntity {
     private String description;
 
     @Column(nullable = false)
-    private LocalDateTime timestamp;
+    private Instant timestamp;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false)
@@ -32,6 +33,6 @@ public class TrackingStatusEntity {
 
     @PrePersist
     public void prePersist() {
-        this.timestamp = LocalDateTime.now();
+        this.timestamp = Instant.now();
     }
 }

@@ -6,5 +6,5 @@ import com.example.pawify.dto.out.order.TrackingStatusResponseDTO;
 
 public interface TrackingStatusService {
     TrackingStatusResponseDTO createTrackingStatus(TrackingStatusCreateRequestDTO requestDTO);
-    Page<TrackingStatusResponseDTO> getAllByTrackingCode(String trackingCode, Long cursor, Integer size);
+    Page<TrackingStatusResponseDTO> getAllByTrackingCode(String trackingCode, String cursor, Integer size);
 }

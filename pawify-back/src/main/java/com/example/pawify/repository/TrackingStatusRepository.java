@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface TrackingStatusRepository extends JpaRepository<TrackingStatusEntity, Long> {
+public interface TrackingStatusRepository extends JpaRepository<TrackingStatusEntity, Long>, TrackingStatusCustomRepository {
     List<TrackingStatusEntity> findAllByOrderOrderByTimestampDesc(OrderEntity order, Limit limit); // first page
 
     List<TrackingStatusEntity> findAllByOrderAndIdLessThanOrderByTimestampDesc(OrderEntity order, Long idIsLessThan, Limit limit);

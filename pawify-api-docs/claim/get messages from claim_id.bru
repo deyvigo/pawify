@@ -1,0 +1,25 @@
+meta {
+  name: get messages from claim_id
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{actual_url}}/message/3?size=5&cursor=eyJpbnN0YW50IjoxNzgxMzYwMjQ3LjM3NzA0NTAwMCwiaWQiOjN9
+  body: none
+  auth: bearer
+}
+
+params:query {
+  size: 5
+  cursor: eyJpbnN0YW50IjoxNzgxMzYwMjQ3LjM3NzA0NTAwMCwiaWQiOjN9
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJpZCI6MSwiZmlyc3RfbmFtZSI6Ikpob24iLCJsYXN0X25hbWUiOiJBZG1pbiIsInVzZXJuYW1lIjoidXNlcmFkbWluIiwiZXhwIjoxNzgxOTM4MDIyfQ.iaCfInNl-rR1hdQv3MRcIoi1oiusnXOlItGbT_2DEA0
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

@@ -47,7 +47,7 @@ public class OrderEntity {
     @PrePersist
     public void prePersist() {
         this.orderAt = LocalDateTime.now();
-        this.orderStatus = OrderStatus.PAID;
+        this.orderStatus = OrderStatus.PENDING;
         this.shippingStatus = ShippingStatus.IN_TRANSIT;
     }
 }

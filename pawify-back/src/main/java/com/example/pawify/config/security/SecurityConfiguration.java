@@ -37,7 +37,8 @@ public class SecurityConfiguration {
                     "/swagger-ui.html",
                     "/swagger-ui/**",
                     "/api-docs",
-                    "/helloworld"
+                    "/helloworld",
+                    "/ws"
                 ).permitAll()
                 .requestMatchers(request -> "OPTIONS".equalsIgnoreCase(request.getMethod())).permitAll()
                 .requestMatchers(

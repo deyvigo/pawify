@@ -3,6 +3,7 @@ package com.example.pawify.service;
 import com.example.pawify.dto.in.product.ProductCreateRequestDTO;
 import com.example.pawify.dto.out.product.ProductResponseSimpleDTO;
 import com.example.pawify.model.UserEntity;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,7 +16,7 @@ public interface ProductService {
         ProductCreateRequestDTO productCreateRequestDTO, List<MultipartFile> images, UserEntity userEntity
     );
 
-    Slice<ProductResponseSimpleDTO> getProducts(
+    Page<ProductResponseSimpleDTO> getProducts(
         String search,
         String brand,
         String category,

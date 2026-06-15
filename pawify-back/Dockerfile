@@ -16,4 +16,4 @@ WORKDIR /app
 COPY --from=build /app/target/*.jar /app/app.jar
 
 EXPOSE ${PORT}
-ENTRYPOINT ["sh", "-c", "java -jar /app/app.jar --server.port=${PORT} --spring.profiles.active=dev"]
+ENTRYPOINT ["sh", "-c", "java -jar /app/app.jar --server.port=${PORT} --spring.profiles.active=prod"]

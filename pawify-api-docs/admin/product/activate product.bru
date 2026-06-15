@@ -1,0 +1,20 @@
+meta {
+  name: activate product
+  type: http
+  seq: 5
+}
+
+patch {
+  url: {{actual_url}}/product/0taabpj7mu/activate
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiJ9.eyJmaXJzdF9uYW1lIjoiSnVhbiIsImxhc3RfbmFtZSI6IkFkbWluIiwidXNlcm5hbWUiOiJ1c2VyYWRtaW4xIiwicm9sZSI6IkFETUlOIiwiaWQiOjIsImV4cCI6MTc4MDI5NjM5OX0.Y9NENa7M6IxzCV9OV2GSP8B9HzlRP3UQN1zOrvQFXPs
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
