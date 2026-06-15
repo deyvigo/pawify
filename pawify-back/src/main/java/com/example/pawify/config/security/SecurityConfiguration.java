@@ -38,7 +38,8 @@ public class SecurityConfiguration {
                     "/swagger-ui/**",
                     "/api-docs",
                     "/helloworld",
-                    "/ws"
+                    "/ws",
+                    "/webhook/**"
                 ).permitAll()
                 .requestMatchers(request -> "OPTIONS".equalsIgnoreCase(request.getMethod())).permitAll()
                 .requestMatchers(
