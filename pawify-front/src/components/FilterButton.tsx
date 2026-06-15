@@ -4,7 +4,7 @@ import { colors } from "../theme/colors";
 
 interface FilterButtonProps {
   label: string;
-  icon: string;
+  icon: React.ReactNode;
   onPress: () => void;
 }
 
@@ -15,7 +15,7 @@ export const FilterButton: React.FC<FilterButtonProps> = ({
 }) => {
   return (
     <TouchableOpacity style={styles.container} onPress={onPress}>
-      <Text style={styles.icon}>{icon}</Text>
+      {icon}
       <Text style={styles.label}>{label}</Text>
     </TouchableOpacity>
   );
@@ -34,9 +34,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 0,
     borderColor: colors.border,
-  },
-  icon: {
-    fontSize: 16,
   },
   label: {
     fontSize: 14,

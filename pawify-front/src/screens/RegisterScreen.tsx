@@ -11,6 +11,8 @@ import {
     Alert
 } from 'react-native';
 import { useRegister } from '../hooks/useRegister';
+import { EyeIcon } from '../components/icons/EyeIcon';
+import { EyeOffIcon } from '../components/icons/EyeOffIcon';
 
 interface RegisterProps {
     onNavigateToLogin: () => void;
@@ -251,7 +253,7 @@ export const RegisterScreen = ({ onNavigateToLogin }: RegisterProps) => {
                             }}
                         />
                         <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-                            <Image style={styles.eyeIcon} source={require('../../assets/eyeIcon.png')} />
+                            {showPassword ? <EyeOffIcon color="#6B7280" size={22} /> : <EyeIcon color="#6B7280" size={22} />}
                         </TouchableOpacity>
                     </View>
                     {passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : null}
@@ -278,7 +280,7 @@ export const RegisterScreen = ({ onNavigateToLogin }: RegisterProps) => {
                             }}
                         />
                         <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
-                            <Image style={styles.eyeIcon} source={require('../../assets/eyeIcon.png')} />
+                            {showConfirmPassword ? <EyeOffIcon color="#6B7280" size={22} /> : <EyeIcon color="#6B7280" size={22} />}
                         </TouchableOpacity>
                     </View>
                     {confirmPasswordError ? <Text style={styles.errorText}>{confirmPasswordError}</Text> : null}

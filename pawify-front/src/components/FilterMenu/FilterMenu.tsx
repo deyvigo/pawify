@@ -7,6 +7,8 @@ import {
   ScrollView,
 } from "react-native";
 import { colors } from "../../theme/colors";
+import { useAppContext } from "../../context/AppContext";
+import { capitalize, titleCase } from "../../utils/format";
 
 interface FilterMenuProps {
   onApply: (filters: FilterState) => void;
@@ -17,32 +19,14 @@ export interface FilterState {
   priceMax: number;
   brands: string[];
   categories: string[];
+  subCategories: string[];
   pets: string[];
 }
-
-const mockBrands = [
-  "Royal Canin",
-  "Purina",
-  "Pedigree",
-  "Whiskas",
-  "Pro Plan",
-  "Hill's",
-  "Eukanuba",
-];
-const mockCategories = [
-  "Alimento",
-  "Juguetes",
-  "Higiene",
-  "Salud",
-  "Accesorios",
-  "Camas",
-];
-const mockPets = ["Perro", "Gato", "Pez", "Ave"];
 
 const THUMB_SIZE = 22;
 const THUMB_RADIUS = THUMB_SIZE / 2;
 
-type AccordionSectionType = "price" | "brands" | "category" | "pets" | null;
+type AccordionSectionType = "price" | "brands" | "category" | null;
 
 interface AccordionSectionProps {
   title: string;
@@ -75,11 +59,14 @@ const AccordionSection: React.FC<AccordionSectionProps> = ({
 };
 
 export const FilterMenu: React.FC<FilterMenuProps> = ({ onApply }) => {
+  const { categories: apiCategories, brands: apiBrands } = useAppContext();
   const [priceMin, setPriceMin] = useState(0);
   const [priceMax, setPriceMax] = useState(100);
   const [brands, setBrands] = useState<string[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
+  const [subCategories, setSubCategories] = useState<string[]>([]);
   const [pets, setPets] = useState<string[]>([]);
+  const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
   const [activeSection, setActiveSection] = useState<AccordionSectionType>(null);
 
   const trackRef = useRef<View>(null);
@@ -103,7 +90,7 @@ export const FilterMenu: React.FC<FilterMenuProps> = ({ onApply }) => {
   );
 
   const handleApply = () => {
-    onApply({ priceMin, priceMax, brands, categories, pets });
+    onApply({ priceMin, priceMax, brands, categories, subCategories, pets });
   };
 
   const handleReset = () => {
@@ -111,7 +98,9 @@ export const FilterMenu: React.FC<FilterMenuProps> = ({ onApply }) => {
     setPriceMax(100);
     setBrands([]);
     setCategories([]);
+    setSubCategories([]);
     setPets([]);
+    setExpandedCategory(null);
   };
 
   const toggleSection = (section: AccordionSectionType) => {
@@ -213,23 +202,27 @@ export const FilterMenu: React.FC<FilterMenuProps> = ({ onApply }) => {
           onPress={() => toggleSection("brands")}
         >
           <View style={styles.tagRow}>
-            {mockBrands.map((option) => {
-              const isActive = brands.includes(option);
-              return (
-                <TouchableOpacity
-                  key={option}
-                  style={[styles.tag, isActive && styles.tagActive]}
-                  onPress={() => toggleOption(brands, setBrands, option)}
-                  activeOpacity={0.7}
-                >
-                  <Text
-                    style={[styles.tagText, isActive && styles.tagTextActive]}
+            {apiBrands.length === 0 ? (
+              <Text style={styles.emptyText}>No hay marcas disponibles</Text>
+            ) : (
+              apiBrands.map((b) => {
+                const isActive = brands.includes(b.name);
+                return (
+                  <TouchableOpacity
+                    key={b.id}
+                    style={[styles.tag, isActive && styles.tagActive]}
+                    onPress={() => toggleOption(brands, setBrands, b.name)}
+                    activeOpacity={0.7}
                   >
-                    {option}
-                  </Text>
-                </TouchableOpacity>
-              );
-            })}
+                    <Text
+                      style={[styles.tagText, isActive && styles.tagTextActive]}
+                    >
+                      {titleCase(b.name)}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })
+            )}
           </View>
         </AccordionSection>
 
@@ -239,49 +232,59 @@ export const FilterMenu: React.FC<FilterMenuProps> = ({ onApply }) => {
           onPress={() => toggleSection("category")}
         >
           <View style={styles.tagRow}>
-            {mockCategories.map((option) => {
-              const isActive = categories.includes(option);
-              return (
-                <TouchableOpacity
-                  key={option}
-                  style={[styles.tag, isActive && styles.tagActive]}
-                  onPress={() => toggleOption(categories, setCategories, option)}
-                  activeOpacity={0.7}
-                >
-                  <Text
-                    style={[styles.tagText, isActive && styles.tagTextActive]}
-                  >
-                    {option}
-                  </Text>
-                </TouchableOpacity>
-              );
-            })}
-          </View>
-        </AccordionSection>
-
-        <AccordionSection
-          title="Mascota"
-          isOpen={activeSection === "pets"}
-          onPress={() => toggleSection("pets")}
-        >
-          <View style={styles.tagRow}>
-            {mockPets.map((option) => {
-              const isActive = pets.includes(option);
-              return (
-                <TouchableOpacity
-                  key={option}
-                  style={[styles.tag, isActive && styles.tagActive]}
-                  onPress={() => toggleOption(pets, setPets, option)}
-                  activeOpacity={0.7}
-                >
-                  <Text
-                    style={[styles.tagText, isActive && styles.tagTextActive]}
-                  >
-                    {option}
-                  </Text>
-                </TouchableOpacity>
-              );
-            })}
+            {apiCategories.length === 0 ? (
+              <Text style={styles.emptyText}>No hay categorías disponibles</Text>
+            ) : (
+              apiCategories.map((cat) => {
+                const isActive = categories.includes(cat.name);
+                const isExpanded = expandedCategory === cat.name;
+                return (
+                  <View key={cat.id} style={styles.categoryGroup}>
+                    <TouchableOpacity
+                      style={[styles.tag, isActive && styles.tagActive]}
+                      onPress={() => {
+                        if (isActive) {
+                          setCategories(categories.filter((c) => c !== cat.name));
+                          setSubCategories([]);
+                          setExpandedCategory(null);
+                        } else {
+                          setCategories([cat.name]);
+                          setExpandedCategory(isExpanded ? null : cat.name);
+                        }
+                      }}
+                      activeOpacity={0.7}
+                    >
+                      <Text
+                        style={[styles.tagText, isActive && styles.tagTextActive]}
+                      >
+                        {capitalize(cat.name)}
+                      </Text>
+                    </TouchableOpacity>
+                    {isExpanded && cat.sub_categories?.length > 0 && (
+                      <View style={styles.subCategoryRow}>
+                        {(cat.sub_categories || []).map((sub) => {
+                          const isSubActive = subCategories.includes(sub.name);
+                          return (
+                            <TouchableOpacity
+                              key={sub.id}
+                              style={[styles.subTag, isSubActive && styles.subTagActive]}
+                              onPress={() => toggleOption(subCategories, setSubCategories, sub.name)}
+                              activeOpacity={0.7}
+                            >
+                              <Text
+                                style={[styles.subTagText, isSubActive && styles.subTagTextActive]}
+                              >
+                                {capitalize(sub.name)}
+                              </Text>
+                            </TouchableOpacity>
+                          );
+                        })}
+                      </View>
+                    )}
+                  </View>
+                );
+              })
+            )}
           </View>
         </AccordionSection>
       </ScrollView>
@@ -381,6 +384,42 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     gap: 8,
+  },
+  emptyText: {
+    fontSize: 13,
+    color: colors.gray,
+    paddingVertical: 8,
+  },
+  categoryGroup: {
+    width: "100%",
+    marginBottom: 4,
+  },
+  subCategoryRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 6,
+    marginTop: 6,
+    marginLeft: 4,
+  },
+  subTag: {
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: colors.background,
+  },
+  subTagActive: {
+    backgroundColor: colors.primary,
+    borderColor: colors.primary,
+  },
+  subTagText: {
+    fontSize: 12,
+    color: colors.textSecondary,
+  },
+  subTagTextActive: {
+    color: colors.white,
+    fontWeight: "600",
   },
   tag: {
     paddingHorizontal: 12,

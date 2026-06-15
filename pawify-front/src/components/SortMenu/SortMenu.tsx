@@ -1,20 +1,24 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { colors } from '../../theme/colors';
+import { SortAZIcon } from '../icons/SortAZIcon';
+import { SortZAIcon } from '../icons/SortZAIcon';
+import { MoveDownIcon } from '../icons/MoveDownIcon';
+import { MoveUpIcon } from '../icons/MoveUpIcon';
 
 type SortOption = 'price-asc' | 'price-desc' | 'name-az' | 'name-za' | 'best-selling' | 'best-rated';
 
 interface SortOptionConfig {
   key: SortOption;
   label: string;
-  icon: string;
+  icon: React.ReactNode;
 }
 
 const sortOptions: SortOptionConfig[] = [
-  { key: 'price-asc', label: 'Menor precio', icon: '↓' },
-  { key: 'price-desc', label: 'Mayor precio', icon: '↑' },
-  { key: 'name-az', label: 'Nombre A-Z', icon: 'A' },
-  { key: 'name-za', label: 'Nombre Z-A', icon: 'Z' },
+  { key: 'price-asc', label: 'Menor precio', icon: <MoveDownIcon size={16} /> },
+  { key: 'price-desc', label: 'Mayor precio', icon: <MoveUpIcon size={16} /> },
+  { key: 'name-az', label: 'Nombre A-Z', icon: <SortAZIcon size={16} /> },
+  { key: 'name-za', label: 'Nombre Z-A', icon: <SortZAIcon size={16} /> },
   { key: 'best-selling', label: 'Más vendidos', icon: '🔥' },
   { key: 'best-rated', label: 'Mejor valorados', icon: '⭐' },
 ];
@@ -34,7 +38,11 @@ export const SortMenu: React.FC<SortMenuProps> = ({ activeSort, onSortSelect }) 
           onPress={() => onSortSelect(option.key)}
           activeOpacity={0.7}
         >
-          <Text style={styles.icon}>{option.icon}</Text>
+          {typeof option.icon === 'string' ? (
+            <Text style={styles.icon}>{option.icon}</Text>
+          ) : (
+            <View style={styles.iconContainer}>{option.icon}</View>
+          )}
           <Text style={[styles.label, activeSort === option.key && styles.activeLabel]}>
             {option.label}
           </Text>
@@ -73,6 +81,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     width: 20,
     textAlign: 'center',
+  },
+  iconContainer: {
+    width: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   label: {
     flex: 1,
