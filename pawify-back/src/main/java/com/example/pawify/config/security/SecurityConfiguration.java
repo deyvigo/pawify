@@ -45,7 +45,8 @@ public class SecurityConfiguration {
                     "/card/**",
                     "/address/**",
                     "/buyer/**",
-                    "/review/**"
+                    "/review/**",
+                    "/stripe/**"
                 ).hasRole("BUYER")
                 .requestMatchers(
                     "/admin/**"
