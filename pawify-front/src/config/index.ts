@@ -5,8 +5,10 @@ import { getToken, saveToken, deleteToken } from "../services/storageService";
 
 const { API_BASE_URL, AUTH_TOKEN } = Constants.expoConfig?.extra || {};
 
-export const API_URL = process.env.API_BASE_URL || API_BASE_URL || "https://pawify-g5fb.onrender.com";
-export let authToken: string | null = process.env.AUTH_TOKEN || AUTH_TOKEN || null;
+export const API_URL =
+  process.env.API_BASE_URL || API_BASE_URL || "http://192.168.0.200:8080";
+export let authToken: string | null =
+  process.env.AUTH_TOKEN || AUTH_TOKEN || null;
 
 export async function setAuthToken(token: string | null) {
   authToken = token;
