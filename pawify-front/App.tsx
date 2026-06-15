@@ -16,6 +16,7 @@ import { RegisterScreen } from './src/screens/RegisterScreen';
 import { RecoveryScreen } from './src/screens/RecoveryScreen'
 import { NewPasswordScreen } from './src/screens/NewPasswordScreen';
 import { OrderDetailScreen } from './src/screens/OrderDetailScreen';
+import { ClaimDetailScreen } from './src/screens/ClaimDetailScreen';
 
 import { Product } from './src/types/product';
 import { useProducts } from './src/hooks/useProducts';
@@ -23,7 +24,7 @@ import { useCategories } from './src/hooks/useCategories';
 import { UserPayload, CartItem } from './src/types';
 import { setAuthToken, loadAuthToken, getAuthUser } from './src/config';
 import { AppContext,TabKey } from './src/context/AppContext';
-import { OrderResponseDTO } from './src/types/orders';
+import { OrderResponseDTO, ClaimResponseDTO } from './src/types/orders';
 import { loadCartFromStorage, saveCartToStorage } from './src/services/cartStorage';
 
 const screens: Record<TabKey, any> = {
@@ -38,6 +39,7 @@ export default function App() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [selectedOrder, setSelectedOrder] = useState<OrderResponseDTO | null>(null);
+  const [selectedClaim, setSelectedClaim] = useState<ClaimResponseDTO | null>(null);
 
   const [currentUser,setCurrentUser] = useState<UserPayload | null>(null);
   const [isLoadingAuth, setIsLoadingAuth] = useState(true);
@@ -244,7 +246,9 @@ export default function App() {
           ) : selectedProduct ? (
             <ProductDetailScreen product={selectedProduct} onBack={() => setSelectedProduct(null)} />
           ) : selectedOrder ? (
-            <OrderDetailScreen order={selectedOrder} onBack={() => setSelectedOrder(null)} />
+            <OrderDetailScreen order={selectedOrder} onBack={() => setSelectedOrder(null)} onNavigateToClaim={(claim) => { setSelectedOrder(null); setSelectedClaim(claim); }} />
+          ) : selectedClaim ? (
+            <ClaimDetailScreen claim={selectedClaim} onBack={() => setSelectedClaim(null)} />
           ) : (
             
             <ActiveScreen onNavigateToDetail={setSelectedOrder} />
@@ -252,11 +256,12 @@ export default function App() {
         </View>
         <DrawerMenu isOpen={drawerOpen} onClose={() => setDrawerOpen(false)} />
         
-        {!selectedProduct && !selectedOrder && (
+        {!selectedProduct && !selectedOrder && !selectedClaim && (
           <BottomNavBar activeTab={activeTab} onTabPress={(tab) => {
             setActiveTab(tab);
             setSelectedProduct(null);
-            setSelectedOrder(null); // Limpiamos al cambiar de pestaña
+            setSelectedOrder(null);
+            setSelectedClaim(null);
           }} />
         )}
         <StatusBar style="dark" />

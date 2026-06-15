@@ -1,14 +1,17 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { OrderResponseDTO } from '../types/orders';
+import { OrderResponseDTO, ClaimResponseDTO } from '../types/orders';
+import { createClaim } from '../services/claimService';
 
 interface OrderDetailProps {
     order: OrderResponseDTO;
     onBack: () => void;
+    onNavigateToClaim: (claim: ClaimResponseDTO) => void;
 }
 
-export const OrderDetailScreen = ({ order, onBack }: OrderDetailProps) => {
+export const OrderDetailScreen = ({ order, onBack, onNavigateToClaim }: OrderDetailProps) => {
+    const [claims, setClaims] = useState<Record<number, ClaimResponseDTO>>({});
 
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);
@@ -47,6 +50,16 @@ export const OrderDetailScreen = ({ order, onBack }: OrderDetailProps) => {
 
     const currentProgressWeight = getStatusWeight(order.shipping_status);
     const timelineSteps = ['Pedido Recibido', 'Procesando', 'Enviado', 'Entregado'];
+
+    const handleClaim = async (detailId: number, productName: string) => {
+      try {
+        const claim = await createClaim(detailId);
+        setClaims(prev => ({ ...prev, [detailId]: claim }));
+        onNavigateToClaim(claim);
+      } catch (error) {
+        Alert.alert('Error', 'No se pudo crear el reclamo. Intenta de nuevo.');
+      }
+    };
 
     return (
         <SafeAreaView style={styles.container}>
@@ -119,16 +132,35 @@ export const OrderDetailScreen = ({ order, onBack }: OrderDetailProps) => {
                 <View style={styles.card}>
                     <Text style={styles.sectionTitle}>ARTÍCULOS EN ESTE PEDIDO</Text>
                     {order.details.map((item) => (
-                        <View key={item.id} style={styles.itemRow}>
-                            <Image source={{ uri: item.product_image || 'https://via.placeholder.com/150' }} style={styles.itemImage} />
-                            <View style={styles.itemInfo}>
-                                <Text style={styles.itemName}>{item.product_name}</Text>
-                                <Text style={styles.itemSubText}>Cantidad: {item.quantity}</Text>
+                        <View key={item.id}>
+                            <View style={styles.itemRow}>
+                                <Image source={{ uri: item.product_image || 'https://via.placeholder.com/150' }} style={styles.itemImage} />
+                                <View style={styles.itemInfo}>
+                                    <Text style={styles.itemName}>{item.product_name}</Text>
+                                    <Text style={styles.itemSubText}>Cantidad: {item.quantity}</Text>
+                                </View>
+                                <View style={styles.itemPriceContainer}>
+                                    <Text style={styles.itemTotal}>S/{item.total.toFixed(2)}</Text>
+                                    <Text style={styles.itemUnit}>S/{item.price.toFixed(2)} c/u</Text>
+                                </View>
                             </View>
-                            <View style={styles.itemPriceContainer}>
-                                <Text style={styles.itemTotal}>S/{item.total.toFixed(2)}</Text>
-                                <Text style={styles.itemUnit}>S/{item.price.toFixed(2)} c/u</Text>
-                            </View>
+                            {order.shipping_status === 'DELIVERED' && (
+                                claims[item.id] ? (
+                                    <TouchableOpacity
+                                        style={styles.claimButton}
+                                        onPress={() => onNavigateToClaim(claims[item.id])}
+                                    >
+                                        <Text style={styles.claimButtonText}>Ver reclamo</Text>
+                                    </TouchableOpacity>
+                                ) : (
+                                    <TouchableOpacity
+                                        style={styles.claimButton}
+                                        onPress={() => handleClaim(item.id, item.product_name)}
+                                    >
+                                        <Text style={styles.claimButtonText}>Reclamar</Text>
+                                    </TouchableOpacity>
+                                )
+                            )}
                         </View>
                     ))}
                 </View>
@@ -202,6 +234,21 @@ const styles = StyleSheet.create({
     itemPriceContainer: { alignItems: 'flex-end' },
     itemTotal: { fontSize: 14, fontWeight: 'bold', color: '#B91C1C', marginBottom: 4 },
     itemUnit: { fontSize: 12, color: '#6B7280' },
+    claimButton: {
+        backgroundColor: '#FFF',
+        borderWidth: 1,
+        borderColor: '#DC2626',
+        borderRadius: 8,
+        paddingVertical: 8,
+        alignItems: 'center',
+        marginBottom: 15,
+        marginHorizontal: 0,
+    },
+    claimButtonText: {
+        color: '#DC2626',
+        fontWeight: 'bold',
+        fontSize: 13,
+    },
     summaryCard: { backgroundColor: '#B91C1C', borderRadius: 16, padding: 20, marginBottom: 30 },
     summaryRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 },
     summaryText: { color: '#FECACA', fontSize: 14 },
