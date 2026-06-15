@@ -33,6 +33,7 @@ export default {
     },
     plugins: ["expo-secure-store"],
     extra: {
+      API_BASE_URL: process.env.API_BASE_URL,
       eas: {
         projectId: "c4f74a0f-26a7-4626-864b-513d8078dfd6",
       },

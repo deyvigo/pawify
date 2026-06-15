@@ -5,8 +5,8 @@ import { getToken, saveToken, deleteToken } from "../services/storageService";
 
 const { API_BASE_URL, AUTH_TOKEN } = Constants.expoConfig?.extra || {};
 
-export const API_URL = process.env.API_BASE_URL || API_BASE_URL || "https://pawify-g5fb.onrender.com";
-export let authToken: string | null = process.env.AUTH_TOKEN || AUTH_TOKEN || null;
+export const API_URL = API_BASE_URL;
+export let authToken: string | null = AUTH_TOKEN || null;
 
 export async function setAuthToken(token: string | null) {
   authToken = token;
@@ -25,7 +25,7 @@ export async function loadAuthToken(): Promise<string | null> {
     }
     return authToken;
   } catch (error) {
-    console.error('Error loading auth token:', error);
+    console.error("Error loading auth token:", error);
     return null;
   }
 }
