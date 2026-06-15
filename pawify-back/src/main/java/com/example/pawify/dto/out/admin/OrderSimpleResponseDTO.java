@@ -8,5 +8,6 @@ public record OrderSimpleResponseDTO(
     BigDecimal totalPrice,
     LocalDateTime orderAt,
     String trackingCode,
-    String shippingStatus
+    String shippingStatus,
+    String orderStatus
 ) {}
