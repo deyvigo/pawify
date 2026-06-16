@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { Client } from '@stomp/stompjs';
+import SockJS from 'sockjs-client';
 import { MessageResponseDTO } from '../types/orders';
 import { getMessages } from '../services/claimService';
-import { WS_URL } from '../config';
+import { API_URL } from '../config';
 
 export const useWebsocket = (claimId: number | null, token?: string | null) => {
     const [messages, setMessages] = useState<MessageResponseDTO[]>([]);
@@ -17,11 +18,11 @@ export const useWebsocket = (claimId: number | null, token?: string | null) => {
         if (!claimId) return;
         try {
             const response = await getMessages(claimId, cursorValue);
-            if (cursorValue) {
-                setMessages(prev => [...prev, ...response.content]);
-            } else {
-                setMessages(response.content);
-            }
+            setMessages(prev => {
+                const existingIds = new Set(prev.map(m => m.id));
+                const newMsgs = response.content.filter(m => !existingIds.has(m.id));
+                return [...prev, ...newMsgs];
+            });
             setCursor(response.cursor);
             setHasMore(response.has_next);
         } catch (error) {
@@ -50,29 +51,27 @@ export const useWebsocket = (claimId: number | null, token?: string | null) => {
     useEffect(() => {
         if (!claimId || !token) return;
 
-        const url = `${WS_URL}/ws`;
-
-        console.log('Conectando WebSocket a:', url, 'Token:', token?.slice(0, 20) + '...');
+        const url = `${API_URL}/ws-sockjs`;
 
         const client = new Client({
-            webSocketFactory: () => new WebSocket(url),
+            webSocketFactory: () => new SockJS(url),
             connectHeaders: {
                 Authorization: `Bearer ${token}`,
             },
             reconnectDelay: 5000,
-            forceBinaryWSFrames: true,
-            appendMissingNULLonIncoming: true,
-            debug: (str) => console.log('STOMP:', str),
         });
 
         client.onConnect = () => {
             console.log('STOMP Conectado');
-
             client.subscribe('/user/queue/claim', (message) => {
                 if (message.body) {
                     const receivedMessage: MessageResponseDTO = JSON.parse(message.body);
                     if (receivedMessage.claim_id === claimId) {
-                        setMessages(prev => [receivedMessage, ...prev]);
+                        setMessages(prev => {
+                            const exists = prev.some(m => m.id === receivedMessage.id);
+                            if (exists) return prev;
+                            return [receivedMessage, ...prev];
+                        });
                     }
                 }
             });
@@ -82,17 +81,12 @@ export const useWebsocket = (claimId: number | null, token?: string | null) => {
             console.error('STOMP Error:', frame.headers['message']);
         };
 
-        client.onWebSocketClose = (event) => {
-            console.log('STOMP WebSocket cerrado - code:', event.code, 'reason:', event.reason);
-        };
-
         client.activate();
         stompClientRef.current = client;
 
         return () => {
             if (stompClientRef.current) {
                 stompClientRef.current.deactivate();
-                console.log('STOMP Desconectado');
             }
         };
     }, [claimId, token]);

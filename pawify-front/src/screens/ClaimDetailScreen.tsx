@@ -1,9 +1,10 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, FlatList, TextInput, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, TextInput, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ClaimResponseDTO, MessageResponseDTO } from '../types/orders';
 import { useWebsocket } from '../context/WebSocket';
 import { useAppContext } from '../context/AppContext';
+import { ArrowLeftIcon, SendHorizontalIcon } from '../components/Icons';
 
 interface ClaimDetailProps {
     claim: ClaimResponseDTO;
@@ -14,17 +15,6 @@ export const ClaimDetailScreen = ({ claim, onBack }: ClaimDetailProps) => {
     const { currentUser } = useAppContext();
     const { messages, isLoading, isLoadingMore, hasMore, loadMore, sendMessage } = useWebsocket(claim.id, currentUser?.token);
     const [inputText, setInputText] = useState('');
-    const flatListRef = useRef<FlatList>(null);
-    const prevCount = useRef(0);
-
-    useEffect(() => {
-        if (messages.length > prevCount.current) {
-            setTimeout(() => {
-                flatListRef.current?.scrollToEnd({ animated: true });
-            }, 100);
-        }
-        prevCount.current = messages.length;
-    }, [messages.length]);
 
     const formatTime = (dateString: string) => {
         const date = new Date(dateString);
@@ -80,7 +70,7 @@ export const ClaimDetailScreen = ({ claim, onBack }: ClaimDetailProps) => {
         );
     };
 
-    const renderHeader = () => {
+    const renderFooter = () => {
         if (isLoadingMore) {
             return <ActivityIndicator size="small" color="#B91C1C" style={styles.footerLoader} />;
         }
@@ -94,7 +84,7 @@ export const ClaimDetailScreen = ({ claim, onBack }: ClaimDetailProps) => {
         <SafeAreaView style={styles.container} edges={['top']}>
             <View style={styles.header}>
                 <TouchableOpacity onPress={onBack} style={styles.backButton}>
-                    <Image source={require('../../assets/arrowLeftIcon.png')} style={styles.backIcon} />
+                    <ArrowLeftIcon size={20} color="#B91C1C" />
                 </TouchableOpacity>
                 <View style={styles.headerInfo}>
                     <Text style={styles.headerTitle} numberOfLines={1}>{claim.detail.product_name}</Text>
@@ -109,15 +99,14 @@ export const ClaimDetailScreen = ({ claim, onBack }: ClaimDetailProps) => {
                 keyboardVerticalOffset={0}
             >
                 <FlatList
-                    ref={flatListRef}
+                    inverted
                     data={messages}
                     keyExtractor={(item) => item.id.toString()}
                     renderItem={renderMessage}
                     contentContainerStyle={styles.listContent}
                     ListEmptyComponent={renderEmpty}
-                    ListHeaderComponent={renderHeader}
+                    ListFooterComponent={renderFooter}
                     showsVerticalScrollIndicator={false}
-                    inverted
                     onEndReached={loadMore}
                     onEndReachedThreshold={0.3}
                 />
@@ -137,10 +126,7 @@ export const ClaimDetailScreen = ({ claim, onBack }: ClaimDetailProps) => {
                         onPress={handleSend}
                         disabled={!inputText.trim()}
                     >
-                        <Image
-                            source={require('../../assets/arrowLeftIcon.png')}
-                            style={styles.sendIcon}
-                        />
+                        <SendHorizontalIcon size={20} color="#FFFFFF" />
                     </TouchableOpacity>
                 </View>
             </KeyboardAvoidingView>
@@ -161,7 +147,6 @@ const styles = StyleSheet.create({
         borderBottomColor: '#E5E7EB',
     },
     backButton: { padding: 4, marginRight: 8 },
-    backIcon: { width: 20, height: 20, tintColor: '#B91C1C' },
     headerInfo: { flex: 1 },
     headerTitle: { fontSize: 15, fontWeight: 'bold', color: '#111827' },
     headerSubtitle: { fontSize: 11, color: '#6B7280', marginTop: 1 },
@@ -221,12 +206,6 @@ const styles = StyleSheet.create({
     },
     sendButtonDisabled: {
         backgroundColor: '#D1D5DB',
-    },
-    sendIcon: {
-        width: 18,
-        height: 18,
-        tintColor: '#FFFFFF',
-        transform: [{ rotate: '180deg' }],
     },
     emptyContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
     emptyText: { fontSize: 16, color: '#6B7280', fontWeight: 'bold' },

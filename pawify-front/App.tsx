@@ -256,7 +256,7 @@ export default function App() {
         </View>
         <DrawerMenu isOpen={drawerOpen} onClose={() => setDrawerOpen(false)} />
         
-        {!selectedProduct && !selectedOrder && !selectedClaim && (
+        {!checkoutActive && !selectedProduct && !selectedOrder && !selectedClaim && (
           <BottomNavBar activeTab={activeTab} onTabPress={(tab) => {
             setActiveTab(tab);
             setSelectedProduct(null);

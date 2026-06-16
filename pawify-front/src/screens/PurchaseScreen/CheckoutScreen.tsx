@@ -4,9 +4,9 @@ import {
   ActivityIndicator, Alert, TextInput, Modal, KeyboardAvoidingView,
   Platform,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../../theme/colors';
 import { useAppContext } from '../../context/AppContext';
+import { ArrowLeftIcon } from '../../components/Icons';
 import { getAddresses, createAddress, deactivateAddress } from '../../services/addressService';
 import { getCards, createCard, deactivateCard } from '../../services/cardService';
 import { createOrder } from '../../services/orderService';
@@ -189,7 +189,7 @@ export const CheckoutScreen: React.FC<CheckoutScreenProps> = ({ onBack, onSucces
     <View style={styles.container}>
       <View style={styles.cartHeader}>
         <TouchableOpacity onPress={onBack} style={styles.cartHeaderBtn}>
-          <Ionicons name="arrow-back" size={26} color={colors.black} />
+          <ArrowLeftIcon size={24} color={colors.black} />
         </TouchableOpacity>
         <View style={styles.cartHeaderLogo}>
           <Text style={styles.cartHeaderEmoji}>🐾</Text>
