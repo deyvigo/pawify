@@ -39,7 +39,8 @@ public class SecurityConfiguration {
                     "/api-docs",
                     "/helloworld",
                     "/ws/**",
-                    "/webhook/**"
+                    "/webhook/**",
+                    "/ws-sockjs/**"
                 ).permitAll()
                 .requestMatchers(request -> "OPTIONS".equalsIgnoreCase(request.getMethod())).permitAll()
                 .requestMatchers(
