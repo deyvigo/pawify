@@ -60,6 +60,11 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
         registry.addEndpoint("/ws")
             .setAllowedOriginPatterns("*")
             .setHandshakeHandler(defaultHandshakeHandler());
+
+        registry.addEndpoint("/ws-sockjs")
+            .setAllowedOriginPatterns("*")
+            .setHandshakeHandler(defaultHandshakeHandler())
+            .withSockJS();
     }
 
     @Override
