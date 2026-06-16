@@ -41,3 +41,8 @@ server:
 logging:
   level:
     org.springframework.web.servlet.DispatcherServlet: DEBUG
+    org.springframework.web.socket: DEBUG
+    org.springframework.messaging: DEBUG
+    org.springframework.web.socket.messaging: DEBUG
+    org.springframework.web.socket.sockjs: DEBUG
+    org.springframework.web.socket.server: DEBUG
