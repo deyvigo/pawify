@@ -5,6 +5,7 @@ import { ClaimResponseDTO, MessageResponseDTO } from '../types/orders';
 import { useWebsocket } from '../context/WebSocket';
 import { useAppContext } from '../context/AppContext';
 import { ArrowLeftIcon, SendHorizontalIcon } from '../components/Icons';
+import { formatDate } from '../utils/format';
 
 interface ClaimDetailProps {
     claim: ClaimResponseDTO;
@@ -15,16 +16,6 @@ export const ClaimDetailScreen = ({ claim, onBack }: ClaimDetailProps) => {
     const { currentUser } = useAppContext();
     const { messages, isLoading, isLoadingMore, hasMore, loadMore, sendMessage } = useWebsocket(claim.id, currentUser?.token);
     const [inputText, setInputText] = useState('');
-
-    const formatTime = (dateString: string) => {
-        const date = new Date(dateString);
-        return date.toLocaleString('es-ES', {
-            day: '2-digit',
-            month: 'short',
-            hour: '2-digit',
-            minute: '2-digit',
-        });
-    };
 
     const handleSend = () => {
         const text = inputText.trim();
@@ -47,25 +38,9 @@ export const ClaimDetailScreen = ({ claim, onBack }: ClaimDetailProps) => {
                         {item.content}
                     </Text>
                     <Text style={[styles.messageTime, isOwn && { color: '#FECACA' }]}>
-                        {formatTime(item.send_at)}
+                        {formatDate(item.send_at)}
                     </Text>
                 </View>
-            </View>
-        );
-    };
-
-    const renderEmpty = () => {
-        if (isLoading) {
-            return (
-                <View style={styles.emptyContainer}>
-                    <ActivityIndicator size="large" color="#B91C1C" />
-                </View>
-            );
-        }
-        return (
-            <View style={styles.emptyContainer}>
-                <Text style={styles.emptyText}>No hay mensajes aún</Text>
-                <Text style={styles.emptySubtext}>Envía un mensaje para iniciar la conversación</Text>
             </View>
         );
     };
@@ -88,7 +63,6 @@ export const ClaimDetailScreen = ({ claim, onBack }: ClaimDetailProps) => {
                 </TouchableOpacity>
                 <View style={styles.headerInfo}>
                     <Text style={styles.headerTitle} numberOfLines={1}>{claim.detail.product_name}</Text>
-                    <Text style={styles.headerSubtitle}>Reclamo #{claim.id}</Text>
                 </View>
                 <View style={styles.headerSpacer} />
             </View>
@@ -98,18 +72,28 @@ export const ClaimDetailScreen = ({ claim, onBack }: ClaimDetailProps) => {
                 behavior={Platform.OS === 'ios' ? 'padding' : undefined}
                 keyboardVerticalOffset={0}
             >
-                <FlatList
-                    inverted
-                    data={messages}
-                    keyExtractor={(item) => item.id.toString()}
-                    renderItem={renderMessage}
-                    contentContainerStyle={styles.listContent}
-                    ListEmptyComponent={renderEmpty}
-                    ListFooterComponent={renderFooter}
-                    showsVerticalScrollIndicator={false}
-                    onEndReached={loadMore}
-                    onEndReachedThreshold={0.3}
-                />
+                {isLoading && messages.length === 0 ? (
+                    <View style={styles.emptyContainer}>
+                        <ActivityIndicator size="large" color="#B91C1C" />
+                    </View>
+                ) : messages.length === 0 ? (
+                    <View style={styles.emptyContainer}>
+                        <Text style={styles.emptyText}>No hay mensajes aún</Text>
+                        <Text style={styles.emptySubtext}>Envía un mensaje para iniciar la conversación</Text>
+                    </View>
+                ) : (
+                    <FlatList
+                        inverted
+                        data={messages}
+                        keyExtractor={(item) => item.id.toString()}
+                        renderItem={renderMessage}
+                        contentContainerStyle={styles.listContent}
+                        ListFooterComponent={renderFooter}
+                        showsVerticalScrollIndicator={false}
+                        onEndReached={loadMore}
+                        onEndReachedThreshold={0.3}
+                    />
+                )}
 
                 <View style={styles.inputContainer}>
                     <TextInput
