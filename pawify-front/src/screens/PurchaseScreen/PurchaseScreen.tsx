@@ -43,8 +43,7 @@ export const PurchaseScreen: React.FC = () => {
           </Text>
           <TouchableOpacity
             style={styles.browseBtn}
-            onPress={() => setActiveTab("catalog")}
-          >
+            onPress={() => setActiveTab("catalog")}>
             <Text style={styles.browseBtnText}>Ver catálogo</Text>
           </TouchableOpacity>
         </View>
@@ -75,8 +74,7 @@ export const PurchaseScreen: React.FC = () => {
 
       <ScrollView
         style={styles.list}
-        contentContainerStyle={styles.listContent}
-      >
+        contentContainerStyle={styles.listContent}>
         {cartItems.map((item) => (
           <View key={item.product.productId} style={styles.cartItem}>
             <Image
@@ -95,8 +93,7 @@ export const PurchaseScreen: React.FC = () => {
                   style={styles.qtyBtn}
                   onPress={() =>
                     updateQuantity(item.product.productId, item.quantity - 1)
-                  }
-                >
+                  }>
                   <Text style={styles.qtyBtnText}>-</Text>
                 </TouchableOpacity>
                 <Text style={styles.qtyText}>{item.quantity}</Text>
@@ -104,8 +101,7 @@ export const PurchaseScreen: React.FC = () => {
                   style={styles.qtyBtn}
                   onPress={() =>
                     updateQuantity(item.product.productId, item.quantity + 1)
-                  }
-                >
+                  }>
                   <Text style={styles.qtyBtnText}>+</Text>
                 </TouchableOpacity>
               </View>
@@ -118,8 +114,7 @@ export const PurchaseScreen: React.FC = () => {
                 {item.quantity} x S/{item.product.price.toFixed(2)}
               </Text>
               <TouchableOpacity
-                onPress={() => removeFromCart(item.product.productId)}
-              >
+                onPress={() => removeFromCart(item.product.productId)}>
                 <Text style={styles.removeText}>Eliminar</Text>
               </TouchableOpacity>
             </View>
@@ -140,8 +135,7 @@ export const PurchaseScreen: React.FC = () => {
         </View>
         <TouchableOpacity
           style={styles.checkoutBtn}
-          onPress={() => setCheckoutActive(true)}
-        >
+          onPress={() => setCheckoutActive(true)}>
           <Text style={styles.checkoutBtnText}>Ir al checkout</Text>
         </TouchableOpacity>
       </View>

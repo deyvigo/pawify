@@ -1,8 +1,9 @@
 import { API_URL, authToken } from "../config";
+import axios from "axios";
 
 async function request<T>(
   endpoint: string,
-  options: RequestInit = {}
+  options: RequestInit = {},
 ): Promise<T> {
   const url = `${API_URL}${endpoint}`;
   console.log(`Request: ${options.method} ${url}`);
@@ -38,14 +39,14 @@ export const api = {
       headers: authToken ? { Authorization: `Bearer ${authToken}` } : {},
     }),
 
-    post: <T>(endpoint: string, body: any) =>
+  post: <T>(endpoint: string, body: any) =>
     request<T>(endpoint, {
       method: "POST",
       body: JSON.stringify(body),
       headers: authToken ? { Authorization: `Bearer ${authToken}` } : {},
     }),
 
-    patch: <T>(endpoint: string, body?: any) =>
+  patch: <T>(endpoint: string, body?: any) =>
     request<T>(endpoint, {
       method: "PATCH",
       body: body ? JSON.stringify(body) : undefined,
@@ -54,3 +55,18 @@ export const api = {
 };
 
 export default api;
+
+export const apiAuthenticated = axios.create({
+  baseURL: API_URL,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
+apiAuthenticated.interceptors.request.use((config) => {
+  const token = authToken;
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});

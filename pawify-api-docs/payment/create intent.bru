@@ -1,0 +1,15 @@
+meta {
+  name: create intent
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{actual_url}}/stripe/create-intent
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

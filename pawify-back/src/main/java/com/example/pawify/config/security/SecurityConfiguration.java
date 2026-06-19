@@ -38,14 +38,17 @@ public class SecurityConfiguration {
                     "/swagger-ui/**",
                     "/api-docs",
                     "/helloworld",
-                    "/ws"
+                    "/ws/**",
+                    "/webhook/**",
+                    "/ws-sockjs/**"
                 ).permitAll()
                 .requestMatchers(request -> "OPTIONS".equalsIgnoreCase(request.getMethod())).permitAll()
                 .requestMatchers(
                     "/card/**",
                     "/address/**",
                     "/buyer/**",
-                    "/review/**"
+                    "/review/**",
+                    "/stripe/**"
                 ).hasRole("BUYER")
                 .requestMatchers(
                     "/admin/**"

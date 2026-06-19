@@ -1,0 +1,20 @@
+meta {
+  name: get publishable key
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{actual_url}}/stripe/publishable-key
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MTEsImZpcnN0X25hbWUiOiJBbmRyZWEiLCJsYXN0X25hbWUiOiJCdXllciIsInVzZXJuYW1lIjoiYnV5ZXIxIiwicm9sZSI6IkJVWUVSIiwiZXhwIjoxNzgyMTQ2MjUwfQ.5hPxMCrtiS2U8uJPC6fLUdaumm4hMMS5qCU4c5DC3B0
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

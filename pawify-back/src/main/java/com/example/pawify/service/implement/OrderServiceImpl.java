@@ -114,4 +114,13 @@ public class OrderServiceImpl implements OrderService {
 
         return orderMapper.toResponseDTO(orderEntity);
     }
+
+    @Override
+    public void updateOrderStatusByOrderId(Long orderId, OrderStatus orderStatus) {
+        OrderEntity orderToModify = orderRepository.findById(orderId)
+            .orElseThrow(() -> new ResourceNotFoundException("order_id not found: " + orderId));
+
+        orderToModify.setOrderStatus(orderStatus);
+        orderRepository.save(orderToModify);
+    }
 }
