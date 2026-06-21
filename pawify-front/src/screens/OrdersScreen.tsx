@@ -32,7 +32,6 @@ export const OrdersScreen = ({ onNavigateToDetail }: OrdersScreenProps) => {
                     <Image source={require('../../assets/logopawify.png')} style={styles.headerLogo} />
                     <Text style={styles.headerTitle}>Mis Pedidos</Text>
                 </View>
-                <Image source={require('../../assets/cartIcon.png')} style={styles.headerIcon} />
             </View>
 
             {/* Filtros Horizontales */}
@@ -82,7 +81,6 @@ const styles = StyleSheet.create({
     headerTitleRow: { flexDirection: 'row', alignItems: 'center' },
     headerLogo: { width: 24, height: 24, tintColor: '#FF1A1A', marginRight: 10 },
     headerTitle: { fontSize: 18, fontWeight: 'bold', color: '#111827' },
-    headerIcon: { width: 24, height: 24, tintColor: '#111827' },
     filtersContainer: { backgroundColor: '#FFFFFF', paddingBottom: 15 },
     filtersScroll: { paddingHorizontal: 20, gap: 10 },
     filterPill: { paddingHorizontal: 16, paddingVertical: 8, backgroundColor: '#F3F4F6', borderRadius: 20 },

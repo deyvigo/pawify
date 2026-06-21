@@ -22,7 +22,8 @@ export interface OrderResponseDTO {
     total_price: number; 
     order_at: string; 
     tracking_code: string;
-    shipping_status: string; 
+    shipping_status: string;
+    order_status: string;
     details: DetailResponseDTO[];
 }
 

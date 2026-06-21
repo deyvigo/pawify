@@ -8,8 +8,8 @@ export const createOrder = async (orderData: OrderCreateRequestDTO): Promise<Ord
     return response as unknown as OrderResponseDTO;
 };
 
-export const getOrdersByBuyer = async (page: number = 0, size: number = 10): Promise<SliceResponse<OrderResponseDTO>> => {
-    const response = await api.get(`/order?page=${page}&size=${size}`);
+export const getOrdersByBuyer = async (page: number = 0, size: number = 10, sort: string = 'orderAt,desc'): Promise<SliceResponse<OrderResponseDTO>> => {
+    const response = await api.get(`/order?page=${page}&size=${size}&sort=${sort}`);
     return response as unknown as SliceResponse<OrderResponseDTO>;
 };
 

@@ -9,20 +9,33 @@ interface OrderCardProps {
 
 export const OrderCard = ({ order, onPressDetail }: OrderCardProps) => {
     
-    const getStatusStyle = (status: string) => {
-                // Protección: Si status viene vacío o undefined, asumimos PENDING
-                const safeStatus = status || 'PENDING'; 
-                
-                switch(safeStatus.toUpperCase()) {
-                    case 'DELIVERED': 
-                        return { bg: '#E5E7EB', text: '#4B5563', label: 'Entregado' };
-                    case 'IN_TRANSIT':
-                    case 'SHIPPED': 
-                        return { bg: '#FF1A1A', text: '#FFFFFF', label: 'En camino' };
-                    // Cualquier otro estado (PAID, PENDING, PROCESSING) mostrará 'Procesando'
-                    default: 
-                        return { bg: '#FCE7F3', text: '#991B1B', label: 'Procesando' };
-                }
+
+    const getShippingStyle = (status: string) => {
+        const safeStatus = status || 'IN_TRANSIT'; 
+        
+        switch(safeStatus.toUpperCase()) {
+            case 'DELIVERED': 
+                return { bg: '#E5E7EB', text: '#4B5563', label: 'Entregado' };
+            case 'IN_TRANSIT':
+            default: 
+                return { bg: '#FF1A1A', text: '#FFFFFF', label: 'En camino' };
+        }
+    };
+
+    const getOrderStyle = (status: string) => {
+        const safeStatus = status || 'PENDING';
+
+        switch(safeStatus.toUpperCase()) {
+            case 'PAID':
+                return { bg: '#D1FAE5', text: '#059669', label: 'Pagado' }; // Verde
+            case 'FAILED':
+                return { bg: '#FEE2E2', text: '#B91C1C', label: 'Pago Fallido' }; // Rojo claro
+            case 'CANCELED':
+                return { bg: '#F3F4F6', text: '#374151', label: 'Cancelado' }; // Gris
+            case 'PENDING':
+            default:
+                return { bg: '#FEF3C7', text: '#D97706', label: 'Pendiente' }; // Amarillo/Naranja
+        }
     };
 
     const formatDate = (dateString: string) => {
@@ -31,7 +44,8 @@ export const OrderCard = ({ order, onPressDetail }: OrderCardProps) => {
             return date.toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' });
     };
 
-    const statusConfig = getStatusStyle(order.shipping_status);
+    const shippingConfig = getShippingStyle(order.shipping_status);
+    const orderConfig = getOrderStyle(order.order_status);
 
     return (
         <View style={styles.orderCard}>
@@ -40,8 +54,13 @@ export const OrderCard = ({ order, onPressDetail }: OrderCardProps) => {
                     <Text style={styles.orderId}>ID: #{order.tracking_code}</Text>
                     <Text style={styles.orderDate}>{formatDate(order.order_at)}</Text>
                 </View>
-                <View style={[styles.statusBadge, { backgroundColor: statusConfig.bg }]}>
-                    <Text style={[styles.statusText, { color: statusConfig.text }]}>• {statusConfig.label}</Text>
+                <View style={styles.badgesContainer}>
+                    <View style={[styles.statusBadge, { backgroundColor: orderConfig.bg, marginBottom: 5 }]}>
+                        <Text style={[styles.statusText, { color: orderConfig.text }]}>• {orderConfig.label}</Text>
+                    </View>
+                    <View style={[styles.statusBadge, { backgroundColor: shippingConfig.bg }]}>
+                        <Text style={[styles.statusText, { color: shippingConfig.text }]}>• {shippingConfig.label}</Text>
+                    </View>
                 </View>
             </View>
 
@@ -83,6 +102,8 @@ const styles = StyleSheet.create({
     cardHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 15 },
     orderId: { fontSize: 13, color: '#6B7280', marginBottom: 4 },
     orderDate: { fontSize: 15, fontWeight: 'bold', color: '#111827' },
+
+    badgesContainer: { alignItems: 'flex-end' },
     statusBadge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 12 },
     statusText: { fontSize: 12, fontWeight: 'bold' },
     cardBody: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 },
