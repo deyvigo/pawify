@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { 
     View, Text, StyleSheet, FlatList, ActivityIndicator, 
     RefreshControl, TouchableOpacity, Image, ScrollView 
@@ -23,6 +23,27 @@ export const OrdersScreen = ({ onNavigateToDetail }: OrdersScreenProps) => {
         orders, isLoading, isRefreshing, isLoadingMore, 
         activeFilter, setActiveFilter, handleRefresh, handleLoadMore 
     } = useOrders();
+
+
+    const filteredOrders = useMemo(() => {
+        return orders.filter(order => {
+            const shipStatus = (order.shipping_status || '').toUpperCase();
+            const ordStatus = (order.order_status || '').toUpperCase();
+
+            switch (activeFilter) {
+                case 'En camino':
+                    // Está en tránsito y NO está cancelado
+                    return shipStatus === 'IN_TRANSIT' && ordStatus !== 'CANCELED' && ordStatus !== 'FAILED';
+                case 'Entregados':
+                    return shipStatus === 'DELIVERED';
+                case 'Cancelados':
+                    return ordStatus === 'CANCELED' || ordStatus === 'FAILED';
+                case 'Todos':
+                default:
+                    return true;
+            }
+        });
+    }, [orders, activeFilter]);
 
     return (
         <SafeAreaView style={styles.container}>
@@ -54,12 +75,12 @@ export const OrdersScreen = ({ onNavigateToDetail }: OrdersScreenProps) => {
             {/* Contenido Principal */}
             {isLoading ? (
                 <ActivityIndicator size="large" color="#FF1A1A" style={{ marginTop: 50 }} />
-            ) : orders.length === 0 ? (
-                // ✅ Usamos nuestro nuevo componente de Estado Vacío
+            ) : filteredOrders.length === 0 ? (
+                // Usamos nuestro nuevo componente de Estado Vacío
                 <EmptyOrders />
             ) : (
                 <FlatList
-                    data={orders}
+                    data={filteredOrders}
                     keyExtractor={(item) => item.id.toString()}
                     // Usamos el componente OrderCard
                     renderItem={({ item }) => <OrderCard order={item} onPressDetail={onNavigateToDetail} />}
