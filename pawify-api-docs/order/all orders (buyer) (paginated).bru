@@ -5,20 +5,20 @@ meta {
 }
 
 get {
-  url: {{actual_url}}/order?trackingCode=0
+  url: {{actual_url}}/order?status=paid&trackingCode=0
   body: none
   auth: bearer
 }
 
 params:query {
+  status: paid
   trackingCode: 0
   ~size: 5
   ~cursor: eyJpbnN0YW50IjoxNzgxMzU1ODMyLjg1NjA3MzAwMCwiaWQiOjR9
-  ~status: PAID
 }
 
 auth:bearer {
-  token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQlVZRVIiLCJpZCI6MTEsImZpcnN0X25hbWUiOiJBbmRyZWEiLCJsYXN0X25hbWUiOiJCdXllciIsInVzZXJuYW1lIjoiYnV5ZXIxIiwiZXhwIjoxNzg0MjMzMDczfQ.i89qwK0wxkmKHo4xLpbwoSqMITb1pGuPf48PwHRgqfk
+  token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQlVZRVIiLCJpZCI6MTEsImZpcnN0X25hbWUiOiJBbmRyZWEiLCJsYXN0X25hbWUiOiJCdXllciIsInVzZXJuYW1lIjoiYnV5ZXIxIiwiZXhwIjoxNzg0MjM0NjkyfQ.KQFnsCpV7aFKeZg4-gDb7aUtXvHqGVLVk6CUMToixY0
 }
 
 settings {
