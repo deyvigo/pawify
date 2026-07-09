@@ -138,13 +138,13 @@ public class OrderServiceImpl implements OrderService {
             orderEntities.removeLast();
         }
 
-        OrderEntity last = orderEntities.getLast();
+        String nextCursor = null;
+        if (!orderEntities.isEmpty()) {
+            OrderEntity last = orderEntities.getLast();
+            nextCursor = cursorUtil.encode(new CursorInternalDTO(last.getOrderAt(), last.getId()));
+        }
 
-        String nextCursor = hasNext
-            ? cursorUtil.encode(new CursorInternalDTO(last.getOrderAt(), last.getId()))
-            : null;
-
-        return new com.example.pawify.dto.out.Page<>(
+        return new Page<>(
             orderEntities.stream().map(orderMapper::toResponseDTO).toList(),
             hasNext,
             nextCursor
