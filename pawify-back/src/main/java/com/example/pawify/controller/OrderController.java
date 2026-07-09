@@ -1,6 +1,7 @@
 package com.example.pawify.controller;
 
 import com.example.pawify.dto.in.order.OrderCreateRequestDTO;
+import com.example.pawify.dto.out.Page;
 import com.example.pawify.dto.out.order.OrderResponseDTO;
 import com.example.pawify.model.BuyerEntity;
 import com.example.pawify.service.OrderService;
@@ -28,19 +29,31 @@ public class OrderController {
         return ResponseEntity.ok(orderService.createOrder(buyerEntity, orderCreateRequestDTO));
     }
 
-    @PreAuthorize("hasRole('BUYER')")
-    @GetMapping("")
-    public ResponseEntity<Slice<OrderResponseDTO>> getOrdersByBuyer(
-        @AuthenticationPrincipal BuyerEntity buyerEntity,
-        Pageable pageable
-    ) {
-        return ResponseEntity.ok(orderService.getOrdersByBuyer(buyerEntity, pageable));
-    }
+//    @PreAuthorize("hasRole('BUYER')")
+//    @GetMapping("")
+//    public ResponseEntity<Slice<OrderResponseDTO>> getOrdersByBuyer(
+//        @AuthenticationPrincipal BuyerEntity buyerEntity,
+//        Pageable pageable
+//    ) {
+//        return ResponseEntity.ok(orderService.getOrdersByBuyer(buyerEntity, pageable));
+//    }
 
     @GetMapping("/{trackingCode}")
     public ResponseEntity<OrderResponseDTO> getOrdersByTrackingCode(
         @PathVariable String trackingCode
     ) {
         return ResponseEntity.ok(orderService.getOrderByTrackingCode(trackingCode));
+    }
+
+    @PreAuthorize("hasRole('BUYER')")
+    @GetMapping("")
+    public ResponseEntity<Page<OrderResponseDTO>> getFilteredOrders(
+        @AuthenticationPrincipal BuyerEntity buyerEntity,
+        @RequestParam(required = false) String trackingCode,
+        @RequestParam(required = false) String status,
+        @RequestParam(required = false) String cursor,
+        @RequestParam(required = false, defaultValue = "10") Integer size
+    ) {
+        return ResponseEntity.ok(orderService.getOrdersWithFilters(cursor, buyerEntity, size, status, trackingCode));
     }
 }

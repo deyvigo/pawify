@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
-public interface OrderRepository extends JpaRepository<OrderEntity, Long> {
+public interface OrderRepository extends JpaRepository<OrderEntity, Long>, OrderRepositoryCustom {
     Page<OrderEntity> findAllByBuyer(BuyerEntity buyerEntity, Pageable pageable);
     boolean existsByTrackingCode(String trackingCode);
     Optional<OrderEntity> findByTrackingCode(String trackingCode);
