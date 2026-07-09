@@ -139,7 +139,7 @@ public class OrderServiceImpl implements OrderService {
         }
 
         String nextCursor = null;
-        if (!orderEntities.isEmpty()) {
+        if (!orderEntities.isEmpty() && hasNext) {
             OrderEntity last = orderEntities.getLast();
             nextCursor = cursorUtil.encode(new CursorInternalDTO(last.getOrderAt(), last.getId()));
         }
