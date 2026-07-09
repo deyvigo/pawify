@@ -5,20 +5,20 @@ meta {
 }
 
 get {
-  url: {{actual_url}}/order?status=paid&trackingCode=0
+  url: {{actual_url}}/order?status=paid&size=5&cursor=eyJpbnN0YW50IjoxNzgxMzU1ODMyLjgzNzY1MjAwMCwiaWQiOjN9
   body: none
   auth: bearer
 }
 
 params:query {
   status: paid
-  trackingCode: 0
-  ~size: 5
-  ~cursor: eyJpbnN0YW50IjoxNzgxMzU1ODMyLjg1NjA3MzAwMCwiaWQiOjR9
+  size: 5
+  cursor: eyJpbnN0YW50IjoxNzgxMzU1ODMyLjgzNzY1MjAwMCwiaWQiOjN9
+  ~trackingCode: k
 }
 
 auth:bearer {
-  token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQlVZRVIiLCJpZCI6MTEsImZpcnN0X25hbWUiOiJBbmRyZWEiLCJsYXN0X25hbWUiOiJCdXllciIsInVzZXJuYW1lIjoiYnV5ZXIxIiwiZXhwIjoxNzg0MjM0NjkyfQ.KQFnsCpV7aFKeZg4-gDb7aUtXvHqGVLVk6CUMToixY0
+  token: eyJhbGciOiJIUzI1NiJ9.eyJmaXJzdF9uYW1lIjoiQW5kcmVhIiwibGFzdF9uYW1lIjoiQnV5ZXIiLCJ1c2VybmFtZSI6ImJ1eWVyMSIsInJvbGUiOiJCVVlFUiIsImlkIjoxMSwiZXhwIjoxNzg0MjM2Njg4fQ.KiKe9C-sYKFX3uRKhLeO24c2nfDr3OcUBudTV2O6kY8
 }
 
 settings {
