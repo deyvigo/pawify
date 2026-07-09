@@ -65,9 +65,25 @@ const CardModal: React.FC<CardModalProps> = ({ visible, onClose, cards, loading,
     onClose();
   };
 
+  const toDisplayDate = (backendDate: string) => {
+    const parts = backendDate.split('-');
+    if (parts.length === 2) return parts[1] + '/' + parts[0].slice(2);
+    return backendDate;
+  };
+
+  const toBackendDate = (displayDate: string) => {
+    const cleaned = displayDate.replace(/\D/g, '');
+    if (cleaned.length === 4) {
+      const month = cleaned.slice(0, 2);
+      const year = cleaned.slice(2, 4);
+      return '20' + year + '-' + month;
+    }
+    return displayDate;
+  };
+
   const handleEdit = (card: CardDTO) => {
     setEditingCard(card);
-    setFormData({ name: card.name, number: card.number, due_date: card.due_date });
+    setFormData({ name: card.name, number: card.number, due_date: toDisplayDate(card.due_date) });
     setShowForm(true);
   };
 
@@ -81,7 +97,7 @@ const CardModal: React.FC<CardModalProps> = ({ visible, onClose, cards, loading,
     try {
       const payload = {
         name: formData.name,
-        due_date: formData.due_date,
+        due_date: toBackendDate(formData.due_date),
         number: formData.number,
       };
       if (editingCard) {
@@ -130,7 +146,7 @@ const CardModal: React.FC<CardModalProps> = ({ visible, onClose, cards, loading,
                       <View style={styles.cardInfo}>
                         <Text style={styles.cardName}>{item.name}</Text>
                         <Text style={styles.cardNumber}>{formatCardNumber(item.number)}</Text>
-                        <Text style={styles.cardDue}>Vence: {item.due_date}</Text>
+                        <Text style={styles.cardDue}>Vence: {toDisplayDate(item.due_date)}</Text>
                       </View>
                       <TouchableOpacity onPress={() => handleEdit(item)}>
                         <Ionicons name="pencil" size={20} color={colors.primary} />
@@ -163,18 +179,18 @@ const CardModal: React.FC<CardModalProps> = ({ visible, onClose, cards, loading,
               />
               <TextInput
                 style={styles.input}
-                placeholder="Fecha de vencimiento (AAAA-MM)"
+                placeholder="MM/AA"
                 value={formData.due_date}
                 onChangeText={(text) => {
                   const numeric = text.replace(/\D/g, '');
-                  if (numeric.length > 4) {
-                    setFormData({ ...formData, due_date: numeric.slice(0, 4) + '-' + numeric.slice(4, 6) });
-                  } else {
+                  if (numeric.length <= 2) {
                     setFormData({ ...formData, due_date: numeric });
+                  } else {
+                    setFormData({ ...formData, due_date: numeric.slice(0, 2) + '/' + numeric.slice(2, 4) });
                   }
                 }}
                 keyboardType="numeric"
-                maxLength={7}
+                maxLength={5}
               />
               <View style={styles.formButtons}>
                 <TouchableOpacity style={styles.cancelButton} onPress={resetForm}>

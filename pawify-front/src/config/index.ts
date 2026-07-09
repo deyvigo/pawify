@@ -3,11 +3,10 @@ import { UserPayload } from "../types";
 import { decodeToken } from "../utils/jwt";
 import { getToken, saveToken, deleteToken } from "../services/storageService";
 
-const { API_BASE_URL, AUTH_TOKEN } = Constants.expoConfig?.extra || {};
+const { API_BASE_URL,WS_BASE_URL, AUTH_TOKEN } = Constants.expoConfig?.extra || {};
 
-export const API_URL =
-  // process.env.API_BASE_URL || API_BASE_URL || "http://192.168.0.200:8080";
-  process.env.API_BASE_URL || API_BASE_URL || "https://pawify.deyvigo.online";
+export const API_URL = API_BASE_URL;
+export const WS_URL = WS_BASE_URL;
 export let authToken: string | null = AUTH_TOKEN || null;
 
 export async function setAuthToken(token: string | null) {

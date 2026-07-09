@@ -13,7 +13,6 @@ import { ProductListScreen } from "./src/screens/ProductListScreen/ProductListSc
 import { PurchaseScreen } from "./src/screens/PurchaseScreen/PurchaseScreen";
 import { OrdersScreen } from "./src/screens/OrdersScreen";
 import { CheckoutScreen } from "./src/screens/PurchaseScreen/CheckoutScreen";
-// import { OrdersScreen } from './src/screens/OrdersScreen/OrdersScreen';
 import { AccountScreen } from "./src/screens/AccountScreen/AccountScreen";
 import { ProductDetailScreen } from "./src/screens/ProductDetailScreen/ProductDetailScreen";
 import { LoginScreen } from "./src/screens/LoginScreen";
@@ -21,6 +20,7 @@ import { RegisterScreen } from "./src/screens/RegisterScreen";
 import { RecoveryScreen } from "./src/screens/RecoveryScreen";
 import { NewPasswordScreen } from "./src/screens/NewPasswordScreen";
 import { OrderDetailScreen } from "./src/screens/OrderDetailScreen";
+import { ClaimDetailScreen } from "./src/screens/ClaimDetailScreen";
 
 import { Product } from "./src/types/product";
 import { useProducts } from "./src/hooks/useProducts";
@@ -28,16 +28,9 @@ import { useCategories } from "./src/hooks/useCategories";
 import { UserPayload, CartItem } from "./src/types";
 import { setAuthToken, loadAuthToken, getAuthUser } from "./src/config";
 import { AppContext, TabKey } from "./src/context/AppContext";
-import { OrderResponseDTO } from "./src/types/orders";
-import {
-  loadCartFromStorage,
-  saveCartToStorage,
-} from "./src/services/cartStorage";
-import {
-  QueryClient,
-  QueryClientProvider,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { OrderResponseDTO, ClaimResponseDTO } from "./src/types/orders";
+import { loadCartFromStorage, saveCartToStorage } from "./src/services/cartStorage";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const screens: Record<TabKey, any> = {
   catalog: ProductListScreen,
@@ -50,9 +43,8 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<TabKey>("catalog");
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [selectedOrder, setSelectedOrder] = useState<OrderResponseDTO | null>(
-    null,
-  );
+  const [selectedOrder, setSelectedOrder] = useState<OrderResponseDTO | null>(null);
+  const [selectedClaim, setSelectedClaim] = useState<ClaimResponseDTO | null>(null);
 
   const [currentUser, setCurrentUser] = useState<UserPayload | null>(null);
   const [isLoadingAuth, setIsLoadingAuth] = useState(true);
@@ -288,6 +280,15 @@ export default function App() {
               <OrderDetailScreen
                 order={selectedOrder}
                 onBack={() => setSelectedOrder(null)}
+                onNavigateToClaim={(claim) => {
+                  setSelectedOrder(null);
+                  setSelectedClaim(claim);
+                }}
+              />
+            ) : selectedClaim ? (
+              <ClaimDetailScreen
+                claim={selectedClaim}
+                onBack={() => setSelectedClaim(null)}
               />
             ) : (
               <ActiveScreen onNavigateToDetail={setSelectedOrder} />
@@ -298,13 +299,14 @@ export default function App() {
             onClose={() => setDrawerOpen(false)}
           />
 
-          {!selectedProduct && !selectedOrder && (
+          {!checkoutActive && !selectedProduct && !selectedOrder && !selectedClaim && (
             <BottomNavBar
               activeTab={activeTab}
               onTabPress={(tab) => {
                 setActiveTab(tab);
                 setSelectedProduct(null);
-                setSelectedOrder(null); // Limpiamos al cambiar de pestaña
+                setSelectedOrder(null);
+                setSelectedClaim(null);
               }}
             />
           )}

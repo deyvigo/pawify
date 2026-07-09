@@ -1,22 +1,20 @@
 package com.example.pawify.service.implement;
 
+import com.example.pawify.dto.CursorInternalDTO;
 import com.example.pawify.dto.in.order.DetailCreateRequestDTO;
 import com.example.pawify.dto.in.order.OrderCreateRequestDTO;
+import com.example.pawify.dto.out.Page;
 import com.example.pawify.dto.out.order.OrderResponseDTO;
 import com.example.pawify.exception.NotEnoughStockException;
 import com.example.pawify.exception.ResourceNotFoundException;
-import com.example.pawify.mapper.DetailMapper;
 import com.example.pawify.mapper.OrderMapper;
 import com.example.pawify.model.*;
 import com.example.pawify.repository.OrderRepository;
 import com.example.pawify.repository.ProductRepository;
 import com.example.pawify.service.CodeGenerator;
 import com.example.pawify.service.OrderService;
+import com.example.pawify.utils.CursorUtil;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,6 +32,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
     private final CodeGenerator codeGenerator;
+    private final CursorUtil cursorUtil;
 
     @Override
     @Transactional
@@ -97,15 +96,15 @@ public class OrderServiceImpl implements OrderService {
         return orderMapper.toResponseDTO(savedOrder);
     }
 
-    @Override
-    public Slice<OrderResponseDTO> getOrdersByBuyer(BuyerEntity buyerEntity, Pageable pageable) {
-        Page<OrderEntity> page = orderRepository.findAllByBuyer(buyerEntity, pageable);
-        return new SliceImpl<>(
-            page.map(orderMapper::toResponseDTO).getContent(),
-            pageable,
-            page.hasNext()
-        );
-    }
+//    @Override
+//    public Slice<OrderResponseDTO> getOrdersByBuyer(BuyerEntity buyerEntity, Pageable pageable) {
+//        Page<OrderEntity> page = orderRepository.findAllByBuyer(buyerEntity, pageable);
+//        return new SliceImpl<>(
+//            page.map(orderMapper::toResponseDTO).getContent(),
+//            pageable,
+//            page.hasNext()
+//        );
+//    }
 
     @Override
     public OrderResponseDTO getOrderByTrackingCode(String trackingCode) {
@@ -122,5 +121,33 @@ public class OrderServiceImpl implements OrderService {
 
         orderToModify.setOrderStatus(orderStatus);
         orderRepository.save(orderToModify);
+    }
+
+    @Override
+    public Page<OrderResponseDTO> getOrdersWithFilters(
+        String cursor, BuyerEntity buyer, Integer size, String status, String trackingCode
+    ) {
+        CursorInternalDTO internalCursor = cursor != null ? cursorUtil.decode(cursor) : null;
+
+        List<OrderEntity> orderEntities = orderRepository.findAllWithFilters(
+            internalCursor, buyer, size + 1, status, trackingCode
+        );
+
+        boolean hasNext = orderEntities.size() > size;
+        if (hasNext) {
+            orderEntities.removeLast();
+        }
+
+        OrderEntity last = orderEntities.getLast();
+
+        String nextCursor = hasNext
+            ? cursorUtil.encode(new CursorInternalDTO(last.getOrderAt(), last.getId()))
+            : null;
+
+        return new com.example.pawify.dto.out.Page<>(
+            orderEntities.stream().map(orderMapper::toResponseDTO).toList(),
+            hasNext,
+            nextCursor
+        );
     }
 }

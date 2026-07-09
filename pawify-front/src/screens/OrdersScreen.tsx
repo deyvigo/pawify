@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useMemo,useState } from 'react';
 import { 
     View, Text, StyleSheet, FlatList, ActivityIndicator, 
-    RefreshControl, TouchableOpacity, Image, ScrollView 
+    RefreshControl, TouchableOpacity, Image, ScrollView ,TextInput
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -24,6 +24,36 @@ export const OrdersScreen = ({ onNavigateToDetail }: OrdersScreenProps) => {
         activeFilter, setActiveFilter, handleRefresh, handleLoadMore 
     } = useOrders();
 
+    const [searchQuery, setSearchQuery] = useState('');
+
+
+    const filteredOrders = useMemo(() => {
+        return orders.filter(order => {
+            //Filtro por tracking
+            const safeTracking = order.tracking_code || '';
+            const matchesSearch = safeTracking.toLowerCase().includes(searchQuery.toLowerCase());
+            
+            if (!matchesSearch) return false; 
+
+            // Filtro por estado
+            const shipStatus = (order.shipping_status || '').toUpperCase();
+            const ordStatus = (order.order_status || '').toUpperCase();
+
+            switch (activeFilter) {
+                case 'En camino':
+                    // Está en tránsito y NO está cancelado
+                    return shipStatus === 'IN_TRANSIT' && ordStatus !== 'CANCELED' && ordStatus !== 'FAILED';
+                case 'Entregados':
+                    return shipStatus === 'DELIVERED';
+                case 'Cancelados':
+                    return ordStatus === 'CANCELED' || ordStatus === 'FAILED';
+                case 'Todos':
+                default:
+                    return true;
+            }
+        });
+    }, [orders, activeFilter,searchQuery]);
+
     return (
         <SafeAreaView style={styles.container}>
             {/* Header Fijo */}
@@ -32,7 +62,19 @@ export const OrdersScreen = ({ onNavigateToDetail }: OrdersScreenProps) => {
                     <Image source={require('../../assets/logopawify.png')} style={styles.headerLogo} />
                     <Text style={styles.headerTitle}>Mis Pedidos</Text>
                 </View>
-                <Image source={require('../../assets/cartIcon.png')} style={styles.headerIcon} />
+            </View>
+
+            {/*  Barra de Búsqueda */}
+            <View style={styles.searchContainer}>
+                <TextInput
+                    style={styles.searchInput}
+                    placeholder="Buscar por número de tracking (#)"
+                    placeholderTextColor="#9CA3AF"
+                    value={searchQuery}
+                    onChangeText={setSearchQuery}
+                    autoCapitalize="characters" 
+                    autoCorrect={false}
+                />
             </View>
 
             {/* Filtros Horizontales */}
@@ -55,12 +97,12 @@ export const OrdersScreen = ({ onNavigateToDetail }: OrdersScreenProps) => {
             {/* Contenido Principal */}
             {isLoading ? (
                 <ActivityIndicator size="large" color="#FF1A1A" style={{ marginTop: 50 }} />
-            ) : orders.length === 0 ? (
-                // ✅ Usamos nuestro nuevo componente de Estado Vacío
+            ) : filteredOrders.length === 0 ? (
+                // Usamos nuestro nuevo componente de Estado Vacío
                 <EmptyOrders />
             ) : (
                 <FlatList
-                    data={orders}
+                    data={filteredOrders}
                     keyExtractor={(item) => item.id.toString()}
                     // Usamos el componente OrderCard
                     renderItem={({ item }) => <OrderCard order={item} onPressDetail={onNavigateToDetail} />}
@@ -82,7 +124,8 @@ const styles = StyleSheet.create({
     headerTitleRow: { flexDirection: 'row', alignItems: 'center' },
     headerLogo: { width: 24, height: 24, tintColor: '#FF1A1A', marginRight: 10 },
     headerTitle: { fontSize: 18, fontWeight: 'bold', color: '#111827' },
-    headerIcon: { width: 24, height: 24, tintColor: '#111827' },
+    searchContainer: { backgroundColor: '#FFFFFF', paddingHorizontal: 20, paddingBottom: 15 },
+    searchInput: { backgroundColor: '#F3F4F6', borderRadius: 10, paddingHorizontal: 15, paddingVertical: 10, fontSize: 14, color: '#111827', borderWidth: 1, borderColor: '#E5E7EB' },
     filtersContainer: { backgroundColor: '#FFFFFF', paddingBottom: 15 },
     filtersScroll: { paddingHorizontal: 20, gap: 10 },
     filterPill: { paddingHorizontal: 16, paddingVertical: 8, backgroundColor: '#F3F4F6', borderRadius: 20 },
