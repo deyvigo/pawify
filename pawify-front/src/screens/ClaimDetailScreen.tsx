@@ -24,7 +24,7 @@ export const ClaimDetailScreen = ({ claim, onBack }: ClaimDetailProps) => {
 
         const showSub = Keyboard.addListener(showEvent, (e) => {
             Animated.timing(translateY, {
-                toValue: -e.endCoordinates.height+-20,
+                toValue: -(e.endCoordinates.height + 20),
                 duration: Platform.OS === 'ios' ? e.duration : 250,
                 useNativeDriver: true,
             }).start();
@@ -203,15 +203,15 @@ const styles = StyleSheet.create({
         backgroundColor: '#F3F4F6',
         borderRadius: 20,
         paddingHorizontal: 16,
-        paddingVertical: 10,
+        paddingVertical: 15,
         fontSize: 14,
         color: '#111827',
         maxHeight: 100,
     },
     sendButton: {
-        width: 40,
-        height: 40,
-        borderRadius: 20,
+        width: 46,
+        height: 46,
+        borderRadius: 23,
         backgroundColor: '#B91C1C',
         justifyContent: 'center',
         alignItems: 'center',
