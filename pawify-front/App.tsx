@@ -6,6 +6,7 @@ import {
   View,
   ActivityIndicator,
 } from "react-native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { colors } from "./src/theme/colors";
 import { BottomNavBar } from "./src/components/BottomNavBar/BottomNavBar";
 import { DrawerMenu } from "./src/components/DrawerMenu/DrawerMenu";
@@ -177,16 +178,19 @@ export default function App() {
 
   if (isLoadingAuth) {
     return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color={colors.primary} />
-        </View>
-      </SafeAreaView>
+      <SafeAreaProvider>
+        <SafeAreaView style={styles.container}>
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color={colors.primary} />
+          </View>
+        </SafeAreaView>
+      </SafeAreaProvider>
     );
   }
 
   if (!currentUser) {
     return (
+      <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
         {authScreen === "login" && (
           <LoginScreen
@@ -229,6 +233,7 @@ export default function App() {
         )}
         <StatusBar style="dark" />
       </SafeAreaView>
+      </SafeAreaProvider>
     );
   }
 
@@ -259,6 +264,7 @@ export default function App() {
         checkoutActive,
         setCheckoutActive,
       }}>
+      <SafeAreaProvider>
       <QueryClientProvider client={queryClient}>
         <SafeAreaView style={styles.container}>
           <View style={styles.content}>
@@ -313,6 +319,7 @@ export default function App() {
           <StatusBar style="dark" />
         </SafeAreaView>
       </QueryClientProvider>
+      </SafeAreaProvider>
     </AppContext.Provider>
   );
 }

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors } from '../../theme/colors';
 import { useAppContext } from '../../context/AppContext';
 import { capitalize, titleCase } from '../../utils/format';
@@ -17,6 +18,7 @@ const SectionHeader: React.FC<{ title: string; isExpanded: boolean; onPress: () 
 );
 
 export const DrawerMenu: React.FC<DrawerMenuProps> = ({ isOpen, onClose }) => {
+  const insets = useSafeAreaInsets();
   const { categories, brands, categoriesLoading, setPendingFilterParams, setActiveTab } = useAppContext();
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({});
 
@@ -41,7 +43,7 @@ export const DrawerMenu: React.FC<DrawerMenuProps> = ({ isOpen, onClose }) => {
   return (
     <View style={styles.overlay}>
       <TouchableOpacity style={styles.overlayBg} onPress={onClose} activeOpacity={1} />
-      <View style={styles.drawer}>
+      <View style={[styles.drawer, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
         <View style={styles.drawerHeader}>
           <Text style={styles.drawerTitle}>Categorías</Text>
           <TouchableOpacity onPress={onClose} style={styles.closeButton}>
@@ -118,19 +120,17 @@ export const DrawerMenu: React.FC<DrawerMenuProps> = ({ isOpen, onClose }) => {
 
 const styles = StyleSheet.create({
   overlay: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     zIndex: 100,
-    flexDirection: 'row',
   },
   overlayBg: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     backgroundColor: 'rgba(0, 0, 0, 0.4)',
   },
   drawer: {
     width: '70%',
     height: '100%',
     backgroundColor: colors.white,
-    paddingTop: 50,
   },
   drawerHeader: {
     flexDirection: 'row',
