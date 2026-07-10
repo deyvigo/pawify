@@ -9,5 +9,5 @@ public record BuyerResponseSimpleDTO (
     String email,
     int countCards,
     int countAddresses,
-    BuyerPreviewResponseDTO profile
+    BuyerImageResponseDTO profile
 ) {}

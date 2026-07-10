@@ -53,7 +53,6 @@ export const AdminsPage = () => {
   const debouncedSearch = useDebounce(search, 300)
 
   const { adminsPage } = useAdmin({ search: debouncedSearch, size: 15, page, sort })
-  console.log(adminsPage)
 
   const handlePageChangeToNext = () => {
     if (adminsPage?.last) return
