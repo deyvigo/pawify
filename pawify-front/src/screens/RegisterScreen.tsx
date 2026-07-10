@@ -8,7 +8,9 @@ import {
     Image, 
     ScrollView, 
     ActivityIndicator,
-    Alert
+    Alert,
+    KeyboardAvoidingView,
+    Platform
 } from 'react-native';
 import { useRegister } from '../hooks/useRegister';
 import { EyeIcon } from '../components/icons/EyeIcon';
@@ -98,9 +100,14 @@ export const RegisterScreen = ({ onNavigateToLogin }: RegisterProps) => {
 
 
     return (
+        <KeyboardAvoidingView
+            style={{ flex: 1 }}
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        >
         <ScrollView 
             contentContainerStyle={styles.scrollContainer} 
             showsVerticalScrollIndicator={false}
+            keyboardShouldPersistTaps="handled"
         >
             {/* Imagen de fondo con opacidad */}
             <View style={styles.imageWrapper}>
@@ -329,6 +336,7 @@ export const RegisterScreen = ({ onNavigateToLogin }: RegisterProps) => {
             <Text style={styles.copyrightText}>© 2026 Pawify. Todos los derechos reservados.</Text>
 
         </ScrollView>
+        </KeyboardAvoidingView>
     );
 };
 

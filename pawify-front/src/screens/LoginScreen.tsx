@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity ,Image, ActivityIndicator,Alert } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity ,Image, ActivityIndicator,Alert, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 
 import { useAuthentication } from '../hooks/useAuthentication';
 import { requestRecoveryCode } from '../services/authService';
@@ -70,42 +70,50 @@ export const LoginScreen = ({ onLoginSuccess, onNavigateToRegister, onNavigateTo
     };
 
     return (
-
-        <View style={styles.container}>
+        <KeyboardAvoidingView
+            style={{ flex: 1 }}
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
+        >
+        <ScrollView
+            contentContainerStyle={styles.scrollContainer}
+            showsVerticalScrollIndicator={false}
+            keyboardShouldPersistTaps="handled"
+        >
             <View style={styles.imageWrapper}>
-                <Image 
-                    source={require('../../assets/fondoLogin.png')} 
-                    style={styles.backgroundImage} 
+                <Image
+                    source={require('../../assets/fondoLogin.png')}
+                    style={styles.backgroundImage}
                 />
                 <View style={styles.overlay} />
             </View>
-
 
             <View style={styles.titleContainer}>
                 <Image  style={styles.logo} source={require('../../assets/logopawify.png') } />
                 <Text style={styles.title}>Pawify</Text>
                 <Text style={styles.subtitle}>Tu mejor amigo merece lo mejor</Text>
             </View>
+
             <View style={styles.formcontainer}>
                 <View style={styles.inputcontainer}>
                     <Text style={styles.label1}>Nombre de Usuario</Text>
                     <View style={[styles.fieldContainer, usernameError ? styles.fieldErrorBorder : null]}>
                         <Image  source={require('../../assets/userIcon.png') } />
-                        <TextInput 
+                        <TextInput
                             style={styles.input}
                             placeholder="Tu nombre de usuario"
-                            placeholderTextColor="#6B7280" 
-                            autoCapitalize="none"  
+                            placeholderTextColor="#6B7280"
+                            autoCapitalize="none"
                             value={username}
                             onChangeText={(text) => {
                                 setUsername(text);
                                 if (text.length > 0 && text.length < 6) {
                                     setUsernameError('El usuario debe tener al menos 6 caracteres');
                                 } else {
-                                    setUsernameError(''); 
+                                    setUsernameError('');
                                 }
                             }}
-                        />                 
+                        />
                     </View>
                     {usernameError ? <Text style={styles.errorText}>{usernameError}</Text> : null}
                 </View>
@@ -118,11 +126,11 @@ export const LoginScreen = ({ onLoginSuccess, onNavigateToRegister, onNavigateTo
                     </View>
                     <View style={[styles.fieldContainer, passwordError ? styles.fieldErrorBorder : null]}>
                         <Image  source={require('../../assets/passIcon.png') } />
-                        <TextInput 
+                        <TextInput
                             style={styles.input}
                             placeholder="••••••••"
-                            placeholderTextColor="#6B7280" 
-                            secureTextEntry={!showPassword} // para ocultar texto con asteriscos
+                            placeholderTextColor="#6B7280"
+                            secureTextEntry={!showPassword}
                             value={password}
                             onChangeText={(text) => {
                                 setPassword(text);
@@ -142,32 +150,30 @@ export const LoginScreen = ({ onLoginSuccess, onNavigateToRegister, onNavigateTo
 
                 <TouchableOpacity style={styles.loginButton} onPress={handleLogin} disabled={isLoading}>
                     {isLoading ? (
-                        <ActivityIndicator color="#ffffff" /> 
+                        <ActivityIndicator color="#ffffff" />
                     ) : (
                         <Text style={styles.loginButtonText}>Iniciar Sesión</Text>
                     )}
                 </TouchableOpacity>
             </View>
 
-            <View style={styles.footeText}> 
+            <View style={styles.footeText}>
                 <Text style={styles.footerText}>¿No tienes una cuenta?</Text>
                 <TouchableOpacity onPress={onNavigateToRegister}>
                     <Text style={styles.registerText}>Regístrate gratis</Text>
                 </TouchableOpacity>
             </View>
-
-        </View>
-
-
-
+        </ScrollView>
+        </KeyboardAvoidingView>
     );
 }
 
-const styles= StyleSheet.create({
-    container: {
-        flex: 1,
+const styles = StyleSheet.create({
+    scrollContainer: {
+        flexGrow: 1,
         alignItems: 'center',
-        backgroundColor: '#F5F5F5',       
+        backgroundColor: '#F5F5F5',
+        paddingBottom: 40,
     },
 
     imageWrapper: {
@@ -175,7 +181,7 @@ const styles= StyleSheet.create({
         top: 0,
         left: 0,
         right: 0,
-        height: '43%', 
+        height: 320,
     },
     backgroundImage: {
         width: '100%',
@@ -194,7 +200,6 @@ const styles= StyleSheet.create({
     titleContainer: {
         alignItems: 'center',
         marginTop: 100,
-
     },
 
     logo: {
@@ -220,19 +225,19 @@ const styles= StyleSheet.create({
     formcontainer: {
         backgroundColor: '#fff',
         width: '90%',
-        height: 435,
-        marginTop: 32,
-        marginBottom: 24,
-        paddingVertical: 24,   
-        paddingHorizontal: 12,
-        borderRadius: 12,
-        elevation: 8, 
-            
+        paddingVertical: 30,
+        paddingHorizontal: 20,
+        borderRadius: 20,
+        marginTop: 30,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.1,
+        shadowRadius: 10,
+        elevation: 8,
     },
 
     inputcontainer: {
-        marginBottom: 24,
-        padding: 10,
+        marginBottom: 20,
     },
 
     fieldContainer: {
@@ -293,7 +298,8 @@ const styles= StyleSheet.create({
     footeText: {
         flexDirection: 'row',
         gap: 5,
-        alignItems: 'center',    
+        alignItems: 'center',
+        marginTop: 12,
     },
 
     footerText: { 

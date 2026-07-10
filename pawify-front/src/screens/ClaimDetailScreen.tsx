@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, TextInput, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, TextInput, Animated, Keyboard, Platform, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ClaimResponseDTO, MessageResponseDTO } from '../types/orders';
 import { useWebsocket } from '../context/WebSocket';
@@ -16,6 +16,33 @@ export const ClaimDetailScreen = ({ claim, onBack }: ClaimDetailProps) => {
     const { currentUser } = useAppContext();
     const { messages, isLoading, isLoadingMore, hasMore, loadMore, sendMessage } = useWebsocket(claim.id, currentUser?.token);
     const [inputText, setInputText] = useState('');
+    const translateY = useRef(new Animated.Value(0)).current;
+
+    useEffect(() => {
+        const showEvent = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
+        const hideEvent = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
+
+        const showSub = Keyboard.addListener(showEvent, (e) => {
+            Animated.timing(translateY, {
+                toValue: -e.endCoordinates.height+-20,
+                duration: Platform.OS === 'ios' ? e.duration : 250,
+                useNativeDriver: true,
+            }).start();
+        });
+
+        const hideSub = Keyboard.addListener(hideEvent, () => {
+            Animated.timing(translateY, {
+                toValue: 0,
+                duration: Platform.OS === 'ios' ? 250 : 250,
+                useNativeDriver: true,
+            }).start();
+        });
+
+        return () => {
+            showSub.remove();
+            hideSub.remove();
+        };
+    }, [translateY]);
 
     const handleSend = () => {
         const text = inputText.trim();
@@ -67,11 +94,7 @@ export const ClaimDetailScreen = ({ claim, onBack }: ClaimDetailProps) => {
                 <View style={styles.headerSpacer} />
             </View>
 
-            <KeyboardAvoidingView
-                style={styles.flex}
-                behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-                keyboardVerticalOffset={0}
-            >
+            <Animated.View style={[styles.chatArea, { transform: [{ translateY }] }]}>
                 {isLoading && messages.length === 0 ? (
                     <View style={styles.emptyContainer}>
                         <ActivityIndicator size="large" color="#B91C1C" />
@@ -113,14 +136,16 @@ export const ClaimDetailScreen = ({ claim, onBack }: ClaimDetailProps) => {
                         <SendHorizontalIcon size={20} color="#FFFFFF" />
                     </TouchableOpacity>
                 </View>
-            </KeyboardAvoidingView>
+            </Animated.View>
         </SafeAreaView>
     );
 };
 
 const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: '#F3F4F6' },
-    flex: { flex: 1 },
+    container: {
+        flex: 1,
+        backgroundColor: '#F3F4F6',
+    },
     header: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -135,6 +160,9 @@ const styles = StyleSheet.create({
     headerTitle: { fontSize: 15, fontWeight: 'bold', color: '#111827' },
     headerSubtitle: { fontSize: 11, color: '#6B7280', marginTop: 1 },
     headerSpacer: { width: 28 },
+    chatArea: {
+        flex: 1,
+    },
     listContent: { padding: 16, paddingBottom: 8, flexGrow: 1 },
     messageRow: { marginBottom: 10 },
     messageRowOwn: { alignItems: 'flex-end' },
@@ -165,6 +193,7 @@ const styles = StyleSheet.create({
         alignItems: 'flex-end',
         paddingHorizontal: 12,
         paddingVertical: 10,
+        paddingBottom: 24,
         backgroundColor: '#FFFFFF',
         borderTopWidth: 1,
         borderTopColor: '#E5E7EB',

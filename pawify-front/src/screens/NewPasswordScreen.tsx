@@ -7,7 +7,10 @@ import {
     StyleSheet, 
     Image ,
     Alert,
-    ActivityIndicator
+    ActivityIndicator,
+    KeyboardAvoidingView,
+    Platform,
+    ScrollView
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -77,7 +80,15 @@ export const NewPasswordScreen = ({ username, code, onBackToRecovery, onPassword
                 <View style={{ width: 24 }} /> 
             </View>
 
-            <View style={styles.content}>
+            <KeyboardAvoidingView
+                style={{ flex: 1 }}
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            >
+            <ScrollView
+                contentContainerStyle={styles.scrollContent}
+                keyboardShouldPersistTaps="handled"
+                showsVerticalScrollIndicator={false}
+            >
                 {/* Icono principal */}
                 <View style={styles.iconWrapper}>
                     <View style={styles.glowCircle}>
@@ -158,7 +169,8 @@ export const NewPasswordScreen = ({ username, code, onBackToRecovery, onPassword
                         <Text style={styles.supportLink}>Contactar soporte</Text>
                     </TouchableOpacity>
                 </View>
-            </View>
+            </ScrollView>
+            </KeyboardAvoidingView>
         </SafeAreaView>
     );
 };
@@ -167,8 +179,10 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#F9F9F9', 
+    },
+    scrollContent: {
         flexGrow: 1,
-
+        paddingHorizontal: 30,
         paddingBottom: 40,
     },
 
@@ -183,10 +197,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         borderBottomWidth: 1,
         borderBottomColor: '#F0F0F0', 
-    },
-
-    content: {
-        paddingHorizontal: 30,
     },
 
     backButton: {

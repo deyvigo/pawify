@@ -7,7 +7,10 @@ import {
     StyleSheet, 
     Image,
     Alert,
-    ActivityIndicator
+    ActivityIndicator,
+    KeyboardAvoidingView,
+    Platform,
+    ScrollView
 } from 'react-native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -134,8 +137,15 @@ export const RecoveryScreen = ({ onBackToLogin, username, email, onCodeVerified 
                 <Text style={styles.headerLogo}>Pawify</Text>
             </View>
 
-            <View style={styles.content}>
-                
+            <KeyboardAvoidingView
+                style={{ flex: 1 }}
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            >
+            <ScrollView
+                contentContainerStyle={styles.scrollContent}
+                keyboardShouldPersistTaps="handled"
+                showsVerticalScrollIndicator={false}
+            >
                 {/*icono principal */}
                 <View style={styles.iconWrapper}>
                     <View style={styles.mainIconContainer}>
@@ -208,7 +218,8 @@ export const RecoveryScreen = ({ onBackToLogin, username, email, onCodeVerified 
                     </View>
                 </View>
 
-            </View>
+            </ScrollView>
+            </KeyboardAvoidingView>
         </SafeAreaView>
     );
 };
@@ -253,6 +264,12 @@ const styles = StyleSheet.create({
 
     content: {
         flex: 1,
+        alignItems: 'center',
+        paddingHorizontal: 20,
+        paddingTop: 10,
+    },
+    scrollContent: {
+        flexGrow: 1,
         alignItems: 'center',
         paddingHorizontal: 20,
         paddingTop: 10,
