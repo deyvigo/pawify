@@ -11,18 +11,22 @@ post {
 }
 
 auth:bearer {
-  token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQlVZRVIiLCJ1c2VybmFtZSI6InVzZXJidXllcjIiLCJsYXN0X25hbWUiOiJCdXllciIsImZpcnN0X25hbWUiOiJVc2VyIiwiaWQiOjIsImV4cCI6MTc3ODU5NDM2N30.1LUUutbbezrMKffFmIJjyzAfSes4RzZMpLOtfEDmBCs
+  token: eyJhbGciOiJIUzI1NiJ9.eyJsYXN0X25hbWUiOiJCdXllciIsImZpcnN0X25hbWUiOiJBbmRyZWEiLCJpZCI6MTEsInJvbGUiOiJCVVlFUiIsInVzZXJuYW1lIjoiYnV5ZXIxIiwiZXhwIjoxNzg0MzI3NjE3fQ.A0YY9tfFOnfTvmtp_sszswnIJoMbtc04wK5t79yfkvQ
 }
 
 body:multipart-form {
   data: '''
     {
+    
         "content": "Buen producto",
+    
         "rating": 1,
-        "detail_id": 5
+    
+        "detail_id": 251
+    
       }
   ''' @contentType(application/json)
-  images: @file(/Users/deyvigo/dev/pawify/mocks/images/fuente_agua_3.webp)
+  ~images: @file(/Users/deyvigo/dev/pawify/mocks/images/fuente_agua_3.webp)
 }
 
 settings {
