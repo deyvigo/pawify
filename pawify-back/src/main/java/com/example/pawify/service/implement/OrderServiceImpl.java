@@ -9,6 +9,7 @@ import com.example.pawify.exception.NotEnoughStockException;
 import com.example.pawify.exception.ResourceNotFoundException;
 import com.example.pawify.mapper.OrderMapper;
 import com.example.pawify.model.*;
+import com.example.pawify.repository.DetailRepository;
 import com.example.pawify.repository.OrderRepository;
 import com.example.pawify.repository.ProductRepository;
 import com.example.pawify.service.CodeGenerator;
@@ -33,6 +34,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderMapper orderMapper;
     private final CodeGenerator codeGenerator;
     private final CursorUtil cursorUtil;
+    private final DetailRepository detailRepository;
 
     @Override
     @Transactional

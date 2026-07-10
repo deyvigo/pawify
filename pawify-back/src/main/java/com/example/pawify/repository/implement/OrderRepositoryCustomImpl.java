@@ -58,7 +58,6 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
         return em.createQuery(cq)
             .setMaxResults(size)
             .getResultList();
-
     }
 
     private void cursorPaginateBuilder(
