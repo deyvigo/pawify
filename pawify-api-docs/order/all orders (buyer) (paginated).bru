@@ -5,13 +5,20 @@ meta {
 }
 
 get {
-  url: {{actual_url}}/order
+  url: {{actual_url}}/order?status=paid&size=5&cursor=eyJpbnN0YW50IjoxNzgxMzU1ODMyLjgzNzY1MjAwMCwiaWQiOjN9
   body: none
   auth: bearer
 }
 
+params:query {
+  status: paid
+  size: 5
+  cursor: eyJpbnN0YW50IjoxNzgxMzU1ODMyLjgzNzY1MjAwMCwiaWQiOjN9
+  ~trackingCode: k
+}
+
 auth:bearer {
-  token: eyJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImJ1eWVyMSIsImxhc3RfbmFtZSI6IkJ1eWVyIiwiZmlyc3RfbmFtZSI6IkFuZHJlYSIsImlkIjoxMSwicm9sZSI6IkJVWUVSIiwiZXhwIjoxNzgyMTYyNzY4fQ.2jNdgoDTmMk80Tlk5vtMfSKjHjD0e7_kevdwX47QYqk
+  token: eyJhbGciOiJIUzI1NiJ9.eyJmaXJzdF9uYW1lIjoiQW5kcmVhIiwibGFzdF9uYW1lIjoiQnV5ZXIiLCJ1c2VybmFtZSI6ImJ1eWVyMSIsInJvbGUiOiJCVVlFUiIsImlkIjoxMSwiZXhwIjoxNzg0MjM2Njg4fQ.KiKe9C-sYKFX3uRKhLeO24c2nfDr3OcUBudTV2O6kY8
 }
 
 settings {

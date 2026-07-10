@@ -1,7 +1,6 @@
 package com.example.pawify.controller;
 
 import com.example.pawify.dto.in.order.OrderCreateRequestDTO;
-import com.example.pawify.dto.in.payment.PaymentRequestDTO;
 import com.example.pawify.dto.out.payment.PaymentIntentResponseDTO;
 import com.example.pawify.dto.out.payment.PublishableKeyDTO;
 import com.example.pawify.model.BuyerEntity;

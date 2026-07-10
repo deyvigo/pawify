@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 
 @Entity
@@ -20,7 +20,7 @@ public class OrderEntity {
     private Long id;
 
     @Column(nullable = false)
-    LocalDateTime orderAt;
+    Instant orderAt;
 
     @Column(nullable = false, unique = true)
     private String trackingCode;
@@ -46,7 +46,7 @@ public class OrderEntity {
 
     @PrePersist
     public void prePersist() {
-        this.orderAt = LocalDateTime.now();
+        this.orderAt = Instant.now();
         this.orderStatus = OrderStatus.PENDING;
         this.shippingStatus = ShippingStatus.IN_TRANSIT;
     }
