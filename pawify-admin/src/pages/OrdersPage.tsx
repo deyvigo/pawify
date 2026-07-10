@@ -69,7 +69,6 @@ export const OrdersPage = () => {
     size: 15,
     page,
   })
-  console.log(dataPage)
 
   const handlePageChangeToNext = () => {
     if (dataPage?.last) return
