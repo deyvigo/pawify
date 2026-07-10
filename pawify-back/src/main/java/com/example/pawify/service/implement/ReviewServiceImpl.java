@@ -67,6 +67,7 @@ public class ReviewServiceImpl implements ReviewService {
         }
 
         ReviewEntity savedReview = reviewRepository.save(reviewEntity);
+        detailEntity.setReviewed(true);
 
         return reviewMapper.toResponseDTO(savedReview);
     }

@@ -10,5 +10,6 @@ public record DetailResponseDTO(
     int quantity,
     BigDecimal price,
     int total,
-    String productImage
+    String productImage,
+    boolean reviewed
 ) {}

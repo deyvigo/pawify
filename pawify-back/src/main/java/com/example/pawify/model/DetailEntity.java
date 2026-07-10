@@ -24,6 +24,9 @@ public class DetailEntity {
     @Column(nullable = false)
     BigDecimal total;
 
+    @Column(nullable = false)
+    boolean reviewed;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id",  nullable = false)
     private ProductEntity product;
@@ -34,4 +37,9 @@ public class DetailEntity {
 
     @OneToMany(mappedBy = "detail", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReviewEntity> reviews;
+
+    @PrePersist
+    public void prePersist() {
+        this.reviewed = false;
+    }
 }
