@@ -15,6 +15,7 @@ export interface DetailResponseDTO {
     price: number;
     total: number;
     product_image: string; 
+    reviewed: boolean;
 }
 
 export interface OrderResponseDTO {

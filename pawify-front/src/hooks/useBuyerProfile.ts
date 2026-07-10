@@ -20,6 +20,7 @@ export function useBuyerProfile(authKey?: string): UseBuyerProfileReturn {
 
     try {
       const data = await api.get<BuyerProfileDTO>('/buyer');
+      console.log('[useBuyerProfile] RAW buyer data:', JSON.stringify(data, null, 2));
       setBuyerData(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error fetching buyer profile");

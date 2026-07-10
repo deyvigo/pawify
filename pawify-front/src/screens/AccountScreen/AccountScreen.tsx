@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, ActivityIndicator, Modal, TextInput, Alert, FlatList } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import * as ImagePicker from 'expo-image-picker';
 import { colors } from '../../theme/colors';
 import { useAppContext } from '../../context/AppContext';
 import { useBuyerProfile } from '../../hooks/useBuyerProfile';
@@ -9,6 +10,7 @@ import { useAddresses } from '../../hooks/useAddresses';
 import { setAuthToken } from '../../config';
 import { CardDTO } from '../../services/cardService';
 import { AddressDTO } from '../../services/addressService';
+import { updateProfileImage } from '../../services/buyerService';
 
 interface InfoRowProps {
   label: string;
@@ -353,6 +355,35 @@ export const AccountScreen: React.FC = () => {
 
   const [showCardsModal, setShowCardsModal] = useState(false);
   const [showAddressesModal, setShowAddressesModal] = useState(false);
+  const [uploading, setUploading] = useState(false);
+
+  const handleChangeProfilePicture = async () => {
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!permissionResult.granted) {
+      Alert.alert('Permiso requerido', 'Se necesita acceso a la galería para cambiar la foto de perfil');
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.8,
+    });
+
+    if (result.canceled) return;
+
+    setUploading(true);
+    try {
+      const response = await updateProfileImage(result.assets[0].uri);
+      console.log('[AccountScreen] upload response:', JSON.stringify(response));
+      refetchBuyer();
+    } catch (err) {
+      Alert.alert('Error', err instanceof Error ? err.message : 'Error al actualizar foto');
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const handleBack = () => {
     setActiveTab('catalog');
@@ -435,15 +466,19 @@ export const AccountScreen: React.FC = () => {
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
         <View style={styles.avatarSection}>
           <View style={styles.avatarContainer}>
-            {buyerData.profile ? (
-              <Image source={{ uri: buyerData.profile }} style={styles.avatarImage} />
+            {buyerData.profile?.url ? (
+              <Image source={{ uri: buyerData.profile.url }} style={styles.avatarImage} />
             ) : (
               <View style={styles.avatar}>
                 <Text style={styles.avatarIcon}>👤</Text>
               </View>
             )}
-            <TouchableOpacity style={styles.cameraButton}>
-              <Ionicons name="add" size={20} color={colors.white} />
+            <TouchableOpacity style={styles.cameraButton} onPress={handleChangeProfilePicture} disabled={uploading}>
+              {uploading ? (
+                <ActivityIndicator size="small" color={colors.white} />
+              ) : (
+                <Ionicons name="add" size={20} color={colors.white} />
+              )}
             </TouchableOpacity>
           </View>
         </View>

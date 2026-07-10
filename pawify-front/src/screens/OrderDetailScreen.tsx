@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { OrderResponseDTO, ClaimResponseDTO } from '../types/orders';
 import { createClaim } from '../services/claimService';
+import { createReview } from '../services/reviewService';
+import { ReviewForm } from '../components/ReviewForm';
 
 interface OrderDetailProps {
     order: OrderResponseDTO;
@@ -12,6 +14,11 @@ interface OrderDetailProps {
 
 export const OrderDetailScreen = ({ order, onBack, onNavigateToClaim }: OrderDetailProps) => {
     const [claims, setClaims] = useState<Record<number, ClaimResponseDTO>>({});
+    const [reviewModalVisible, setReviewModalVisible] = useState(false);
+    const [selectedDetailId, setSelectedDetailId] = useState<number | null>(null);
+    const [reviewedSet, setReviewedSet] = useState<Set<number>>(
+      useMemo(() => new Set(order.details.filter(d => d.reviewed).map(d => d.id)), [order])
+    );
 
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);
@@ -61,6 +68,23 @@ export const OrderDetailScreen = ({ order, onBack, onNavigateToClaim }: OrderDet
         onNavigateToClaim(claim);
       } catch (error) {
         Alert.alert('Error', 'No se pudo crear el reclamo. Intenta de nuevo.');
+      }
+    };
+
+    const handleReviewSubmit = async (content: string, rating: number) => {
+      if (selectedDetailId === null) return;
+      try {
+        await createReview({ content, rating, detail_id: selectedDetailId });
+        setReviewedSet(prev => new Set(prev).add(selectedDetailId!));
+        Alert.alert("Éxito", "Reseña creada exitosamente");
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : '';
+        if (msg.includes('already exists')) {
+          setReviewedSet(prev => new Set(prev).add(selectedDetailId!));
+          Alert.alert("Info", "Ya has reseñado este producto");
+        } else {
+          Alert.alert("Error", msg || "Error al crear reseña");
+        }
       }
     };
 
@@ -164,21 +188,29 @@ export const OrderDetailScreen = ({ order, onBack, onNavigateToClaim }: OrderDet
                                 </View>
                             </View>
                             {order.shipping_status === 'DELIVERED' && (
-                                claims[item.id] ? (
+                                <View style={styles.actionsRow}>
+                                    {claims[item.id] ? (
+                                        <TouchableOpacity
+                                            style={styles.actionButton}
+                                            onPress={() => onNavigateToClaim(claims[item.id])}
+                                        >
+                                            <Text style={styles.actionButtonText}>Ver reclamo</Text>
+                                        </TouchableOpacity>
+                                    ) : (
+                                        <TouchableOpacity
+                                            style={styles.actionButton}
+                                            onPress={() => handleClaim(item.id, item.product_name)}
+                                        >
+                                            <Text style={styles.actionButtonText}>Reclamar</Text>
+                                        </TouchableOpacity>
+                                    )}
                                     <TouchableOpacity
-                                        style={styles.claimButton}
-                                        onPress={() => onNavigateToClaim(claims[item.id])}
+                                        style={styles.actionButton}
+                                        onPress={() => { setSelectedDetailId(item.id); setReviewModalVisible(true); }}
                                     >
-                                        <Text style={styles.claimButtonText}>Ver reclamo</Text>
+                                        <Text style={styles.actionButtonText}>Reseñar</Text>
                                     </TouchableOpacity>
-                                ) : (
-                                    <TouchableOpacity
-                                        style={styles.claimButton}
-                                        onPress={() => handleClaim(item.id, item.product_name)}
-                                    >
-                                        <Text style={styles.claimButtonText}>Reclamar</Text>
-                                    </TouchableOpacity>
-                                )
+                                </View>
                             )}
                         </View>
                     ))}
@@ -202,6 +234,13 @@ export const OrderDetailScreen = ({ order, onBack, onNavigateToClaim }: OrderDet
                 </View>
 
             </ScrollView>
+
+            <ReviewForm
+                visible={reviewModalVisible}
+                onClose={() => { setReviewModalVisible(false); setSelectedDetailId(null); }}
+                onSubmit={handleReviewSubmit}
+                readOnly={selectedDetailId !== null && reviewedSet.has(selectedDetailId)}
+            />
         </SafeAreaView>
     );
 };
@@ -248,8 +287,9 @@ const styles = StyleSheet.create({
     itemPriceContainer: { alignItems: 'flex-end' },
     itemTotal: { fontSize: 14, fontWeight: 'bold', color: '#B91C1C', marginBottom: 4 },
     itemUnit: { fontSize: 12, color: '#6B7280' },
-    claimButton: { backgroundColor: '#FFF', borderWidth: 1, borderColor: '#DC2626', borderRadius: 8, paddingVertical: 8, alignItems: 'center', marginBottom: 15 },
-    claimButtonText: { color: '#DC2626', fontWeight: 'bold', fontSize: 13 },
+    actionsRow: { flexDirection: 'row', gap: 10, marginBottom: 15 },
+    actionButton: { flex: 1, backgroundColor: '#FFF', borderWidth: 1, borderColor: '#DC2626', borderRadius: 8, paddingVertical: 8, alignItems: 'center' },
+    actionButtonText: { color: '#DC2626', fontWeight: 'bold', fontSize: 13 },
     summaryCard: { backgroundColor: '#B91C1C', borderRadius: 16, padding: 20, marginBottom: 30 },
     summaryRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 },
     summaryText: { color: '#FECACA', fontSize: 14 },

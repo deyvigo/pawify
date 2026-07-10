@@ -182,5 +182,5 @@ export interface BuyerProfileDTO {
   dni_number: string;
   count_cards: number;
   count_addresses: number;
-  profile: string | null;
+  profile: { id: number; url: string } | null;
 }

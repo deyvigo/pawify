@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   View,
   Text,
@@ -8,121 +8,21 @@ import {
   ScrollView,
   SafeAreaView,
   Dimensions,
-  Modal,
-  TextInput,
   ActivityIndicator,
   Alert,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 import { colors } from "../../theme/colors";
 import { StarRating } from "../../components/StarRating";
-import { InteractiveStarRating } from "../../components/InteractiveStarRating";
 import { Product } from "../../types/product";
 import { Header } from "../../components/Header";
 import { useAppContext } from "../../context/AppContext";
-
-const pawLogo = require("../../../assets/pawlogo.png");
-const pawTxtLogo = require("../../../assets/pawtxtlogo.png");
+import { useReviews } from "../../hooks/useReviews";
+import { ReviewDTO } from "../../services/reviewService";
 
 const { width } = Dimensions.get("window");
 
-interface LocalReview {
-  id: string;
-  content: string;
-  rating: number;
-  created_at: string;
-  buyer: {
-    first_name: string;
-    last_name: string;
-  };
-}
-
-interface ReviewModalProps {
-  visible: boolean;
-  onClose: () => void;
-  onSubmit: (content: string, rating: number) => void;
-}
-
-const ReviewModal: React.FC<ReviewModalProps> = ({ visible, onClose, onSubmit }) => {
-  const [content, setContent] = useState("");
-  const [rating, setRating] = useState(0);
-  const [submitting, setSubmitting] = useState(false);
-
-  const handleSubmit = () => {
-    if (!content.trim()) {
-      Alert.alert("Error", "Por favor escribe una descripcion");
-      return;
-    }
-    if (rating === 0) {
-      Alert.alert("Error", "Por favor selecciona una calificacion");
-      return;
-    }
-
-    setSubmitting(true);
-    try {
-      onSubmit(content.trim(), rating);
-      setContent("");
-      setRating(0);
-      onClose();
-    } catch (err) {
-      Alert.alert("Error", err instanceof Error ? err.message : "Error al enviar resena");
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  const handleClose = () => {
-    setContent("");
-    setRating(0);
-    onClose();
-  };
-
-  return (
-    <Modal visible={visible} animationType="slide" transparent>
-      <View style={styles.modalOverlay}>
-        <View style={styles.modalContent}>
-          <View style={styles.modalHeader}>
-            <Text style={styles.modalTitle}>Nueva Resena</Text>
-            <TouchableOpacity onPress={handleClose}>
-              <Ionicons name="close" size={24} color={colors.textPrimary} />
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.modalBody}>
-            <Text style={styles.inputLabel}>Calificacion</Text>
-            <InteractiveStarRating rating={rating} onRatingChange={setRating} size={36} />
-
-            <Text style={[styles.inputLabel, { marginTop: 20 }]}>Tu resena</Text>
-            <TextInput
-              style={styles.textArea}
-              placeholder="Escribe tu experiencia con el producto..."
-              value={content}
-              onChangeText={setContent}
-              multiline
-              numberOfLines={4}
-              textAlignVertical="top"
-            />
-
-            <TouchableOpacity
-              style={[styles.submitButton, submitting && styles.submitButtonDisabled]}
-              onPress={handleSubmit}
-              disabled={submitting}
-            >
-              {submitting ? (
-                <ActivityIndicator size="small" color={colors.white} />
-              ) : (
-                <Text style={styles.submitButtonText}>Enviar Resena</Text>
-              )}
-            </TouchableOpacity>
-          </View>
-        </View>
-      </View>
-    </Modal>
-  );
-};
-
 interface ReviewItemProps {
-  review: LocalReview;
+  review: ReviewDTO;
 }
 
 const ReviewItem: React.FC<ReviewItemProps> = ({ review }) => (
@@ -151,13 +51,15 @@ export const ProductDetailScreen: React.FC<ProductDetailScreenProps> = ({
   product,
   onBack,
 }) => {
-  const { currentUser } = useAppContext();
   const [quantity, setQuantity] = useState(1);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
-  const [showReviewModal, setShowReviewModal] = useState(false);
-  const [reviews, setReviews] = useState<LocalReview[]>([]);
   const scrollRef = useRef<ScrollView>(null);
   const { addToCart } = useAppContext();
+  const { reviews, loading: reviewsLoading, hasMore, loadMore } = useReviews(product.productId);
+
+  useEffect(() => {
+    console.log(`[ProductDetailScreen] reviews for product ${product.productId}:`, reviews.length, reviewsLoading ? '(loading)' : '(done)');
+  }, [reviews, reviewsLoading, product.productId]);
 
   const handleDecrease = () => {
     if (quantity > 1) setQuantity(quantity - 1);
@@ -183,29 +85,20 @@ export const ProductDetailScreen: React.FC<ProductDetailScreenProps> = ({
     }
   };
 
-  const handleAddReview = (content: string, rating: number) => {
-    const firstName = currentUser?.first_name || "Usuario";
-    const lastName = currentUser?.last_name || "";
-
-    const newReview: LocalReview = {
-      id: Date.now().toString(),
-      content,
-      rating,
-      created_at: new Date().toISOString(),
-      buyer: {
-        first_name: firstName,
-        last_name: lastName,
-      },
-    };
-
-    setReviews((prev) => [newReview, ...prev]);
-  };
-
   return (
     <SafeAreaView style={styles.container}>
       <Header onActionPress={onBack} variant="detail" />
 
-      <ScrollView contentContainerStyle={styles.scrollContent}>
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        onScroll={({ nativeEvent }) => {
+          const { contentOffset, layoutMeasurement, contentSize } = nativeEvent;
+          if (contentOffset.y + layoutMeasurement.height >= contentSize.height - 100 && hasMore && !reviewsLoading) {
+            loadMore();
+          }
+        }}
+        scrollEventThrottle={16}
+      >
         <View style={styles.carouselContainer}>
           <ScrollView
             ref={scrollRef}
@@ -302,19 +195,21 @@ export const ProductDetailScreen: React.FC<ProductDetailScreenProps> = ({
             )}
           </View>
 
-          <View style={styles.reviewsHeader}>
-            <Text style={styles.sectionTitle}>Resenas</Text>
-            <TouchableOpacity style={styles.addReviewButton} onPress={() => setShowReviewModal(true)}>
-              <Ionicons name="add" size={20} color={colors.white} />
-            </TouchableOpacity>
-          </View>
+          <Text style={styles.sectionTitle}>Resenas</Text>
           <View style={styles.reviewsContainer}>
-            {reviews.length === 0 ? (
+            {reviewsLoading && reviews.length === 0 ? (
+              <ActivityIndicator size="small" color={colors.primary} style={{ paddingVertical: 20 }} />
+            ) : reviews.length === 0 ? (
               <Text style={styles.noReviewsText}>Sin resenas aun</Text>
             ) : (
-              reviews.map((review) => (
-                <ReviewItem key={review.id} review={review} />
-              ))
+              <>
+                {reviews.map((review) => (
+                  <ReviewItem key={review.id} review={review} />
+                ))}
+                {reviewsLoading && reviews.length > 0 && (
+                  <ActivityIndicator size="small" color={colors.primary} style={{ paddingVertical: 20 }} />
+                )}
+              </>
             )}
           </View>
         </View>
@@ -343,11 +238,6 @@ export const ProductDetailScreen: React.FC<ProductDetailScreenProps> = ({
         </TouchableOpacity>
       </View>
 
-      <ReviewModal
-        visible={showReviewModal}
-        onClose={() => setShowReviewModal(false)}
-        onSubmit={handleAddReview}
-      />
     </SafeAreaView>
   );
 };
@@ -515,21 +405,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: colors.textSecondary,
     textTransform: "capitalize",
-  },
-  reviewsHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 10,
-    marginTop: 10,
-  },
-  addReviewButton: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: colors.primary,
-    justifyContent: "center",
-    alignItems: "center",
   },
   reviewsContainer: {
     marginTop: 5,
