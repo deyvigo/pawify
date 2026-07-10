@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict bg66AjmRBsj9PKnnm3CeQZLyg6FobYGKWqddSFgwddYFBbsKdabOrZWSC3IGhs8
+\restrict 5906Xb67SDMxMY2pGBfXYQLhojEwkRHOFvtOf6yn8MA8HyFonTV384xEnhMDBal
 
 -- Dumped from database version 16.13 (Debian 16.13-1.pgdg13+1)
 -- Dumped by pg_dump version 16.13 (Debian 16.13-1.pgdg13+1)
@@ -227,7 +227,8 @@ CREATE TABLE public.details (
     quantity integer NOT NULL,
     total numeric(38,2) NOT NULL,
     order_id bigint NOT NULL,
-    product_id bigint NOT NULL
+    product_id bigint NOT NULL,
+    reviewed boolean
 );
 
 
@@ -583,6 +584,9 @@ ALTER SEQUENCE public.users_seq OWNER TO dbuser;
 --
 
 COPY public.addresses (id, active, latitude, longitude, name, reference, buyer_id) FROM stdin;
+1	t	0.1	0.1	Casa	Av. Brasil	11
+2	t	0.1	0.1	Casa 2	Av. México	11
+52	t	0.1	0.1	Casa 3	Av. Argentina	11
 \.
 
 
@@ -640,6 +644,7 @@ COPY public.brands (id, name) FROM stdin;
 --
 
 COPY public.buyer_images (id, url, buyer_id) FROM stdin;
+1	https://res.cloudinary.com/drpvxaxr2/image/upload/v1783711428/pawify/inztmsjloruy4opywlw0.jpg	11
 \.
 
 
@@ -952,257 +957,260 @@ COPY public.claims (id, last_message, last_message_sender, last_modified, admin_
 -- Data for Name: details; Type: TABLE DATA; Schema: public; Owner: dbuser
 --
 
-COPY public.details (id, quantity, total, order_id, product_id) FROM stdin;
-1	1	4.00	1	20
-2	3	105.00	1	9
-3	3	33.00	1	15
-4	3	42.00	2	17
-5	3	18.00	2	22
-6	2	12.00	2	13
-7	3	36.00	3	14
-8	3	33.00	3	15
-9	3	84.00	4	19
-10	1	9.00	4	11
-11	3	21.00	5	12
-12	1	14.00	6	17
-13	2	12.00	6	5
-14	3	105.00	6	9
-15	1	10.00	7	1
-16	2	10.00	7	10
-17	2	26.00	8	18
-18	1	12.00	8	8
-19	2	12.00	8	13
-20	2	56.00	9	19
-21	2	18.00	9	7
-22	3	27.00	9	11
-23	1	25.00	10	6
-24	2	30.00	11	4
-25	3	30.00	12	2
-26	2	22.00	13	21
-27	1	12.00	13	8
-28	2	12.00	14	5
-29	3	27.00	14	7
-30	2	8.00	15	20
-31	2	20.00	16	2
-32	2	8.00	17	20
-33	2	10.00	18	10
-34	3	18.00	18	13
-35	3	24.00	19	3
-36	1	28.00	19	19
-37	2	24.00	19	8
-38	3	84.00	20	19
-39	2	24.00	20	14
-40	3	39.00	21	18
-41	2	12.00	21	22
-42	1	5.00	22	16
-43	1	11.00	22	21
-44	2	12.00	22	5
-45	3	33.00	23	21
-46	3	105.00	23	9
-47	3	36.00	23	14
-48	1	7.00	24	12
-49	3	42.00	25	17
-50	2	16.00	25	3
-51	1	25.00	25	6
-52	2	10.00	26	10
-53	2	10.00	27	16
-54	3	18.00	28	5
-55	2	16.00	29	3
-56	2	18.00	29	7
-57	1	11.00	30	21
-58	2	50.00	30	6
-59	1	12.00	30	8
-60	1	5.00	31	16
-61	1	8.00	31	3
-62	3	30.00	32	1
-63	1	14.00	32	17
-64	1	22.00	32	23
-65	1	10.00	33	1
-66	3	42.00	33	17
-67	1	10.00	34	2
-68	3	15.00	34	10
-69	2	24.00	35	14
-70	2	20.00	36	2
-71	1	4.00	36	20
-72	1	6.00	36	13
-73	1	12.00	37	14
-74	3	15.00	38	16
-75	2	28.00	38	17
-76	2	30.00	38	4
-77	2	16.00	39	3
-78	2	30.00	39	4
-79	3	30.00	40	2
-80	3	39.00	41	18
-81	3	45.00	41	4
-82	1	11.00	41	21
-83	2	12.00	42	13
-84	1	25.00	43	6
-85	3	36.00	43	14
-86	2	28.00	44	17
-87	1	13.00	44	18
-88	3	36.00	44	8
-89	1	4.00	45	20
-90	1	14.00	46	17
-91	1	13.00	46	18
-92	3	36.00	46	8
-93	3	18.00	47	22
-94	1	8.00	48	3
-95	1	11.00	48	21
-96	1	5.00	48	10
-97	3	27.00	49	11
-98	3	15.00	50	16
-99	2	22.00	51	21
-100	2	50.00	51	6
-101	3	21.00	52	12
-102	3	33.00	53	21
-103	2	44.00	53	23
-104	1	5.00	54	16
-105	2	28.00	54	17
-106	2	18.00	54	11
-107	1	10.00	55	1
-108	2	70.00	56	9
-109	1	6.00	56	13
-110	1	10.00	57	1
-111	3	45.00	57	4
-112	3	30.00	58	1
-113	2	10.00	58	10
-114	3	33.00	58	15
-115	1	15.00	59	4
-116	3	84.00	60	19
-117	2	16.00	60	3
-118	1	6.00	60	22
-119	1	22.00	61	23
-120	3	30.00	62	1
-121	2	18.00	63	7
-122	3	18.00	64	13
-123	1	11.00	65	21
-124	1	12.00	65	8
-125	1	5.00	66	10
-126	1	10.00	67	2
-127	2	10.00	68	10
-128	1	9.00	68	11
-129	1	4.00	69	20
-130	2	20.00	70	2
-131	2	16.00	70	3
-132	2	50.00	70	6
-133	1	6.00	71	22
-134	3	27.00	71	7
-135	2	10.00	72	10
-136	2	24.00	72	14
-137	3	84.00	73	19
-138	3	24.00	74	3
-139	1	11.00	75	21
-140	3	18.00	75	5
-141	3	45.00	76	4
-142	1	9.00	76	11
-143	2	24.00	76	14
-144	2	14.00	77	12
-145	1	25.00	78	6
-146	2	70.00	78	9
-147	1	9.00	78	11
-148	1	4.00	79	20
-149	3	27.00	80	11
-150	1	6.00	81	5
-151	1	9.00	82	7
-152	2	12.00	82	13
-153	1	15.00	83	4
-154	1	6.00	83	22
-155	3	21.00	83	12
-156	2	12.00	84	22
-157	3	18.00	84	13
-158	2	24.00	84	14
-159	3	42.00	85	17
-160	3	45.00	85	4
-161	2	70.00	85	9
-162	1	12.00	86	14
-163	2	28.00	87	17
-164	3	39.00	87	18
-165	3	21.00	87	12
-166	1	10.00	88	1
-167	3	66.00	88	23
-168	2	10.00	89	10
-169	1	11.00	89	15
-170	2	16.00	90	3
-171	3	39.00	91	18
-172	3	84.00	91	19
-173	1	7.00	91	12
-174	2	20.00	92	1
-175	3	84.00	92	19
-176	1	22.00	93	23
-177	2	28.00	94	17
-178	2	20.00	95	1
-179	3	12.00	96	20
-180	2	70.00	96	9
-181	3	15.00	96	10
-182	3	30.00	97	1
-183	1	35.00	97	9
-184	1	28.00	98	19
-185	3	36.00	99	8
-186	2	30.00	100	4
-187	2	22.00	101	21
-188	2	18.00	101	7
-189	1	10.00	102	2
-190	1	12.00	103	14
-191	3	27.00	104	7
-192	3	15.00	105	16
-193	2	56.00	105	19
-194	3	45.00	106	4
-195	3	18.00	107	5
-196	3	24.00	108	3
-197	1	25.00	108	6
-198	3	12.00	109	20
-199	3	75.00	109	6
-200	1	12.00	109	14
-201	3	18.00	110	5
-202	3	27.00	110	11
-203	2	24.00	110	14
-204	2	44.00	111	23
-205	2	20.00	112	1
-206	2	12.00	112	13
-207	2	20.00	113	2
-208	3	105.00	113	9
-209	1	9.00	113	11
-210	1	9.00	114	11
-211	2	70.00	115	9
-212	2	24.00	116	14
-213	1	11.00	117	15
-214	3	21.00	118	12
-215	1	28.00	119	19
-216	2	8.00	119	20
-217	3	105.00	119	9
-218	3	18.00	120	5
-219	3	75.00	121	6
-220	2	10.00	122	16
-221	2	24.00	122	8
-222	1	13.00	123	18
-223	3	33.00	124	21
-224	2	12.00	124	22
-225	2	24.00	124	8
-226	2	8.00	125	20
-227	1	25.00	125	6
-228	1	22.00	126	23
-229	1	14.00	127	17
-230	2	8.00	128	20
-231	1	11.00	128	21
-232	3	18.00	128	13
-233	3	42.00	129	17
-234	1	11.00	130	21
-235	1	4.00	131	20
-236	3	15.00	131	10
-237	1	22.00	132	23
-238	1	28.00	133	19
-239	3	18.00	133	5
-240	2	20.00	134	1
-241	2	30.00	135	4
-242	2	10.00	135	10
-243	2	12.00	135	13
-244	3	15.00	136	10
-245	2	12.00	137	5
-246	2	16.00	138	3
-247	2	30.00	138	4
-248	2	22.00	138	21
-249	2	30.00	139	4
-250	1	11.00	139	21
+COPY public.details (id, quantity, total, order_id, product_id, reviewed) FROM stdin;
+1	1	4.00	1	20	t
+2	3	105.00	1	9	t
+3	3	33.00	1	15	t
+4	3	42.00	2	17	t
+5	3	18.00	2	22	t
+6	2	12.00	2	13	t
+7	3	36.00	3	14	t
+8	3	33.00	3	15	t
+9	3	84.00	4	19	t
+10	1	9.00	4	11	t
+11	3	21.00	5	12	t
+12	1	14.00	6	17	t
+13	2	12.00	6	5	t
+14	3	105.00	6	9	t
+15	1	10.00	7	1	t
+16	2	10.00	7	10	t
+17	2	26.00	8	18	t
+18	1	12.00	8	8	t
+19	2	12.00	8	13	t
+20	2	56.00	9	19	t
+21	2	18.00	9	7	t
+22	3	27.00	9	11	t
+23	1	25.00	10	6	t
+24	2	30.00	11	4	t
+25	3	30.00	12	2	t
+26	2	22.00	13	21	t
+27	1	12.00	13	8	t
+28	2	12.00	14	5	t
+29	3	27.00	14	7	t
+30	2	8.00	15	20	t
+31	2	20.00	16	2	t
+32	2	8.00	17	20	t
+33	2	10.00	18	10	t
+34	3	18.00	18	13	t
+35	3	24.00	19	3	t
+36	1	28.00	19	19	t
+37	2	24.00	19	8	t
+38	3	84.00	20	19	t
+39	2	24.00	20	14	t
+40	3	39.00	21	18	t
+41	2	12.00	21	22	t
+42	1	5.00	22	16	t
+43	1	11.00	22	21	t
+44	2	12.00	22	5	t
+45	3	33.00	23	21	t
+46	3	105.00	23	9	t
+47	3	36.00	23	14	t
+48	1	7.00	24	12	t
+49	3	42.00	25	17	t
+50	2	16.00	25	3	t
+51	1	25.00	25	6	t
+52	2	10.00	26	10	t
+53	2	10.00	27	16	t
+54	3	18.00	28	5	t
+55	2	16.00	29	3	t
+56	2	18.00	29	7	t
+57	1	11.00	30	21	t
+58	2	50.00	30	6	t
+59	1	12.00	30	8	t
+60	1	5.00	31	16	t
+61	1	8.00	31	3	t
+62	3	30.00	32	1	t
+63	1	14.00	32	17	t
+64	1	22.00	32	23	t
+65	1	10.00	33	1	t
+66	3	42.00	33	17	t
+67	1	10.00	34	2	t
+68	3	15.00	34	10	t
+69	2	24.00	35	14	t
+70	2	20.00	36	2	t
+71	1	4.00	36	20	t
+72	1	6.00	36	13	t
+73	1	12.00	37	14	t
+74	3	15.00	38	16	t
+75	2	28.00	38	17	t
+76	2	30.00	38	4	t
+77	2	16.00	39	3	t
+78	2	30.00	39	4	t
+79	3	30.00	40	2	t
+80	3	39.00	41	18	t
+81	3	45.00	41	4	t
+82	1	11.00	41	21	t
+83	2	12.00	42	13	t
+84	1	25.00	43	6	t
+85	3	36.00	43	14	t
+86	2	28.00	44	17	t
+87	1	13.00	44	18	t
+88	3	36.00	44	8	t
+89	1	4.00	45	20	t
+90	1	14.00	46	17	t
+91	1	13.00	46	18	t
+92	3	36.00	46	8	t
+93	3	18.00	47	22	t
+94	1	8.00	48	3	t
+95	1	11.00	48	21	t
+96	1	5.00	48	10	t
+97	3	27.00	49	11	t
+98	3	15.00	50	16	t
+99	2	22.00	51	21	t
+100	2	50.00	51	6	t
+101	3	21.00	52	12	t
+102	3	33.00	53	21	t
+103	2	44.00	53	23	t
+104	1	5.00	54	16	t
+105	2	28.00	54	17	t
+106	2	18.00	54	11	t
+107	1	10.00	55	1	t
+108	2	70.00	56	9	t
+109	1	6.00	56	13	t
+110	1	10.00	57	1	t
+111	3	45.00	57	4	t
+112	3	30.00	58	1	t
+113	2	10.00	58	10	t
+114	3	33.00	58	15	t
+115	1	15.00	59	4	t
+116	3	84.00	60	19	t
+117	2	16.00	60	3	t
+118	1	6.00	60	22	t
+119	1	22.00	61	23	t
+120	3	30.00	62	1	t
+121	2	18.00	63	7	t
+122	3	18.00	64	13	t
+123	1	11.00	65	21	t
+124	1	12.00	65	8	t
+125	1	5.00	66	10	t
+126	1	10.00	67	2	t
+127	2	10.00	68	10	t
+128	1	9.00	68	11	t
+129	1	4.00	69	20	t
+130	2	20.00	70	2	t
+131	2	16.00	70	3	t
+132	2	50.00	70	6	t
+133	1	6.00	71	22	t
+134	3	27.00	71	7	t
+135	2	10.00	72	10	t
+136	2	24.00	72	14	t
+137	3	84.00	73	19	t
+138	3	24.00	74	3	t
+139	1	11.00	75	21	t
+140	3	18.00	75	5	t
+141	3	45.00	76	4	t
+142	1	9.00	76	11	t
+143	2	24.00	76	14	t
+144	2	14.00	77	12	t
+145	1	25.00	78	6	t
+146	2	70.00	78	9	t
+147	1	9.00	78	11	t
+148	1	4.00	79	20	t
+149	3	27.00	80	11	t
+150	1	6.00	81	5	t
+151	1	9.00	82	7	t
+152	2	12.00	82	13	t
+153	1	15.00	83	4	t
+154	1	6.00	83	22	t
+155	3	21.00	83	12	t
+156	2	12.00	84	22	t
+157	3	18.00	84	13	t
+158	2	24.00	84	14	t
+159	3	42.00	85	17	t
+160	3	45.00	85	4	t
+161	2	70.00	85	9	t
+162	1	12.00	86	14	t
+163	2	28.00	87	17	t
+164	3	39.00	87	18	t
+165	3	21.00	87	12	t
+166	1	10.00	88	1	t
+167	3	66.00	88	23	t
+168	2	10.00	89	10	t
+169	1	11.00	89	15	t
+170	2	16.00	90	3	t
+171	3	39.00	91	18	t
+172	3	84.00	91	19	t
+173	1	7.00	91	12	t
+174	2	20.00	92	1	t
+175	3	84.00	92	19	t
+176	1	22.00	93	23	t
+177	2	28.00	94	17	t
+178	2	20.00	95	1	t
+179	3	12.00	96	20	t
+180	2	70.00	96	9	t
+181	3	15.00	96	10	t
+182	3	30.00	97	1	t
+183	1	35.00	97	9	t
+184	1	28.00	98	19	t
+185	3	36.00	99	8	t
+186	2	30.00	100	4	t
+187	2	22.00	101	21	t
+188	2	18.00	101	7	t
+189	1	10.00	102	2	t
+190	1	12.00	103	14	t
+191	3	27.00	104	7	t
+192	3	15.00	105	16	t
+193	2	56.00	105	19	t
+194	3	45.00	106	4	t
+195	3	18.00	107	5	t
+196	3	24.00	108	3	t
+197	1	25.00	108	6	t
+198	3	12.00	109	20	t
+199	3	75.00	109	6	t
+200	1	12.00	109	14	t
+201	3	18.00	110	5	t
+202	3	27.00	110	11	t
+203	2	24.00	110	14	t
+204	2	44.00	111	23	t
+205	2	20.00	112	1	t
+206	2	12.00	112	13	t
+207	2	20.00	113	2	t
+208	3	105.00	113	9	t
+209	1	9.00	113	11	t
+210	1	9.00	114	11	t
+211	2	70.00	115	9	t
+212	2	24.00	116	14	t
+213	1	11.00	117	15	t
+214	3	21.00	118	12	t
+215	1	28.00	119	19	t
+216	2	8.00	119	20	t
+217	3	105.00	119	9	t
+218	3	18.00	120	5	t
+219	3	75.00	121	6	t
+220	2	10.00	122	16	t
+221	2	24.00	122	8	t
+222	1	13.00	123	18	t
+223	3	33.00	124	21	t
+224	2	12.00	124	22	t
+225	2	24.00	124	8	t
+226	2	8.00	125	20	t
+227	1	25.00	125	6	t
+228	1	22.00	126	23	t
+229	1	14.00	127	17	t
+230	2	8.00	128	20	t
+231	1	11.00	128	21	t
+232	3	18.00	128	13	t
+233	3	42.00	129	17	t
+234	1	11.00	130	21	t
+235	1	4.00	131	20	t
+236	3	15.00	131	10	t
+237	1	22.00	132	23	t
+238	1	28.00	133	19	t
+239	3	18.00	133	5	t
+240	2	20.00	134	1	t
+241	2	30.00	135	4	t
+242	2	10.00	135	10	t
+243	2	12.00	135	13	t
+244	3	15.00	136	10	t
+245	2	12.00	137	5	t
+246	2	16.00	138	3	t
+247	2	30.00	138	4	t
+248	2	22.00	138	21	t
+249	2	30.00	139	4	t
+250	1	11.00	139	21	t
+252	1	25.00	140	6	f
+253	1	12.00	140	14	f
+251	1	11.00	140	21	t
 \.
 
 
@@ -1475,6 +1483,7 @@ COPY public.orders (id, order_at, order_status, shipping_status, total_price, tr
 137	2026-06-13 13:03:55.924445	PAID	IN_TRANSIT	12.00	spun1lrwmg1q6st7	25
 138	2026-06-13 13:03:55.946184	PAID	IN_TRANSIT	68.00	4nfmglqyfguvb4ys	25
 139	2026-06-13 13:03:55.974101	PAID	IN_TRANSIT	41.00	kl0i1gxid5vqr208	25
+140	2026-06-15 15:20:02.634238	PENDING	IN_TRANSIT	48.00	0zlvdjyry0it0m21	11
 \.
 
 
@@ -1569,14 +1578,14 @@ COPY public.product_images (id, url, product_id) FROM stdin;
 
 COPY public.products (id, active, created_at, description, name, price, rating, review_count, share_code, sold_count, stock, brand_id, category_id, admin_id, sub_category_id) FROM stdin;
 18	t	2026-06-13 13:03:32.314571	Permite pasear dos perros al mismo tiempo	Correa doble para paseo	13.0000	0	0	1civu0g13f	0	83	18	3	1	15
+14	t	2026-06-13 13:03:19.286221	Arena aglomerante con control de olores	Arena para gatos	12.0000	0	0	tivo4ovstj	0	72	14	2	1	11
 11	t	2026-06-13 13:03:09.756474	Collar con luz LED para paseos nocturnos seguros	Collar LED luminoso	9.0000	0	0	zkp5umo7b1	0	80	11	3	1	3
 23	t	2026-06-13 13:03:47.113642	Dispensador de agua con filtrado continuo	Fuente de agua automática	22.0000	0	0	952f6oxskd	0	88	23	1	1	18
+21	t	2026-06-13 13:03:41.247932	Arnés cómodo para control de perros durante el paseo	Arnés ajustable	11.0000	0	0	9xw1jb15f8	0	73	21	3	1	3
 8	t	2026-06-13 13:02:59.496467	Bowl doble para agua y comida, fácil de limpiar	Comedero doble acero inoxidable	12.0000	0	0	zmgj1xt8f0	0	81	8	1	1	7
-14	t	2026-06-13 13:03:19.286221	Arena aglomerante con control de olores	Arena para gatos	12.0000	0	0	tivo4ovstj	0	73	14	2	1	11
 15	t	2026-06-13 13:03:23.517972	Rascador de cartón resistente para gatos	Rascador para gatos	11.0000	0	0	i6on30m71r	0	89	15	4	1	12
 22	t	2026-06-13 13:03:44.278224	Premios que ayudan a limpiar los dientes del perro	Snack dental	6.0000	0	0	n5ruvs35j7	0	85	22	1	1	9
 12	t	2026-06-13 13:03:13.165114	Comedero diseñado para evitar que el perro coma demasiado rápido	Plato antivoracidad	7.0000	0	0	r4jxry0yf3	0	81	12	1	1	7
-6	t	2026-06-13 13:02:53.237071	Cama acolchada con base antideslizante	Cama para perro mediano	25.0000	0	0	ln8jslbis4	0	82	6	5	1	5
 19	t	2026-06-13 13:03:35.370447	Casa portátil y resistente al clima	Casita para perros pequeños	28.0000	0	0	gr1cmxbwkx	0	74	19	8	1	16
 9	t	2026-06-13 13:03:03.145778	Caja de transporte segura para viajes cortos y largos	Transportadora para mascotas	35.0000	0	0	n8km5cglsc	0	74	9	6	1	8
 1	t	2026-06-13 13:02:36.756133	Chow Chow	Croquetas	10.0000	0	0	ed1aqo2a1c	0	75	1	1	1	1
@@ -1587,7 +1596,7 @@ COPY public.products (id, active, created_at, description, name, price, rating, 
 2	t	2026-06-13 13:02:40.797993	Comida para todos	Dispensador de comida	10.0000	0	0	yy11lgne2v	0	83	2	2	1	2
 4	t	2026-06-13 13:02:47.036514	Correa extensible hasta 5 metros con sistema de bloqueo	Correa retráctil	15.0000	0	0	id8m4g2euy	0	69	4	3	1	3
 17	t	2026-06-13 13:03:29.552661	Suplemento vitamínico para mejorar la salud general	Vitaminas para perros	14.0000	0	0	5hjmobkgiz	0	71	17	7	1	14
-21	t	2026-06-13 13:03:41.247932	Arnés cómodo para control de perros durante el paseo	Arnés ajustable	11.0000	0	0	9xw1jb15f8	0	74	21	3	1	3
+6	t	2026-06-13 13:02:53.237071	Cama acolchada con base antideslizante	Cama para perro mediano	25.0000	0	0	ln8jslbis4	0	81	6	5	1	5
 16	t	2026-06-13 13:03:26.580149	Pelota que rebota irregularmente para estimular el juego	Pelota interactiva	5.0000	0	0	7jjywrqr89	0	84	16	4	1	13
 7	t	2026-06-13 13:02:56.551039	Shampoo especial para eliminar pulgas y garrapatas	Shampoo antipulgas	9.0000	0	0	7x0srzpu62	0	82	7	2	1	6
 20	t	2026-06-13 13:03:38.254882	Bolsas ecológicas para recoger desechos de mascotas	Bolsas biodegradables	4.0000	0	0	vm7jx67z5q	0	978	20	2	1	17
@@ -1977,6 +1986,7 @@ COPY public.reviews (id, content, created_at, rating, buyer_id, detail_id, produ
 248	El producto dejó de funcionar al poco tiempo	2026-06-13 13:06:40.886371	2	25	248	21
 249	El producto dejó de funcionar al poco tiempo	2026-06-13 13:06:40.910448	2	25	249	4
 250	Llegó rápido y en buen estado	2026-06-13 13:06:41.807263	5	25	250	21
+251	Buen producto	2026-07-10 17:34:37.055093	1	11	251	21
 \.
 
 
@@ -2714,7 +2724,7 @@ COPY public.users (id, dni_number, first_name, last_name, password, username, ro
 -- Name: addresses_seq; Type: SEQUENCE SET; Schema: public; Owner: dbuser
 --
 
-SELECT pg_catalog.setval('public.addresses_seq', 1, false);
+SELECT pg_catalog.setval('public.addresses_seq', 101, true);
 
 
 --
@@ -2728,7 +2738,7 @@ SELECT pg_catalog.setval('public.brands_seq', 51, true);
 -- Name: buyer_images_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbuser
 --
 
-SELECT pg_catalog.setval('public.buyer_images_id_seq', 1, false);
+SELECT pg_catalog.setval('public.buyer_images_id_seq', 1, true);
 
 
 --
@@ -2756,7 +2766,7 @@ SELECT pg_catalog.setval('public.claims_id_seq', 250, true);
 -- Name: details_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbuser
 --
 
-SELECT pg_catalog.setval('public.details_id_seq', 250, true);
+SELECT pg_catalog.setval('public.details_id_seq', 253, true);
 
 
 --
@@ -2770,7 +2780,7 @@ SELECT pg_catalog.setval('public.messages_id_seq', 117, true);
 -- Name: orders_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbuser
 --
 
-SELECT pg_catalog.setval('public.orders_id_seq', 139, true);
+SELECT pg_catalog.setval('public.orders_id_seq', 140, true);
 
 
 --
@@ -2805,7 +2815,7 @@ SELECT pg_catalog.setval('public.review_images_id_seq', 120, true);
 -- Name: reviews_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbuser
 --
 
-SELECT pg_catalog.setval('public.reviews_id_seq', 250, true);
+SELECT pg_catalog.setval('public.reviews_id_seq', 251, true);
 
 
 --
@@ -3280,5 +3290,5 @@ ALTER TABLE ONLY public.tracking_statuses
 -- PostgreSQL database dump complete
 --
 
-\unrestrict bg66AjmRBsj9PKnnm3CeQZLyg6FobYGKWqddSFgwddYFBbsKdabOrZWSC3IGhs8
+\unrestrict 5906Xb67SDMxMY2pGBfXYQLhojEwkRHOFvtOf6yn8MA8HyFonTV384xEnhMDBal
 
