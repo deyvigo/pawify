@@ -2,37 +2,19 @@ import { useState, useEffect, useCallback } from "react";
 import { api } from "../services/api";
 import { BuyerProfileDTO } from "../types";
 
-/**
- * Return type for the {@link useBuyerProfile} hook.
- */
+// Tipo de retorno del hook useBuyerProfile
 interface UseBuyerProfileReturn {
-  /** The buyer's profile data, or null if not yet loaded */
+  // Datos del perfil del comprador, o null si no esta cargado
   buyerData: BuyerProfileDTO | null;
-  /** Whether the profile is currently being fetched */
+  // Cargando perfil
   loading: boolean;
-  /** Error message from the last failed request, or null */
+  // Mensaje de error, o null
   error: string | null;
-  /** Function to manually re-fetch the buyer profile */
+  // Recarga manualmente el perfil del comprador
   refetch: () => Promise<void>;
 }
 
-/**
- * Hook that fetches and caches the authenticated buyer's profile data.
- *
- * Calls the `/buyer` endpoint on mount (or when `authKey` changes) and
- * provides the profile along with loading/error state.
- *
- * @param authKey - Optional authentication key; profile loads only when this is provided.
- * @returns The {@link UseBuyerProfileReturn} object with profile data and control functions.
- *
- * @example
- * ```tsx
- * const { buyerData, loading, refetch } = useBuyerProfile(token);
- * if (buyerData) {
- *   console.log(buyerData.username);
- * }
- * ```
- */
+// Carga y cachea el perfil del comprador autenticado
 export function useBuyerProfile(authKey?: string): UseBuyerProfileReturn {
   const [buyerData, setBuyerData] = useState<BuyerProfileDTO | null>(null);
   const [loading, setLoading] = useState(true);

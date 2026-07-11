@@ -12,24 +12,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
-/**
- * Implementation of {@link EmailService} that sends emails via SendGrid.
- *
- * <p>This service is only active in the "prod" profile. It sends HTML-formatted
- * password recovery codes to users using the SendGrid email API. The sender
- * email must be a verified sender in the SendGrid account.</p>
- *
- * <p>Requires the {@code sendgrid.api-key} configuration property to be set.</p>
- */
+// Implementacion del servicio de emails via SendGrid (solo perfil prod)
 @Profile("prod")
 @Service
 public class EmailServiceImpl implements EmailService {
     @Value("${sendgrid.api-key}")
     private String apiKey;
 
-    /**
-     * {@inheritDoc}
-     */
+    // Envia el codigo de recuperacion en un email HTML via SendGrid
     @Override
     public void sendRecoveryCodeToEmail(String email, String recoveryCode) {
         Email from = new Email("deyvipgo17@gmail.com"); // debe ser el verificado

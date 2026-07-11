@@ -1,39 +1,23 @@
 import { useState, useEffect, useCallback } from "react";
 import { getCards, CardDTO, CardCreateRequest, createCard, updateCard } from "../services/cardService";
 
-/**
- * Return type for the {@link useCards} hook.
- */
+// Tipo de retorno del hook useCards
 interface UseCardsReturn {
-  /** Array of payment cards for the authenticated user */
+  // Lista de tarjetas del usuario
   cards: CardDTO[];
-  /** Whether the cards are currently being fetched */
+  // Cargando tarjetas
   loading: boolean;
-  /** Error message from the last failed request, or null */
+  // Mensaje de error, o null
   error: string | null;
-  /** Function to manually re-fetch the card list */
+  // Recarga manualmente la lista de tarjetas
   refetch: () => Promise<void>;
-  /** Function to create a new card and refresh the list */
+  // Crea una tarjeta nueva y recarga la lista
   addCard: (data: CardCreateRequest) => Promise<void>;
-  /** Function to update an existing card and refresh the list */
+  // Actualiza una tarjeta existente y recarga la lista
   editCard: (id: number, data: CardCreateRequest) => Promise<void>;
 }
 
-/**
- * Hook that manages the user's payment cards with CRUD operations.
- *
- * Fetches the card list on mount and provides functions to add, edit,
- * and re-fetch cards. All mutations automatically refresh the list.
- *
- * @param token - Optional authentication token; cards load only when this is provided.
- * @returns The {@link UseCardsReturn} object with card data and control functions.
- *
- * @example
- * ```tsx
- * const { cards, loading, addCard, editCard } = useCards(token);
- * addCard({ name: "Visa", number: "4111...", due_date: "12/25" });
- * ```
- */
+// Maneja las tarjetas de pago del usuario con operaciones CRUD
 export function useCards(token?: string): UseCardsReturn {
   const [cards, setCards] = useState<CardDTO[]>([]);
   const [loading, setLoading] = useState(false);

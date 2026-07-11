@@ -14,22 +14,14 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-/**
- * Implementation of {@link AddressService} that manages buyer delivery addresses.
- *
- * <p>This service handles address creation, retrieval of active addresses,
- * address deactivation with ownership checks, and address updates with
- * authorization enforcement.</p>
- */
+// Implementacion del servicio de gestion de direcciones de envio
 @Service
 @AllArgsConstructor
 public class AddressServiceImpl implements AddressService {
     private final AddressMapper addressMapper;
     private final AddressRepository addressRepository;
 
-    /**
-     * {@inheritDoc}
-     */
+    // Crea una direccion de envio para un comprador
     @Override
     public AddressResponseDTO createAddress(AddressCreateRequestDTO addressCreateRequestDTO, BuyerEntity buyerEntity) {
         AddressEntity addressEntity = addressMapper.toEntity(addressCreateRequestDTO);
@@ -38,9 +30,7 @@ public class AddressServiceImpl implements AddressService {
         return addressMapper.toDTO(savedAddress);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    // Lista direcciones activas de un comprador
     @Override
     public List<AddressResponseDTO> getAddressesByBuyer(BuyerEntity buyerEntity) {
         return addressRepository.findAllByBuyerAndActiveTrue(buyerEntity).stream()
@@ -48,9 +38,7 @@ public class AddressServiceImpl implements AddressService {
             .toList();
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    // Desactiva una direccion validando que el comprador sea el propietario
     @Override
     public void deactivateAddress(Long addressId, BuyerEntity buyerEntity) {
         AddressEntity addressInDb = addressRepository.findById(addressId)
@@ -66,9 +54,7 @@ public class AddressServiceImpl implements AddressService {
         addressRepository.save(addressInDb);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    // Actualiza datos de direccion validando propiedad
     @Override
     public AddressResponseDTO updateAddressByBuyer(Long addressId, AddressCreateRequestDTO newAddress, BuyerEntity buyerEntity) {
         AddressEntity addressInDb = addressRepository.findById(addressId)

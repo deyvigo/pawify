@@ -12,26 +12,14 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/**
- * REST controller for payment card management operations.
- * <p>
- * Provides endpoints for creating, retrieving, updating, and deactivating
- * payment cards associated with the authenticated buyer.
- * </p>
- */
+// Controlador de tarjetas de pago
 @RestController
 @RequestMapping("/card")
 @AllArgsConstructor
 public class CardController {
     private final CardService cardService;
 
-    /**
-     * Creates a new payment card for the authenticated buyer.
-     *
-     * @param cardCreateRequestDTO the validated card creation request containing card details
-     * @param buyerEntity the authenticated buyer extracted from the security context
-     * @return {@link ResponseEntity} with HTTP 200 (OK) and the created card data
-     */
+    // Crea una nueva tarjeta de pago para el comprador
     @PostMapping("")
     public ResponseEntity<CardResponseDTO> createCard(
         @Valid @RequestBody CardCreateRequestDTO cardCreateRequestDTO,
@@ -40,12 +28,7 @@ public class CardController {
         return ResponseEntity.ok(cardService.createCard(cardCreateRequestDTO, buyerEntity));
     }
 
-    /**
-     * Retrieves all active payment cards belonging to the authenticated buyer.
-     *
-     * @param buyerEntity the authenticated buyer extracted from the security context
-     * @return {@link ResponseEntity} with HTTP 200 (OK) and the list of card responses
-     */
+    // Lista todas las tarjetas activas del comprador
     @GetMapping("")
     public ResponseEntity<List<CardResponseDTO>> getAllCardsByBuyer(
         @AuthenticationPrincipal BuyerEntity buyerEntity
@@ -53,13 +36,7 @@ public class CardController {
         return ResponseEntity.ok(cardService.getCardsByBuyer(buyerEntity));
     }
 
-    /**
-     * Deactivates a payment card owned by the authenticated buyer.
-     *
-     * @param id the numeric ID of the card to deactivate
-     * @param buyerEntity the authenticated buyer extracted from the security context
-     * @return {@link ResponseEntity} with HTTP 204 (No Content) on success
-     */
+    // Desactiva una tarjeta de pago del comprador
     @PatchMapping("/{id}/deactivate")
     public ResponseEntity<Void> deactivateCard(
         @PathVariable Long id,
@@ -69,14 +46,7 @@ public class CardController {
         return ResponseEntity.noContent().build();
     }
 
-    /**
-     * Updates an existing payment card belonging to the authenticated buyer.
-     *
-     * @param id the numeric ID of the card to update
-     * @param buyerEntity the authenticated buyer extracted from the security context
-     * @param cardCreateRequestDTO the validated card update data
-     * @return {@link ResponseEntity} with HTTP 200 (OK) and the updated card data
-     */
+    // Actualiza una tarjeta de pago existente del comprador
     @PutMapping("/{id}")
     public ResponseEntity<CardResponseDTO> updateCard(
         @PathVariable Long id,

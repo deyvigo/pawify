@@ -1,35 +1,33 @@
-/**
- * Core product representation used throughout the cart and local views.
- */
+// Representacion de un producto usada en carrito y vistas locales
 export interface Product {
-  /** Unique product identifier */
+  // Identificador unico del producto
   productId: number;
-  /** Product display name */
+  // Nombre del producto
   name: string;
-  /** Primary product image URL */
+  // URL de la imagen principal
   image: string;
-  /** All product image URLs */
+  // Todas las URLs de imagenes del producto
   images: string[];
-  /** Product price */
+  // Precio del producto
   price: number;
-  /** Average customer rating */
+  // Valoracion promedio de clientes
   rating: number;
-  /** Total units sold */
+  // Total de unidades vendidas
   sold: number;
-  /** Detailed product description */
+  // Descripcion detallada del producto
   description: string;
-  /** Available stock quantity */
+  // Stock disponible
   stock: number;
-  /** Unique code used for sharing the product link */
+  // Codigo para compartir el producto
   share_code: string;
-  /** Whether the product is currently active/listed */
+  // Producto activo en catalogo
   active: boolean;
-  /** Optional brand name */
+  // Nombre de la marca (opcional)
   brand?: string;
-  /** Optional category name */
+  // Nombre de la categoria (opcional)
   category?: string;
-  /** Optional sub-category name */
+  // Nombre de la subcategoria (opcional)
   sub_category?: string;
-  /** Optional pet type filter */
+  // Tipo de mascota (opcional)
   pet?: string;
 }

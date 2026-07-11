@@ -1,25 +1,11 @@
 package com.example.pawify.service;
 
-/**
- * Service interface for generating random alphanumeric codes.
- *
- * <p>Provides operations for generating codes of configurable length,
- * used for tracking codes, share codes, and recovery tokens.</p>
- */
+// Generador de codigos alfanumericos aleatorios
 public interface CodeGenerator {
 
-    /**
-     * Generates a random alphanumeric code with the default length of 10 characters.
-     *
-     * @return a random alphanumeric string
-     */
+    // Genera un codigo de 10 caracteres por defecto
     String generateCode();
 
-    /**
-     * Generates a random alphanumeric code of the specified length.
-     *
-     * @param length the desired length of the generated code
-     * @return a random alphanumeric string of the given length
-     */
+    // Genera un codigo de la longitud indicada
     String generateCode(int length);
 }

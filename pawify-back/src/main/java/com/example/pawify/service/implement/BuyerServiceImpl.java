@@ -17,13 +17,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-/**
- * Implementation of {@link BuyerService} that manages buyer profile information.
- *
- * <p>This service handles buyer profile retrieval, profile image upload and
- * update via Cloudinary, and personal information updates including name,
- * email, and DNI number.</p>
- */
+// Implementacion del servicio de perfil de comprador
 @Service
 @AllArgsConstructor
 public class BuyerServiceImpl implements BuyerService {
@@ -32,9 +26,7 @@ public class BuyerServiceImpl implements BuyerService {
     private final CloudinaryService cloudinaryService;
     private final BuyerProfileMapper buyerProfileMapper;
 
-    /**
-     * {@inheritDoc}
-     */
+    // Obtiene la informacion del perfil de un comprador
     @Override
     public BuyerResponseSimpleDTO getBuyer(BuyerEntity buyerEntity) {
         BuyerEntity buyerFromDb = buyerRepository.findById(buyerEntity.getId())
@@ -43,9 +35,7 @@ public class BuyerServiceImpl implements BuyerService {
         return buyerMapper.toResponseSimpleDTO(buyerFromDb);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    // Sube o actualiza la imagen de perfil en Cloudinary
     @Override
     public BuyerImageResponseDTO createOrUpdateImage(BuyerEntity buyerEntity, MultipartFile image) {
         BuyerEntity buyerFromDb = buyerRepository.findById(buyerEntity.getId())
@@ -69,9 +59,7 @@ public class BuyerServiceImpl implements BuyerService {
         return buyerProfileMapper.toDTO(saved.getProfile());
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    // Actualiza los datos personales del comprador
     @Override
     public UpdateBuyerResponseDTO updateBuyer(BuyerEntity buyerEntity, UpdateBuyerRequestDTO dto) {
         BuyerEntity buyerFromDb = buyerRepository.findById(buyerEntity.getId())

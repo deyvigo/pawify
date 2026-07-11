@@ -20,14 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.Map;
 
-/**
- * Implementation of {@link AuthService} that handles user authentication,
- * registration, and password recovery operations.
- *
- * <p>This service manages the full lifecycle of user authentication including
- * admin and buyer registration, login with JWT token generation, refresh token
- * validation, and a multi-step password recovery flow with email delivery.</p>
- */
+// Implementacion del servicio de autenticacion
 @Service
 @AllArgsConstructor
 public class AuthServiceImpl implements AuthService {
@@ -44,9 +37,7 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordResetTokenRepository passwordResetTokenRepository;
     private final EmailService emailService;
 
-    /**
-     * {@inheritDoc}
-     */
+    // Registra un administrador validando unicidad de username y DNI
     @Override
     public AdminRegisterResponseDTO registerAdmin(AdminRegisterRequestDTO dto) {
         if (userRepository.existsByUsername(dto.username())) throw new UsernameAlreadyUsedException("Username is already in use");
@@ -63,9 +54,7 @@ public class AuthServiceImpl implements AuthService {
         return adminMapper.toResponseDTO(savedAdminEntity);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    // Registra un comprador validando unicidad de username, DNI y email
     @Override
     public BuyerRegisterResponseDTO registerBuyer(BuyerRegisterRequestDTO dto) {
         if (userRepository.existsByUsername(dto.username()))  throw new UsernameAlreadyUsedException("Username is already in use");
@@ -83,9 +72,7 @@ public class AuthServiceImpl implements AuthService {
         return buyerMapper.toResponseDTO(savedBuyerEntity);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    // Valida credenciales y retorna access y refresh tokens
     @Override
     public JwtDTO login(LoginRequestDTO dto) {
         UserEntity userEntity = userRepository.findByUsername(dto.username())
@@ -102,9 +89,7 @@ public class AuthServiceImpl implements AuthService {
         return new JwtDTO(token, refreshToken);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    // Valida el refresh token y genera nuevos tokens
     @Override
     public JwtDTO refreshToken(LoginWithTokensRequestDTO dto) {
         if (!jwtService.isValidToken(dto.refreshToken())) throw new UserInvalidCredentialsException("Invalid refresh token");
@@ -120,9 +105,7 @@ public class AuthServiceImpl implements AuthService {
         return new JwtDTO(token, refreshToken);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    // Genera un codigo de recuperacion y lo envia por email
     @Override
     @Transactional
     public UsernameVerificationResponseDTO sendRecoveryCode(RecoveryCodeRequestDTO dto) {
@@ -153,9 +136,7 @@ public class AuthServiceImpl implements AuthService {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    // Verifica que el codigo de recuperacion sea valido y no este expirado
     @Override
     public VerificationCodeResponseDTO verifyToken(String username, String token) {
         UserEntity userEntity = userRepository.findByUsername(username)
@@ -177,9 +158,7 @@ public class AuthServiceImpl implements AuthService {
         );
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    // Resetea la contrasena y marca el token como usado
     @Override
     @Transactional
     public void resetPassword(PasswordRecoveryRequestDTO dto) {
@@ -204,13 +183,7 @@ public class AuthServiceImpl implements AuthService {
         passwordResetTokenRepository.save(passwordResetTokenEntity);
     }
 
-    /**
-     * Builds a claims map from the given user entity containing user metadata
-     * for inclusion in JWT access tokens.
-     *
-     * @param userEntity the user entity from which to extract claims
-     * @return an immutable map containing user id, username, role, first name, and last name
-     */
+    // Construye claims con datos del usuario para el JWT
     private Map<String, Object> buildClaimsFromUser(UserEntity userEntity) {
         return Map.of(
             "id", userEntity.getId(),

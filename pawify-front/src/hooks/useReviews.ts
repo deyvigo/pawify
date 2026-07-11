@@ -1,42 +1,25 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { getReviews, createReview, ReviewDTO, ReviewCreateRequest, SliceReviewResponse } from "../services/reviewService";
 
-/**
- * Return type for the {@link useReviews} hook.
- */
+// Tipo de retorno del hook useReviews
 interface UseReviewsReturn {
-  /** Array of reviews loaded so far for the product */
+  // Lista de resenas cargadas
   reviews: ReviewDTO[];
-  /** Whether reviews are currently being fetched */
+  // Cargando resenas
   loading: boolean;
-  /** Error message from the last failed request, or null */
+  // Mensaje de error, o null
   error: string | null;
-  /** Whether more pages of reviews are available */
+  // Hay mas paginas disponibles
   hasMore: boolean;
-  /** Function to re-fetch reviews from the first page */
+  // Recarga la primera pagina de resenas
   refetch: () => Promise<void>;
-  /** Function to load the next page of reviews */
+  // Carga la siguiente pagina de resenas
   loadMore: () => Promise<void>;
-  /** Function to submit a new review for the product and refresh the list */
+  // Crea una resena y recarga la lista
   addReview: (data: Omit<ReviewCreateRequest, 'detail_id'>) => Promise<void>;
 }
 
-/**
- * Hook that manages paginated product reviews with create functionality.
- *
- * Fetches reviews for a specific product on mount and provides pagination,
- * refresh, and review submission capabilities.
- *
- * @param productId - The unique identifier of the product whose reviews to manage.
- * @param token - Optional authentication token (reserved for authenticated review creation).
- * @returns The {@link UseReviewsReturn} object with review data and control functions.
- *
- * @example
- * ```tsx
- * const { reviews, loading, addReview, loadMore } = useReviews(productId, token);
- * addReview({ content: "Great product!", rating: 5 });
- * ```
- */
+// Maneja las resenas paginadas de un producto con funcionalidad de crear
 export function useReviews(productId: number, token?: string): UseReviewsReturn {
   const [reviews, setReviews] = useState<ReviewDTO[]>([]);
   const [loading, setLoading] = useState(false);

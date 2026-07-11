@@ -10,26 +10,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-/**
- * REST controller for brand retrieval operations.
- * <p>
- * Provides endpoints for listing all available product brands.
- * </p>
- */
+// Controlador de marcas de productos
 @RestController
 @RequestMapping("/brand")
 @AllArgsConstructor
 public class BrandController {
     private final BrandService brandService;
 
-    /**
-     * Retrieves all brands ordered alphabetically by name in ascending order.
-     * <p>
-     * This endpoint is publicly accessible (no authentication required).
-     * </p>
-     *
-     * @return {@link ResponseEntity} with HTTP 200 (OK) and the list of brand responses
-     */
+    // Lista todas las marcas ordenadas alfabeticamente
     @GetMapping("")
     public ResponseEntity<List<BrandResponseDTO>> findAll() {
         return ResponseEntity.ok(brandService.findAllOrderedByNameAsc());

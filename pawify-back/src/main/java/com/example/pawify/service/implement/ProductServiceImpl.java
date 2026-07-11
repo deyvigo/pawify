@@ -28,13 +28,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-/**
- * Implementation of {@link ProductService} that manages the product catalog.
- *
- * <p>This service handles product creation with image upload, multi-criteria
- * product search using JPA Specifications, product activation/deactivation,
- * and product updates with automatic brand, category, and subcategory creation.</p>
- */
+// Implementacion del servicio de catalogo de productos
 @Service
 @AllArgsConstructor
 public class ProductServiceImpl implements ProductService {
@@ -47,9 +41,7 @@ public class ProductServiceImpl implements ProductService {
     private final CategoryRepository categoryRepository;
     private final SubCategoryRepository subCategoryRepository;
 
-    /**
-     * {@inheritDoc}
-     */
+    // Crea un producto validando rol ADMIN, subiendo imagenes y generando share code
     @Override
     @Transactional
     public ProductResponseSimpleDTO createProduct(
@@ -128,9 +120,7 @@ public class ProductServiceImpl implements ProductService {
         return productMapper.toResponseDTO(savedProduct);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    // Busca productos activos con filtros via JPA Specifications
     @Override
     public Slice<ProductResponseSimpleDTO> getProducts(
         String search,
@@ -169,9 +159,7 @@ public class ProductServiceImpl implements ProductService {
         );
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    // Desactiva un producto por share code
     @Override
     public void deactivateProduct(String shareCode) {
         ProductEntity productEntity = productRepository.findByShareCode(shareCode)
@@ -183,9 +171,7 @@ public class ProductServiceImpl implements ProductService {
         productRepository.save(productEntity);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    // Activa un producto por share code
     @Override
     public void activateProduct(String shareCode) {
         ProductEntity productEntity = productRepository.findByShareCode(shareCode)
@@ -197,17 +183,13 @@ public class ProductServiceImpl implements ProductService {
         productRepository.save(productEntity);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    // Obtiene un producto por ID
     @Override
     public ProductResponseSimpleDTO getProductById(Long id) {
         return productMapper.toResponseDTO(productRepository.findById(id).orElse(null));
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    // Actualiza producto y crea brand/category/subcategory si no existen
     @Override
     public ProductResponseSimpleDTO updateProduct(Long id, ProductCreateRequestDTO dto) {
         ProductEntity productInDb = productRepository.findById(id)

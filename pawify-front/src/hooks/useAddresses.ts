@@ -1,39 +1,23 @@
 import { useState, useEffect, useCallback } from "react";
 import { getAddresses, AddressDTO, AddressCreateRequest, createAddress, updateAddress } from "../services/addressService";
 
-/**
- * Return type for the {@link useAddresses} hook.
- */
+// Tipo de retorno del hook useAddresses
 interface UseAddressesReturn {
-  /** Array of delivery addresses for the authenticated user */
+  // Lista de direcciones del usuario
   addresses: AddressDTO[];
-  /** Whether the addresses are currently being fetched */
+  // Cargando direcciones
   loading: boolean;
-  /** Error message from the last failed request, or null */
+  // Mensaje de error, o null
   error: string | null;
-  /** Function to manually re-fetch the address list */
+  // Recarga manualmente la lista de direcciones
   refetch: () => Promise<void>;
-  /** Function to create a new address and refresh the list */
+  // Crea una direccion nueva y recarga la lista
   addAddress: (data: AddressCreateRequest) => Promise<void>;
-  /** Function to update an existing address and refresh the list */
+  // Actualiza una direccion existente y recarga la lista
   editAddress: (id: number, data: AddressCreateRequest) => Promise<void>;
 }
 
-/**
- * Hook that manages the user's delivery addresses with CRUD operations.
- *
- * Fetches the address list on mount and provides functions to add, edit,
- * and re-fetch addresses. All mutations automatically refresh the list.
- *
- * @param token - Optional authentication token; addresses load only when this is provided.
- * @returns The {@link UseAddressesReturn} object with address data and control functions.
- *
- * @example
- * ```tsx
- * const { addresses, loading, addAddress } = useAddresses(token);
- * addAddress({ name: "Home", reference: "Apt 1", latitude: -12.0, longitude: -77.0 });
- * ```
- */
+// Maneja las direcciones de envio del usuario con operaciones CRUD
 export function useAddresses(token?: string): UseAddressesReturn {
   const [addresses, setAddresses] = useState<AddressDTO[]>([]);
   const [loading, setLoading] = useState(true);

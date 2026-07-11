@@ -1,371 +1,327 @@
-/**
- * Represents the decoded JWT payload for the currently authenticated user.
- */
+// Payload JWT decodificado del usuario autenticado
 export interface UserPayload {
-  /** Unique identifier of the user */
+  // Identificador unico del usuario
   id: number;
-  /** Login username */
+  // Nombre de usuario
   username: string;
-  /** Role assigned to the user (e.g. "buyer") */
+  // Rol del usuario
   role: string;
-  /** User's first name */
+  // Nombre del usuario
   first_name: string;
-  /** User's last name */
+  // Apellido del usuario
   last_name: string;
-  /** Token expiration timestamp (Unix seconds) */
+  // Timestamp de expiracion del token
   exp: number;
-  /** Optional raw JWT token string */
+  // Token JWT raw (opcional)
   token?: string;
 }
 
-/**
- * Lightweight product representation used in cart items and local views.
- */
+// Representacion basica de un producto para carrito y vistas locales
 export interface Product {
-  /** Unique product identifier (string-encoded) */
+  // Identificador unico del producto (string)
   id: string;
-  /** Display name of the product */
+  // Nombre del producto
   name: string;
-  /** Optional product description */
+  // Descripcion del producto (opcional)
   description?: string;
-  /** Product price */
+  // Precio del producto
   price: number;
-  /** Primary product image URL */
+  // URL de la imagen principal
   image: string;
-  /** Average rating value */
+  // Valoracion promedio
   rating: number;
-  /** Number of units sold */
+  // Cantidad de unidades vendidas
   sold_count: number;
-  /** Optional brand name */
+  // Nombre de la marca (opcional)
   brand?: string;
-  /** Optional category name */
+  // Nombre de la categoria (opcional)
   category?: string;
-  /** Optional sub-category name */
+  // Nombre de la subcategoria (opcional)
   subCategory?: string;
-  /** Available stock quantity */
+  // Stock disponible (opcional)
   stock?: number;
-  /** Number of reviews for this product */
+  // Cantidad de resenas (opcional)
   review_count?: number;
 }
 
-/**
- * Data transfer object for a product brand.
- */
+// DTO de una marca de producto
 export interface BrandDTO {
-  /** Unique brand identifier */
+  // Identificador unico de la marca
   id: number;
-  /** Brand display name */
+  // Nombre de la marca
   name: string;
 }
 
-/**
- * Simplified category data transfer object without sub-categories.
- */
+// Categoria simplificada sin subcategorias
 export interface CategorySimpleDTO {
-  /** Unique category identifier */
+  // Identificador unico de la categoria
   id: number;
-  /** Category display name */
+  // Nombre de la categoria
   name: string;
 }
 
-/**
- * Data transfer object for a product sub-category.
- */
+// DTO de una subcategoria de producto
 export interface SubCategoryDTO {
-  /** Unique sub-category identifier */
+  // Identificador unico de la subcategoria
   id: number;
-  /** Sub-category display name */
+  // Nombre de la subcategoria
   name: string;
 }
 
-/**
- * Data transfer object for a product image returned by the API.
- */
+// DTO de una imagen de producto devuelto por la API
 export interface ImageResponseDTO {
-  /** Unique image identifier */
+  // Identificador unico de la imagen
   id: number;
-  /** Full URL to the image resource */
+  // URL completa de la imagen
   url: string;
 }
 
-/**
- * Full product data transfer object returned by the product API endpoints.
- */
+// DTO completo de un producto devuelto por la API
 export interface ProductResponseDTO {
-  /** Unique product identifier */
+  // Identificador unico del producto
   id: number;
-  /** Product display name */
+  // Nombre del producto
   name: string;
-  /** Detailed product description */
+  // Descripcion detallada del producto
   description: string;
-  /** Product price */
+  // Precio del producto
   price: number;
-  /** Associated brand */
+  // Marca asociada
   brand: BrandDTO;
-  /** Top-level category */
+  // Categoria principal
   category: CategorySimpleDTO;
-  /** Sub-category within the parent category */
+  // Subcategoria dentro de la categoria
   sub_category: SubCategoryDTO;
-  /** Total units sold */
+  // Unidades totales vendidas
   sold_count: number;
-  /** Available stock quantity */
+  // Stock disponible
   stock: number;
-  /** Unique code used for sharing the product link */
+  // Codigo unico para compartir el producto
   share_code: string;
-  /** Whether the product is currently active/listed */
+  // Producto activo en catalogo
   active: boolean;
-  /** Total number of customer reviews */
+  // Total de resenas de clientes
   review_count: number;
-  /** Average customer rating */
+  // Valoracion promedio de clientes
   rating: number;
-  /** ISO 8601 timestamp of when the product was created */
+  // Fecha de creacion en formato ISO 8601
   created_at: string;
-  /** Collection of product images */
+  // Coleccion de imagenes del producto
   images: ImageResponseDTO[];
 }
 
-/**
- * Sub-category data transfer object as returned in category listings.
- */
+// Subcategoria en listados de categorias
 export interface SubCategoryResponseDTO {
-  /** Unique sub-category identifier */
+  // Identificador unico de la subcategoria
   id: number;
-  /** Sub-category display name */
+  // Nombre de la subcategoria
   name: string;
 }
 
-/**
- * Full category data transfer object including its sub-categories.
- */
+// Categoria completa con sus subcategorias
 export interface CategoryResponseDTO {
-  /** Unique category identifier */
+  // Identificador unico de la categoria
   id: number;
-  /** Category display name */
+  // Nombre de la categoria
   name: string;
-  /** List of sub-categories belonging to this category */
+  // Lista de subcategorias
   sub_categories: SubCategoryResponseDTO[];
 }
 
-/**
- * Brand data transfer object as returned in brand listings.
- */
+// Marca en listados de marcas
 export interface BrandResponseDTO {
-  /** Unique brand identifier */
+  // Identificador unico de la marca
   id: number;
-  /** Brand display name */
+  // Nombre de la marca
   name: string;
 }
 
-/**
- * Paginated response wrapper for product listings.
- */
+// Respuesta paginada de productos
 export interface ProductsResponse {
-  /** Array of products for the current page */
+  // Lista de productos de la pagina actual
   content: ProductResponseDTO[];
-  /** Pagination metadata */
+  // Metadatos de paginacion
   pageable: {
-    /** Current page number (zero-indexed) */
+    // Numero de pagina actual (desde 0)
     page: number;
-    /** Number of items per page */
+    // Cantidad de elementos por pagina
     size: number;
-    /** Active sort descriptor */
+    // Descriptor de ordenamiento activo
     sort: string;
   };
-  /** Total number of products across all pages */
+  // Total de productos en todas las paginas
   totalElements: number;
-  /** Total number of available pages */
+  // Total de paginas disponibles
   totalPages: number;
-  /** Whether this is the last page of results */
+  // Es la ultima pagina
   last: boolean;
 }
 
-/**
- * Represents a single item in the shopping cart, including product details and quantity.
- */
+// Item individual del carrito de compras
 export interface CartItem {
-  /** Snapshot of product information at the time the item was added */
+  // Snapshot de datos del producto al momento de agregarlo al carrito
   product: {
-    /** Unique product identifier */
+    // Identificador unico del producto
     productId: number;
-    /** Product display name */
+    // Nombre del producto
     name: string;
-    /** Primary product image URL */
+    // URL de la imagen principal
     image: string;
-    /** All product image URLs */
+    // Todas las URLs de imagenes del producto
     images: string[];
-    /** Product price at time of cart addition */
+    // Precio al momento de agregar al carrito
     price: number;
-    /** Product rating at time of cart addition */
+    // Rating al momento de agregar al carrito
     rating: number;
-    /** Units sold count at time of cart addition */
+    // Unidades vendidas al momento de agregar al carrito
     sold: number;
-    /** Product description */
+    // Descripcion del producto
     description: string;
-    /** Available stock at time of cart addition */
+    // Stock disponible al momento de agregar al carrito
     stock: number;
-    /** Share code for the product */
+    // Codigo para compartir el producto
     share_code: string;
-    /** Whether the product is currently active */
+    // Producto activo
     active: boolean;
-    /** Optional brand name */
+    // Nombre de la marca (opcional)
     brand?: string;
-    /** Optional category name */
+    // Nombre de la categoria (opcional)
     category?: string;
-    /** Optional sub-category name */
+    // Nombre de la subcategoria (opcional)
     sub_category?: string;
-    /** Optional pet type filter */
+    // Tipo de mascota (opcional)
     pet?: string;
   };
-  /** Number of units of this product in the cart */
+  // Cantidad de unidades de este producto en el carrito
   quantity: number;
 }
 
-/**
- * Request payload for creating a new delivery address.
- */
+// Payload para crear una nueva direccion de envio
 export interface AddressCreateRequestDTO {
-  /** User-defined label for the address (e.g. "Home", "Office") */
+  // Nombre o etiqueta de la direccion
   name: string;
-  /** Additional reference or directions for locating the address */
+  // Referencia adicional para ubicar la direccion
   reference: string;
-  /** Geographic latitude coordinate */
+  // Latitud geografica
   latitude: number;
-  /** Geographic longitude coordinate */
+  // Longitud geografica
   longitude: number;
 }
 
-/**
- * Address data transfer object returned by the API.
- */
+// DTO de una direccion devuelto por la API
 export interface AddressResponseDTO {
-  /** Unique address identifier */
+  // Identificador unico de la direccion
   id: number;
-  /** User-defined label for the address */
+  // Nombre o etiqueta de la direccion
   name: string;
-  /** Additional reference or directions */
+  // Referencia adicional
   reference: string;
-  /** Geographic latitude coordinate */
+  // Latitud geografica
   latitude: number;
-  /** Geographic longitude coordinate */
+  // Longitud geografica
   longitude: number;
 }
 
-/**
- * Request payload for creating a new payment card.
- */
+// Payload para crear una nueva tarjeta de pago
 export interface CardCreateRequestDTO {
-  /** Cardholder name */
+  // Nombre del titular
   name: string;
-  /** Card number (as string) */
+  // Numero de la tarjeta (string)
   number: string;
-  /** Card expiration date */
+  // Fecha de vencimiento
   due_date: string;
 }
 
-/**
- * Payment card data transfer object returned by the API.
- */
+// DTO de una tarjeta de pago devuelto por la API
 export interface CardResponseDTO {
-  /** Unique card identifier */
+  // Identificador unico de la tarjeta
   id: number;
-  /** Cardholder name */
+  // Nombre del titular
   name: string;
-  /** Masked or full card number */
+  // Numero de la tarjeta (enmascarado o completo)
   number: string;
-  /** Card expiration date */
+  // Fecha de vencimiento
   due_date: string;
 }
 
-/**
- * Request payload for a single order line item.
- */
+// Payload para un item individual de una orden
 export interface DetailCreateRequestDTO {
-  /** Identifier of the product being ordered */
+  // Identificador del producto a ordenar
   product_id: number;
-  /** Number of units to order */
+  // Cantidad de unidades a ordenar
   quantity: number;
 }
 
-/**
- * Request payload for creating a new order.
- */
+// Payload para crear una nueva orden
 export interface OrderCreateRequestDTO {
-  /** Array of line items to include in the order */
+  // Lista de items de la orden
   details: DetailCreateRequestDTO[];
 }
 
-/**
- * Order line item data transfer object returned by the API.
- */
+// DTO de un item de orden devuelto por la API
 export interface DetailResponseDTO {
-  /** Unique detail identifier */
+  // Identificador unico del item
   id: number;
-  /** Name of the product in this line item */
+  // Nombre del producto en esta linea
   product_name: string;
-  /** Number of units ordered */
+  // Cantidad ordenada
   quantity: number;
-  /** Unit price of the product */
+  // Precio unitario del producto
   price: number;
-  /** Total cost for this line item (price * quantity) */
+  // Costo total de esta linea (precio * cantidad)
   total: number;
-  /** URL of the product image */
+  // URL de la imagen del producto
   product_image: string;
 }
 
-/**
- * Order data transfer object returned by the API.
- */
+// DTO de una orden devuelto por la API
 export interface OrderResponseDTO {
-  /** Unique order identifier */
+  // Identificador unico de la orden
   id: number;
-  /** Total order price */
+  // Precio total de la orden
   total_price: number;
-  /** ISO 8601 timestamp of when the order was placed */
+  // Fecha de la orden en formato ISO 8601
   order_at: string;
-  /** Unique tracking code for the order */
+  // Codigo de seguimiento unico
   tracking_code: string;
-  /** Current shipping status (e.g. "PROCESSING", "SHIPPED", "DELIVERED") */
+  // Estado actual del envio
   shipping_status: string;
-  /** Line items in this order */
+  // Items de la orden
   details: DetailResponseDTO[];
 }
 
-/**
- * Filter parameters for querying the product catalog.
- */
+// Parametros de filtro para consultar el catalogo de productos
 export interface ProductFilters {
-  /** Free-text search query */
+  // Busqueda por texto libre
   search?: string;
-  /** Filter by brand name */
+  // Filtrar por nombre de marca
   brand?: string;
-  /** Filter by category name */
+  // Filtrar por nombre de categoria
   category?: string;
-  /** Filter by sub-category name */
+  // Filtrar por nombre de subcategoria
   sub_category?: string;
-  /** Minimum price boundary */
+  // Precio minimo
   min_price?: number;
-  /** Maximum price boundary */
+  // Precio maximo
   max_price?: number;
-  /** Sort descriptor (e.g. "price-asc", "name-az") */
+  // Descriptor de ordenamiento
   sort?: string;
 }
 
-/**
- * Buyer profile data transfer object returned by the API.
- */
+// DTO del perfil del comprador devuelto por la API
 export interface BuyerProfileDTO {
-  /** Buyer's login username */
+  // Nombre de usuario del comprador
   username: string;
-  /** Buyer's first name */
+  // Nombre del comprador
   first_name: string;
-  /** Buyer's last name */
+  // Apellido del comprador
   last_name: string;
-  /** National identification number */
+  // Numero de documento de identidad
   dni_number: string;
-  /** Number of payment cards registered by the buyer */
+  // Cantidad de tarjetas registradas
   count_cards: number;
-  /** Number of delivery addresses registered by the buyer */
+  // Cantidad de direcciones registradas
   count_addresses: number;
-  /** URL of the buyer's profile image, or null if not set */
+  // URL de la foto de perfil, o null si no tiene
   profile: string | null;
 }

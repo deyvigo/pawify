@@ -2,21 +2,19 @@ import { useState, useEffect, useCallback } from "react";
 import { api } from "../services/api";
 import { ProductResponseDTO } from "../types";
 
-/**
- * Return type for the {@link useProducts} hook.
- */
+// Tipo de retorno del hook useProducts
 interface UseProductsReturn {
-  /** Array of products matching the current query/filters */
+  // Lista de productos cargados
   products: ProductResponseDTO[];
-  /** Whether the initial product load is in progress */
+  // Cargando productos iniciales
   loading: boolean;
-  /** Whether a next-page load is in progress */
+  // Cargando mas productos (scroll infinito)
   loadingMore: boolean;
-  /** Error message from the last failed request, or null */
+  // Mensaje de error, o null
   error: string | null;
-  /** Whether more pages of results are available */
+  // Hay mas paginas disponibles
   hasMore: boolean;
-  /** Function to load products with the given filter/sort parameters */
+  // Carga productos con filtros/ordenamiento dados
   loadProducts: (params: {
     search?: string;
     brand?: string;
@@ -27,16 +25,16 @@ interface UseProductsReturn {
     sort?: string;
     page?: number;
   }) => Promise<void>;
-  /** Function to load the next page of products using the current filters */
+  // Carga la siguiente pagina de productos
   loadMore: () => void;
-  /** Function to reload the first page with the current filters */
+  // Recarga la primera pagina con los filtros actuales
   refresh: () => Promise<void>;
 }
 
-/** Number of products to request per page. */
+// Cantidad de productos por pagina
 const PAGE_SIZE = 20;
 
-/** Maps user-facing sort labels to API sort query parameters. */
+// Mapa de etiquetas de ordenamiento a parametros de la API
 const SORT_MAP: Record<string, string> = {
   "price-asc": "price,asc",
   "price-desc": "price,desc",
@@ -46,21 +44,7 @@ const SORT_MAP: Record<string, string> = {
   "best-rated": "rating,desc",
 };
 
-/**
- * Hook that manages product listing with filtering, sorting, and pagination.
- *
- * Fetches products from the `/product` endpoint and maintains scroll-based
- * infinite loading state.
- *
- * @param authKey - Optional authentication key; products load only when this is provided.
- * @returns The {@link UseProductsReturn} object with product data and control functions.
- *
- * @example
- * ```tsx
- * const { products, loading, loadProducts, loadMore } = useProducts(token);
- * loadProducts({ search: "collar", sort: "price-asc" });
- * ```
- */
+// Maneja el listado de productos con filtros, ordenamiento y paginacion
 export function useProducts(authKey?: string): UseProductsReturn {
   const [products, setProducts] = useState<ProductResponseDTO[]>([]);
   const [loading, setLoading] = useState(true);

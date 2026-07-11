@@ -3,22 +3,7 @@ import { useState } from 'react';
 import { Alert } from 'react-native';
 import { loginUser } from '../services/authService';
 
-/**
- * Hook that manages the login flow including input validation and API communication.
- *
- * @param onLoginSuccess - Callback invoked with the user data (token and username) upon successful login.
- * @returns An object containing:
- *   - `login` - Function to initiate the login process with username and password.
- *   - `isLoading` - Boolean indicating whether a login request is in progress.
- *
- * @example
- * ```tsx
- * const { login, isLoading } = useAuthentication((data) => {
- *   navigation.navigate('Home');
- * });
- * login('johndoe', 'password123');
- * ```
- */
+// Maneja el flujo de login con validacion y llamada a la API
 export const useAuthentication = (onLoginSuccess: (userData: any) => void) => {
     const [isLoading, setIsLoading] = useState(false);
 

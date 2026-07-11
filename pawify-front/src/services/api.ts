@@ -1,14 +1,6 @@
 import { API_URL, authToken } from "../config";
 
-/**
- * Sends an HTTP request to the backend API and parses the JSON response.
- *
- * @template T - Expected response type.
- * @param endpoint - API path to call (appended to the base API_URL).
- * @param options - Standard fetch RequestInit options (method, body, headers, etc.).
- * @returns A promise that resolves to the parsed JSON response of type T.
- * @throws {Error} An error with the HTTP status code if the response is not OK.
- */
+// Envia una peticion HTTP al backend y retorna la respuesta parseada
 async function request<T>(
   endpoint: string,
   options: RequestInit = {}
@@ -40,33 +32,16 @@ async function request<T>(
   return textResponse ? JSON.parse(textResponse) : {};
 }
 
-/**
- * Pre-configured HTTP client for communicating with the Pawify REST API.
- *
- * All methods automatically attach the Bearer token when one is available.
- */
+// Cliente HTTP pre-configurado para la API REST de Pawify
 export const api = {
-  /**
-   * Sends a GET request to the specified endpoint.
-   *
-   * @template T - Expected response type.
-   * @param endpoint - API path to call.
-   * @returns A promise that resolves to the parsed JSON response of type T.
-   */
+  // Envia un GET al endpoint indicado
   get: <T>(endpoint: string) =>
     request<T>(endpoint, {
       method: "GET",
       headers: authToken ? { Authorization: `Bearer ${authToken}` } : {},
     }),
 
-  /**
-   * Sends a POST request with a JSON body to the specified endpoint.
-   *
-   * @template T - Expected response type.
-   * @param endpoint - API path to call.
-   * @param body - Request body to be JSON-serialized.
-   * @returns A promise that resolves to the parsed JSON response of type T.
-   */
+  // Envia un POST con body JSON al endpoint indicado
     post: <T>(endpoint: string, body: any) =>
     request<T>(endpoint, {
       method: "POST",
@@ -74,14 +49,7 @@ export const api = {
       headers: authToken ? { Authorization: `Bearer ${authToken}` } : {},
     }),
 
-  /**
-   * Sends a PATCH request with an optional JSON body to the specified endpoint.
-   *
-   * @template T - Expected response type.
-   * @param endpoint - API path to call.
-   * @param body - Optional request body to be JSON-serialized.
-   * @returns A promise that resolves to the parsed JSON response of type T.
-   */
+  // Envia un PATCH con body JSON opcional al endpoint indicado
     patch: <T>(endpoint: string, body?: any) =>
     request<T>(endpoint, {
       method: "PATCH",

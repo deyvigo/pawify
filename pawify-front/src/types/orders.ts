@@ -1,72 +1,61 @@
-/**
- * Request payload for a single order line item.
- */
+// Payload para un item individual de una orden
 export interface DetailCreateRequestDTO {
-    /** Identifier of the product being ordered */
+    // Identificador del producto a ordenar
     product_id: number;
-    /** Number of units to order */
+    // Cantidad de unidades a ordenar
     quantity: number;
 }
 
-/**
- * Request payload for creating a new order.
- */
+// Payload para crear una nueva orden
 export interface OrderCreateRequestDTO {
-    /** Array of line items to include in the order */
+    // Lista de items de la orden
     details: DetailCreateRequestDTO[];
 }
 
-/**
- * Order line item data transfer object returned by the API.
- */
+// DTO de un item de orden devuelto por la API
 export interface DetailResponseDTO {
-    /** Unique detail identifier */
+    // Identificador unico del item
     id: number;
-    /** Name of the product in this line item */
+    // Nombre del producto en esta linea
     product_name: string;
-    /** Number of units ordered */
+    // Cantidad ordenada
     quantity: number;
-    /** Unit price of the product */
+    // Precio unitario del producto
     price: number;
-    /** Total cost for this line item (price * quantity) */
+    // Costo total de esta linea (precio * cantidad)
     total: number;
-    /** URL of the product image */
+    // URL de la imagen del producto
     product_image: string;
 }
 
-/**
- * Order data transfer object returned by the API.
- */
+// DTO de una orden devuelto por la API
 export interface OrderResponseDTO {
-    /** Unique order identifier */
+    // Identificador unico de la orden
     id: number;
-    /** Total order price */
+    // Precio total de la orden
     total_price: number;
-    /** ISO 8601 timestamp of when the order was placed */
+    // Fecha de la orden en formato ISO 8601
     order_at: string;
-    /** Unique tracking code for the order */
+    // Codigo de seguimiento unico
     tracking_code: string;
-    /** Current shipping status (e.g. "PROCESSING", "SHIPPED", "DELIVERED") */
+    // Estado actual del envio
     shipping_status: string;
-    /** Line items in this order */
+    // Items de la orden
     details: DetailResponseDTO[];
 }
 
-/**
- * Generic paginated response wrapper matching Spring Boot's slice format.
- * @template T - The type of items contained in the response.
- */
+// Respuesta paginada generica con formato Spring Boot Slice
 export interface SliceResponse<T> {
-    /** Array of items for the current page */
+    // Lista de elementos de la pagina actual
     content: T[];
-    /** Whether this is the last page of results */
+    // Es la ultima pagina
     last: boolean;
-    /** Whether this is the first page of results */
+    // Es la primera pagina
     first: boolean;
-    /** Whether the result set is empty */
+    // No hay resultados
     empty: boolean;
-    /** Current page number (zero-indexed) */
+    // Numero de pagina actual (desde 0)
     number: number;
-    /** Number of items per page */
+    // Cantidad de elementos por pagina
     size: number;
 }

@@ -4,81 +4,72 @@ import { Product } from '../types/product';
 import { ProductResponseDTO, UserPayload, CategoryResponseDTO, BrandResponseDTO, CartItem } from '../types';
 import { OrderResponseDTO } from '../types';
 
-/**
- * Union of valid bottom-navigation tab keys.
- */
+// Claves validas del bottom navigation
 export type TabKey = 'catalog' | 'purchase' | 'orders' | 'account';
 
-/**
- * Shape of the global application context shared across all screens.
- */
+// Forma del contexto global de la aplicacion compartido entre pantallas
 export interface AppContextType {
-    /** Whether the navigation drawer is currently open */
+    // Drawer de navegacion abierto
     drawerOpen: boolean;
-    /** Opens the navigation drawer */
+    // Abre el drawer de navegacion
     openDrawer: () => void;
-    /** Closes the navigation drawer */
+    // Cierra el drawer de navegacion
     closeDrawer: () => void;
-    /** Currently selected product for detail view, or null */
+    // Producto seleccionado para vista detalle, o null
     selectedProduct: Product | null;
-    /** Sets the currently selected product (or clears it) */
+    // Selecciona un producto para vista detalle (o limpia la seleccion)
     setSelectedProduct: (product: Product | null) => void;
-    /** List of products loaded from the catalog */
+    // Lista de productos del catalogo
     products: ProductResponseDTO[];
-    /** Whether the initial product load is in progress */
+    // Cargando productos iniciales
     loading: boolean;
-    /** Whether a next-page load is in progress */
+    // Cargando mas productos (scroll infinito)
     loadingMore: boolean;
-    /** Whether more pages of products are available */
+    // Hay mas paginas de productos disponibles
     hasMore: boolean;
-    /** Function to load products with the given filter/sort parameters */
+    // Carga productos con filtros/ordenamiento dados
     loadProducts: (params?: any) => Promise<void>;
-    /** Function to load the next page of products */
+    // Carga la siguiente pagina de productos
     loadMore: () => void;
-    /** Function to reload the first page of products with the current filters */
+    // Recarga la primera pagina de productos con filtros actuales
     refresh: () => Promise<void>;
-    /** The currently authenticated user payload, or null if not logged in */
+    // Usuario autenticado actualmente, o null si no esta logueado
     currentUser: UserPayload | null;
-    /** Sets the current user (e.g. on login) or clears it (on logout) */
+    // Establece el usuario actual (login) o lo limpia (logout)
     setCurrentUser: (user: UserPayload | null) => void;
-    /** Navigates to the specified bottom tab */
+    // Navega al tab del bottom navigation indicado
     setActiveTab: (tab: TabKey) => void;
-    /** List of product categories from the API */
+    // Lista de categorias de productos desde la API
     categories: CategoryResponseDTO[];
-    /** List of product brands from the API */
+    // Lista de marcas de productos desde la API
     brands: BrandResponseDTO[];
-    /** Whether categories and brands are currently being fetched */
+    // Cargando categorias y marcas
     categoriesLoading: boolean;
-    /** Pending filter parameters to apply when the catalog screen is focused, or null */
+    // Filtros pendientes para aplicar cuando se enfoque la pantalla del catalogo
     pendingFilterParams: Record<string, any> | null;
-    /** Sets or clears the pending filter parameters */
+    // Establece o limpia los filtros pendientes
     setPendingFilterParams: (params: Record<string, any> | null) => void;
-    /** Array of items currently in the shopping cart */
+    // Items actualmente en el carrito de compras
     cartItems: CartItem[];
-    /** Total number of items across all cart lines */
+    // Total de items en todas las lineas del carrito
     cartCount: number;
-    /** Summed total price of all items in the cart */
+    // Suma total del precio de todos los items del carrito
     cartTotal: number;
-    /** Adds a product to the cart with the given quantity (defaults to 1) */
+    // Agrega un producto al carrito con la cantidad dada (default 1)
     addToCart: (product: Product, quantity?: number) => void;
-    /** Removes a product from the cart by its product ID */
+    // Elimina un producto del carrito por su ID
     removeFromCart: (productId: number) => void;
-    /** Updates the quantity of a specific product in the cart */
+    // Actualiza la cantidad de un producto especifico en el carrito
     updateQuantity: (productId: number, quantity: number) => void;
-    /** Empties the entire shopping cart */
+    // Vacia todo el carrito de compras
     clearCart: () => void;
-    /** Whether the checkout flow is currently active */
+    // Flujo de checkout activo actualmente
     checkoutActive: boolean;
-    /** Sets whether the checkout flow is active */
+    // Establece si el flujo de checkout esta activo
     setCheckoutActive: (active: boolean) => void;
 }
 
-/**
- * React context for the Pawify application's shared state.
- *
- * Provides default no-op values so that `useAppContext` can be called
- * outside of a provider without throwing (though the values will be inert).
- */
+// Contexto de React para el estado compartido de la aplicacion Pawify
 export const AppContext = createContext<AppContextType>({
     drawerOpen: false,
     openDrawer: () => {},
@@ -111,11 +102,5 @@ export const AppContext = createContext<AppContextType>({
     setCheckoutActive: () => {},
 });
 
-/**
- * Convenience hook to access the global application context.
- *
- * Must be used within a component tree wrapped by the `AppContext.Provider`.
- *
- * @returns The current {@link AppContextType} value.
- */
+// Hook de conveniencia para acceder al contexto global de la aplicacion
 export const useAppContext = () => useContext(AppContext);

@@ -1,81 +1,63 @@
 import { api } from "./api";
 
-/**
- * Review data transfer object returned by the API.
- */
+// DTO de una resena devuelto por la API
 export interface ReviewDTO {
-  /** Unique review identifier */
+  // Identificador unico de la resena
   id: number;
-  /** Review text content */
+  // Texto de la resena
   content: string;
-  /** Numeric rating value */
+  // Valor numerico del rating
   rating: number;
-  /** ISO 8601 timestamp of when the review was created */
+  // Fecha de creacion en formato ISO 8601
   created_at: string;
-  /** Information about the buyer who wrote the review */
+  // Datos del comprador que escribio la resena
   buyer: {
-    /** Buyer's username */
+    // Nombre de usuario del comprador
     username: string;
-    /** Buyer's first name */
+    // Nombre del comprador
     first_name: string;
-    /** Buyer's last name */
+    // Apellido del comprador
     last_name: string;
-    /** Buyer's profile image information */
+    // Foto de perfil del comprador
     profile: {
-      /** Profile image identifier */
+      // Identificador de la imagen
       id: number;
-      /** Profile image URL */
+      // URL de la imagen
       url: string;
     };
   };
 }
 
-/**
- * Request payload for creating a new product review.
- */
+// Payload para crear una resena de producto
 export interface ReviewCreateRequest {
-  /** Review text content */
+  // Texto de la resena
   content: string;
-  /** Numeric rating value */
+  // Valor numerico del rating
   rating: number;
-  /** Identifier of the order detail line item being reviewed */
+  // Identificador del detalle de orden que se esta reseñando
   detail_id: number;
 }
 
-/**
- * Paginated response wrapper for product reviews.
- */
+// Respuesta paginada de resenas de producto
 export interface SliceReviewResponse {
-  /** Array of reviews for the current page */
+  // Lista de resenas de la pagina actual
   content: ReviewDTO[];
-  /** Whether this is the first page of results */
+  // Es la primera pagina
   first: boolean;
-  /** Whether this is the last page of results */
+  // Es la ultima pagina
   last: boolean;
-  /** Number of reviews on this page */
+  // Cantidad de elementos en la pagina
   number_of_elements: number;
-  /** Whether the result set is empty */
+  // No hay resultados
   empty: boolean;
 }
 
-/**
- * Retrieves a paginated list of reviews for a specific product.
- *
- * @param productId - The unique identifier of the product to fetch reviews for.
- * @param page - Zero-based page number. Defaults to 0.
- * @param size - Number of reviews per page. Defaults to 10.
- * @returns A promise that resolves to a paginated slice of review responses.
- */
+// Obtiene las resenas paginadas de un producto
 export const getReviews = async (productId: number, page: number = 0, size: number = 10): Promise<SliceReviewResponse> => {
   return api.get<SliceReviewResponse>(`/review/product/${productId}?page=${page}&size=${size}`);
 };
 
-/**
- * Creates a new review for a product.
- *
- * @param data - The review creation payload containing content, rating, and detail ID.
- * @returns A promise that resolves to the newly created review DTO.
- */
+// Crea una nueva resena para un producto
 export const createReview = async (data: ReviewCreateRequest): Promise<ReviewDTO> => {
   return api.post<ReviewDTO>('/review', { data });
 };

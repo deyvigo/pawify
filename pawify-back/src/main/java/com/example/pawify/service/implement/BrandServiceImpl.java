@@ -9,21 +9,14 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-/**
- * Implementation of {@link BrandService} that retrieves brand information.
- *
- * <p>This service provides read-only access to brand data, returning
- * all brands sorted alphabetically.</p>
- */
+// Implementacion del servicio de consulta de marcas
 @Service
 @AllArgsConstructor
 public class BrandServiceImpl implements BrandService {
     private final BrandRepository brandRepository;
     private final BrandMapper brandMapper;
 
-    /**
-     * {@inheritDoc}
-     */
+    // Retorna todas las marcas ordenadas alfabeticamente
     @Override
     public List<BrandResponseDTO> findAllOrderedByNameAsc() {
         return brandRepository.findByOrderByNameAsc().stream()

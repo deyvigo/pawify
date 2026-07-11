@@ -10,26 +10,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-/**
- * REST controller for category retrieval operations.
- * <p>
- * Provides endpoints for listing all available product categories.
- * </p>
- */
+// Controlador de categorias de productos
 @RestController
 @RequestMapping("/category")
 @AllArgsConstructor
 public class CategoryController {
     private CategoryService categoryService;
 
-    /**
-     * Retrieves all categories ordered alphabetically by name in ascending order.
-     * <p>
-     * This endpoint is publicly accessible (no authentication required).
-     * </p>
-     *
-     * @return {@link ResponseEntity} with HTTP 200 (OK) and the list of category responses
-     */
+    // Lista todas las categorias ordenadas alfabeticamente
     @GetMapping("")
     public ResponseEntity<List<CategoryResponseDTO>> findAllOrderedByName() {
         return ResponseEntity.ok(categoryService.findAllOrderedByNameAsc());
