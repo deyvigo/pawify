@@ -16,12 +16,23 @@ import org.springframework.stereotype.Service;
 import java.time.YearMonth;
 import java.util.List;
 
+/**
+ * Implementation of {@link CardService} that manages buyer payment cards.
+ *
+ * <p>This service handles card creation with expiration validation, retrieval
+ * of active cards, card deactivation with ownership checks, and card updates
+ * with authorization enforcement. Only the last four digits of card numbers
+ * are stored for security.</p>
+ */
 @Service
 @AllArgsConstructor
 public class CardServiceImpl implements CardService {
     private final CardRepository cardRepository;
     private final CardMapper cardMapper;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public CardResponseDTO createCard(CardCreateRequestDTO cardCreateRequestDTO, BuyerEntity buyerEntity) {
         if (cardCreateRequestDTO.dueDate().isBefore(YearMonth.now())) {
@@ -39,6 +50,9 @@ public class CardServiceImpl implements CardService {
         return cardMapper.toResponseDTO(savedCardEntity);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<CardResponseDTO> getCardsByBuyer(BuyerEntity buyerEntity) {
         return cardRepository.findAllByBuyerAndActiveTrue(buyerEntity).stream()
@@ -46,6 +60,9 @@ public class CardServiceImpl implements CardService {
             .toList();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void deactivateCard(Long cardId, BuyerEntity buyerEntity) {
         CardEntity cardInDb = cardRepository.findById(cardId)
@@ -61,6 +78,9 @@ public class CardServiceImpl implements CardService {
         cardRepository.save(cardInDb);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public CardResponseDTO updateCardByBuyer(Long cardId, CardCreateRequestDTO cardCreateRequestDTO, BuyerEntity buyerEntity) {
         CardEntity cardInDb = cardRepository.findById(cardId)

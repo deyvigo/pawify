@@ -18,6 +18,19 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Stream;
 
+/**
+ * JWT authentication filter that intercepts incoming HTTP requests and
+ * validates the JWT token from the Authorization header.
+ *
+ * <p>Extracts the Bearer token from the Authorization header, validates
+ * it using {@link JwtService}, loads the corresponding user details,
+ * and sets the authentication in the Spring Security context. Requests
+ * to public endpoints (auth, swagger, etc.) are skipped.</p>
+ *
+ * <p>If the token is present but invalid, the security context is cleared
+ * and a {@link org.springframework.security.authentication.BadCredentialsException}
+ * is thrown.</p>
+ */
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
@@ -37,6 +50,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         this.userDetailsService = userDetailsService;
     }
 
+    /**
+     * Extracts the JWT token from the Authorization header of the HTTP request.
+     *
+     * @param req the HTTP servlet request
+     * @return the JWT token string without the "Bearer " prefix, or null if not present
+     */
     private String getTokenFromRequest(HttpServletRequest req) {
         String bearerToken = req.getHeader("Authorization");
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
@@ -45,6 +64,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         return null;
     }
 
+    /**
+     * Processes each HTTP request to extract and validate the JWT token.
+     *
+     * <p>If a valid token is found, the user is loaded via the
+     * {@link UserDetailsService}, and a
+     * {@link UsernamePasswordAuthenticationToken} is set in the
+     * {@link SecurityContextHolder}. If the token is invalid, the
+     * context is cleared and a {@link BadCredentialsException} is thrown.</p>
+     *
+     * @param request the HTTP servlet request
+     * @param response the HTTP servlet response
+     * @param filterChain the filter chain to continue processing
+     * @throws ServletException if a servlet error occurs
+     * @throws IOException if an I/O error occurs
+     */
     @Override
     protected void doFilterInternal(
         HttpServletRequest request,

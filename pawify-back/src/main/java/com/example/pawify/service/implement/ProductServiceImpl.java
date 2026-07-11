@@ -28,6 +28,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Implementation of {@link ProductService} that manages the product catalog.
+ *
+ * <p>This service handles product creation with image upload, multi-criteria
+ * product search using JPA Specifications, product activation/deactivation,
+ * and product updates with automatic brand, category, and subcategory creation.</p>
+ */
 @Service
 @AllArgsConstructor
 public class ProductServiceImpl implements ProductService {
@@ -40,6 +47,9 @@ public class ProductServiceImpl implements ProductService {
     private final CategoryRepository categoryRepository;
     private final SubCategoryRepository subCategoryRepository;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Transactional
     public ProductResponseSimpleDTO createProduct(
@@ -118,6 +128,9 @@ public class ProductServiceImpl implements ProductService {
         return productMapper.toResponseDTO(savedProduct);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Slice<ProductResponseSimpleDTO> getProducts(
         String search,
@@ -156,6 +169,9 @@ public class ProductServiceImpl implements ProductService {
         );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void deactivateProduct(String shareCode) {
         ProductEntity productEntity = productRepository.findByShareCode(shareCode)
@@ -167,6 +183,9 @@ public class ProductServiceImpl implements ProductService {
         productRepository.save(productEntity);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void activateProduct(String shareCode) {
         ProductEntity productEntity = productRepository.findByShareCode(shareCode)
@@ -178,11 +197,17 @@ public class ProductServiceImpl implements ProductService {
         productRepository.save(productEntity);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ProductResponseSimpleDTO getProductById(Long id) {
         return productMapper.toResponseDTO(productRepository.findById(id).orElse(null));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ProductResponseSimpleDTO updateProduct(Long id, ProductCreateRequestDTO dto) {
         ProductEntity productInDb = productRepository.findById(id)

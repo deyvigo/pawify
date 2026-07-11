@@ -10,11 +10,20 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.Map;
 
+/**
+ * Implementation of {@link CloudinaryService} that uploads images to Cloudinary.
+ *
+ * <p>This service uploads image files to the Cloudinary CDN under the "pawify"
+ * folder and returns the secure URL for the uploaded asset.</p>
+ */
 @Service
 @AllArgsConstructor
 public class CloudinaryServiceImpl implements CloudinaryService {
     private final Cloudinary cloudinary;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String uploadImage(MultipartFile file) {
         try {

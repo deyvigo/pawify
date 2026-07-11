@@ -16,6 +16,22 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
+/**
+ * Spring Security configuration for the Pawify application.
+ *
+ * <p>Defines the security filter chain with the following characteristics:</p>
+ * <ul>
+ *   <li>Stateless session management (no HTTP sessions)</li>
+ *   <li>CSRF protection disabled for REST API usage</li>
+ *   <li>CORS configured for local development origins</li>
+ *   <li>Public endpoints: auth, error, swagger, and helloworld routes</li>
+ *   <li>BUYER role required for card, address, buyer, and review endpoints</li>
+ *   <li>ADMIN role required for admin endpoints</li>
+ *   <li>All other endpoints require authentication</li>
+ *   <li>JWT-based authentication via {@link JwtAuthenticationFilter}</li>
+ *   <li>Custom authentication entry point for 401 responses</li>
+ * </ul>
+ */
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -24,6 +40,18 @@ public class SecurityConfiguration {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
+    /**
+     * Configures the HTTP security filter chain.
+     *
+     * <p>Sets up CORS, disables CSRF, configures stateless sessions,
+     * defines URL-based authorization rules, adds the JWT authentication
+     * filter before the username/password filter, and registers a
+     * custom authentication entry point.</p>
+     *
+     * @param http the {@link HttpSecurity} to configure
+     * @return the configured {@link SecurityFilterChain}
+     * @throws Exception if any configuration error occurs
+     */
     @Bean
     public SecurityFilterChain customSecurityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -55,6 +83,15 @@ public class SecurityConfiguration {
         return http.build();
     }
 
+    /**
+     * Configures the CORS (Cross-Origin Resource Sharing) settings.
+     *
+     * <p>Allows requests from localhost origins on any port, permits
+     * standard HTTP methods and headers, enables credentials, and
+     * exposes the Authorization header.</p>
+     *
+     * @return the configured {@link CorsConfigurationSource}
+     */
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();

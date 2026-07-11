@@ -3,6 +3,19 @@ import { useState } from 'react';
 import { Alert } from 'react-native';
 import { registerUser } from '../services/authService';
 
+/**
+ * Hook that manages the user registration flow including validation and API communication.
+ *
+ * @returns An object containing:
+ *   - `register` - Function to submit the registration form.
+ *   - `isLoading` - Boolean indicating whether a registration request is in progress.
+ *
+ * @example
+ * ```tsx
+ * const { register, isLoading } = useRegister();
+ * register(userData, confirmPassword, true, () => navigation.navigate('Login'));
+ * ```
+ */
 export const useRegister = () => {
     const [isLoading, setIsLoading] = useState(false);
 

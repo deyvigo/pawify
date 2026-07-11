@@ -1,5 +1,22 @@
 import { api } from './api';
 
+/**
+ * Builds an initial tracking event list for an order based on its shipping and order status.
+ * Used to generate mock tracking data when real tracking data is unavailable.
+ *
+ * @param {Object} order - The order object to build trackings for.
+ * @param {number} order.id - The order's unique identifier.
+ * @param {string} order.shipping_status - The current shipping status (e.g., 'IN_TRANSIT', 'DELIVERED', 'CANCELED').
+ * @param {string} order.order_status - The current order status (e.g., 'PAID', 'FAILED').
+ * @param {string} order.order_at - The ISO timestamp when the order was placed.
+ * @returns {Object[]} An array of tracking event objects, each with id, title, description, and timestamp.
+ *
+ * @example
+ * const trackings = buildInitialTrackings({
+ *   id: 1, shipping_status: 'DELIVERED', order_status: 'PAID', order_at: '2026-05-12T12:16:33'
+ * });
+ * // Returns: [{ id: 101, title: 'IN_TRANSIT', ... }, { id: 201, title: 'DELIVERED', ... }]
+ */
 function buildInitialTrackings(order) {
   const trackings = [];
 
@@ -214,6 +231,25 @@ let mockDb = [...MOCK_ORDERS];
 
 const USE_MOCK = true;
 
+/**
+ * Retrieves a paginated list of admin orders.
+ * Currently uses mock data when USE_MOCK is true; otherwise fetches from the API.
+ *
+ * @param {number} [page=0] - The page number to retrieve (0-indexed).
+ * @param {number} [size=10] - The number of orders per page.
+ * @returns {Promise<Object>} A paginated response object containing:
+ * @returns {Object[]} returns.content - Array of order objects with details.
+ * @returns {boolean} returns.first - Whether this is the first page.
+ * @returns {boolean} returns.last - Whether this is the last page.
+ * @returns {number} returns.number - The current page number.
+ * @returns {number} returns.number_of_elements - Number of elements in the current page.
+ * @returns {number} returns.size - The page size.
+ * @returns {boolean} returns.empty - Whether the result set is empty.
+ *
+ * @example
+ * const data = await getAdminOrders(0, 5);
+ * console.log(data.content); // Array of order objects
+ */
 export async function getAdminOrders(page = 0, size = 10) {
   if (USE_MOCK) {
     const start = page * size;
@@ -233,6 +269,19 @@ export async function getAdminOrders(page = 0, size = 10) {
   return data;
 }
 
+/**
+ * Retrieves a single order by its unique tracking code.
+ * Includes tracking event history when using mock data.
+ *
+ * @param {string} trackingCode - The unique tracking code of the order.
+ * @returns {Promise<Object>} The order object with all details and tracking events.
+ * @throws {Error} If no order is found with the given tracking code.
+ *
+ * @example
+ * const order = await getAdminOrderByTrackingCode('hce30e7pqcuaf0n6');
+ * console.log(order.tracking_code); // 'hce30e7pqcuaf0n6'
+ * console.log(order.trackings);     // Array of tracking events
+ */
 export async function getAdminOrderByTrackingCode(trackingCode) {
   if (USE_MOCK) {
     const order = mockDb.find(o => o.tracking_code === trackingCode);
@@ -248,6 +297,20 @@ export async function getAdminOrderByTrackingCode(trackingCode) {
   return api.get(`/admin/orders/${trackingCode}`);
 }
 
+/**
+ * Updates the shipping status of an order identified by its tracking code.
+ * Valid statuses are 'IN_TRANSIT' and 'DELIVERED'. Appends a new tracking event.
+ *
+ * @param {string} trackingCode - The unique tracking code of the order to update.
+ * @param {string} newStatus - The new shipping status. Must be 'IN_TRANSIT' or 'DELIVERED'.
+ * @returns {Promise<Object>} The updated order object with the new tracking event.
+ * @throws {Error} If no order is found with the given tracking code.
+ * @throws {Error} If the newStatus is not one of the valid statuses.
+ *
+ * @example
+ * const updated = await updateOrderStatus('hce30e7pqcuaf0n6', 'DELIVERED');
+ * console.log(updated.shipping_status); // 'DELIVERED'
+ */
 export async function updateOrderStatus(trackingCode, newStatus) {
   if (USE_MOCK) {
     const order = mockDb.find(o => o.tracking_code === trackingCode);
@@ -275,6 +338,20 @@ export async function updateOrderStatus(trackingCode, newStatus) {
   return api.patch(`/admin/orders/${trackingCode}/status`, { shipping_status: newStatus });
 }
 
+/**
+ * Retrieves the tracking status history for a specific order.
+ * Returns paginated tracking events associated with the given tracking code.
+ *
+ * @param {string} trackingCode - The unique tracking code of the order.
+ * @returns {Promise<Object>} A tracking response object containing:
+ * @returns {Object[]} returns.content - Array of tracking event objects.
+ * @returns {boolean} returns.has_next - Whether there are more pages of tracking data.
+ * @returns {string|null} returns.next_cursor - The cursor for the next page, or null if at the end.
+ *
+ * @example
+ * const tracking = await getOrderTrackingStatus('hce30e7pqcuaf0n6');
+ * console.log(tracking.content); // [{ id: 101, title: 'IN_TRANSIT', ... }, ...]
+ */
 export async function getOrderTrackingStatus(trackingCode) {
   if (USE_MOCK) {
     const order = mockDb.find(o => o.tracking_code === trackingCode);

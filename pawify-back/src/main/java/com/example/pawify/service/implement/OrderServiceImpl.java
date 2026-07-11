@@ -27,6 +27,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * Implementation of {@link OrderService} that manages order creation,
+ * retrieval, and tracking.
+ *
+ * <p>This service handles the full order creation workflow including stock
+ * validation, stock deduction, tracking code generation, and persistence
+ * of order details. Supports paginated retrieval of buyer orders and
+ * individual order lookup by tracking code.</p>
+ */
 @Service
 @AllArgsConstructor
 public class OrderServiceImpl implements OrderService {
@@ -35,6 +44,9 @@ public class OrderServiceImpl implements OrderService {
     private final OrderMapper orderMapper;
     private final CodeGenerator codeGenerator;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Transactional
     public OrderResponseDTO createOrder(BuyerEntity buyerEntity, OrderCreateRequestDTO dto) {
@@ -97,6 +109,9 @@ public class OrderServiceImpl implements OrderService {
         return orderMapper.toResponseDTO(savedOrder);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Slice<OrderResponseDTO> getOrdersByBuyer(BuyerEntity buyerEntity, Pageable pageable) {
         Page<OrderEntity> page = orderRepository.findAllByBuyer(buyerEntity, pageable);
@@ -107,6 +122,9 @@ public class OrderServiceImpl implements OrderService {
         );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public OrderResponseDTO getOrderByTrackingCode(String trackingCode) {
         OrderEntity orderEntity = orderRepository.findByTrackingCode(trackingCode)

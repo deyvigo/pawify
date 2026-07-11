@@ -22,6 +22,13 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Service;
 
+/**
+ * Implementation of {@link AdminService} that provides administrator
+ * operations for managing users and order statuses.
+ *
+ * <p>This service handles paginated retrieval of buyers and admins,
+ * and manages order shipping status transitions with validation.</p>
+ */
 @Service
 @AllArgsConstructor
 public class AdminServiceImpl implements AdminService {
@@ -31,6 +38,9 @@ public class AdminServiceImpl implements AdminService {
     private final AdminMapper adminMapper;
     private final OrderRepository orderRepository;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Slice<BuyerResponseSimpleDTO> getAllBuyers(Pageable pageable) {
         Page<BuyerEntity> page = buyerRepository.findAll(pageable);
@@ -41,6 +51,9 @@ public class AdminServiceImpl implements AdminService {
         );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Slice<AdminResponseSimpleDTO> getAllAdmins(Pageable pageable) {
         Page<AdminEntity> page = adminRepository.findAll(pageable);
@@ -51,6 +64,9 @@ public class AdminServiceImpl implements AdminService {
         );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void changeOrderStatusByOrderId(ChangeOrderStatusShipmentRequestDTO requestDTO, String trackingCode) {
         OrderEntity orderEntity = orderRepository.findByTrackingCode(trackingCode)

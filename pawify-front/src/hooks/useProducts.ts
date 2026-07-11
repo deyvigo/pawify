@@ -2,12 +2,21 @@ import { useState, useEffect, useCallback } from "react";
 import { api } from "../services/api";
 import { ProductResponseDTO } from "../types";
 
+/**
+ * Return type for the {@link useProducts} hook.
+ */
 interface UseProductsReturn {
+  /** Array of products matching the current query/filters */
   products: ProductResponseDTO[];
+  /** Whether the initial product load is in progress */
   loading: boolean;
+  /** Whether a next-page load is in progress */
   loadingMore: boolean;
+  /** Error message from the last failed request, or null */
   error: string | null;
+  /** Whether more pages of results are available */
   hasMore: boolean;
+  /** Function to load products with the given filter/sort parameters */
   loadProducts: (params: {
     search?: string;
     brand?: string;
@@ -18,11 +27,16 @@ interface UseProductsReturn {
     sort?: string;
     page?: number;
   }) => Promise<void>;
+  /** Function to load the next page of products using the current filters */
   loadMore: () => void;
+  /** Function to reload the first page with the current filters */
   refresh: () => Promise<void>;
 }
 
+/** Number of products to request per page. */
 const PAGE_SIZE = 20;
+
+/** Maps user-facing sort labels to API sort query parameters. */
 const SORT_MAP: Record<string, string> = {
   "price-asc": "price,asc",
   "price-desc": "price,desc",
@@ -32,6 +46,21 @@ const SORT_MAP: Record<string, string> = {
   "best-rated": "rating,desc",
 };
 
+/**
+ * Hook that manages product listing with filtering, sorting, and pagination.
+ *
+ * Fetches products from the `/product` endpoint and maintains scroll-based
+ * infinite loading state.
+ *
+ * @param authKey - Optional authentication key; products load only when this is provided.
+ * @returns The {@link UseProductsReturn} object with product data and control functions.
+ *
+ * @example
+ * ```tsx
+ * const { products, loading, loadProducts, loadMore } = useProducts(token);
+ * loadProducts({ search: "collar", sort: "price-asc" });
+ * ```
+ */
 export function useProducts(authKey?: string): UseProductsReturn {
   const [products, setProducts] = useState<ProductResponseDTO[]>([]);
   const [loading, setLoading] = useState(true);

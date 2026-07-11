@@ -14,12 +14,22 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Implementation of {@link AddressService} that manages buyer delivery addresses.
+ *
+ * <p>This service handles address creation, retrieval of active addresses,
+ * address deactivation with ownership checks, and address updates with
+ * authorization enforcement.</p>
+ */
 @Service
 @AllArgsConstructor
 public class AddressServiceImpl implements AddressService {
     private final AddressMapper addressMapper;
     private final AddressRepository addressRepository;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public AddressResponseDTO createAddress(AddressCreateRequestDTO addressCreateRequestDTO, BuyerEntity buyerEntity) {
         AddressEntity addressEntity = addressMapper.toEntity(addressCreateRequestDTO);
@@ -28,6 +38,9 @@ public class AddressServiceImpl implements AddressService {
         return addressMapper.toDTO(savedAddress);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<AddressResponseDTO> getAddressesByBuyer(BuyerEntity buyerEntity) {
         return addressRepository.findAllByBuyerAndActiveTrue(buyerEntity).stream()
@@ -35,6 +48,9 @@ public class AddressServiceImpl implements AddressService {
             .toList();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void deactivateAddress(Long addressId, BuyerEntity buyerEntity) {
         AddressEntity addressInDb = addressRepository.findById(addressId)
@@ -50,6 +66,9 @@ public class AddressServiceImpl implements AddressService {
         addressRepository.save(addressInDb);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public AddressResponseDTO updateAddressByBuyer(Long addressId, AddressCreateRequestDTO newAddress, BuyerEntity buyerEntity) {
         AddressEntity addressInDb = addressRepository.findById(addressId)

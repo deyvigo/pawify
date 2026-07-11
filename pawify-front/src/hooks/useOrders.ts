@@ -2,6 +2,22 @@ import { useState, useEffect, useCallback } from 'react';
 import { OrderResponseDTO } from '../types/orders';
 import { getOrdersByBuyer } from '../services/orderService';
 
+/**
+ * Hook that manages paginated order listing for the authenticated buyer.
+ *
+ * Fetches orders on mount and provides refresh/load-more capabilities along with
+ * an active filter state for the order list UI.
+ *
+ * @returns An object containing:
+ *   - `orders` - Array of order response DTOs loaded so far.
+ *   - `isLoading` - Boolean indicating the initial load is in progress.
+ *   - `isRefreshing` - Boolean indicating a pull-to-refresh is in progress.
+ *   - `isLoadingMore` - Boolean indicating a next-page load is in progress.
+ *   - `activeFilter` - Currently selected filter string (e.g. "Todos").
+ *   - `setActiveFilter` - Function to update the active filter.
+ *   - `handleRefresh` - Function to reload the first page of orders.
+ *   - `handleLoadMore` - Function to load the next page of orders.
+ */
 export const useOrders = () => {
     const [orders, setOrders] = useState<OrderResponseDTO[]>([]);
     const [page, setPage] = useState<number>(0);
