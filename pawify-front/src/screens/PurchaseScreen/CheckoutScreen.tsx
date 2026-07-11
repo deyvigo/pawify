@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Alert,
+  Image,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { colors } from "../../theme/colors";
@@ -115,7 +116,7 @@ export const CheckoutScreen: React.FC<CheckoutScreenProps> = ({
             <Ionicons name="arrow-back" size={26} color={colors.black} />
           </TouchableOpacity>
           <View style={styles.cartHeaderLogo}>
-            <Text style={styles.cartHeaderEmoji}>🐾</Text>
+            <Image source={require("../../../assets/logopawify.png")} style={styles.cartHeaderLogoImage} />
             <Text style={styles.cartHeaderTitle}>Pawify</Text>
           </View>
           <View style={styles.cartHeaderBtn} />
@@ -256,8 +257,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 6,
   },
-  cartHeaderEmoji: {
-    fontSize: 24,
+  cartHeaderLogoImage: {
+    width: 28,
+    height: 28,
+    resizeMode: "contain",
   },
   cartHeaderTitle: {
     fontSize: 22,

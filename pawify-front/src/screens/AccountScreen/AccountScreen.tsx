@@ -459,7 +459,10 @@ export const AccountScreen: React.FC = () => {
         <TouchableOpacity onPress={handleBack} style={styles.backButton}>
           <Ionicons name="arrow-back" size={28} color={colors.primary} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Mi cuenta</Text>
+        <View style={styles.headerLogo}>
+          <Image source={require("../../../assets/logopawify.png")} style={styles.headerLogoImage} />
+          <Text style={styles.headerTitle}>Pawify</Text>
+        </View>
         <View style={styles.placeholder} />
       </View>
 
@@ -584,6 +587,16 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
     color: colors.textPrimary,
+  },
+  headerLogo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  headerLogoImage: {
+    width: 28,
+    height: 28,
+    resizeMode: 'contain',
   },
   placeholder: {
     width: 40,
