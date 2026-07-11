@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface OrderRepositoryCustom {
     List<OrderEntity> findAllWithFilters(
-        CursorInternalDTO cursor, BuyerEntity buyer, Integer size, String status, String trackingCode
+        CursorInternalDTO cursor, BuyerEntity buyer, Integer size, String shippingStatus, String trackingCode
     );
 }
