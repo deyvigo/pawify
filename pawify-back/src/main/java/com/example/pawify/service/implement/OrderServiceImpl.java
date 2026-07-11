@@ -127,12 +127,12 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Page<OrderResponseDTO> getOrdersWithFilters(
-        String cursor, BuyerEntity buyer, Integer size, String status, String trackingCode
+        String cursor, BuyerEntity buyer, Integer size, String shippingStatus, String trackingCode
     ) {
         CursorInternalDTO internalCursor = cursor != null ? cursorUtil.decode(cursor) : null;
 
         List<OrderEntity> orderEntities = orderRepository.findAllWithFilters(
-            internalCursor, buyer, size + 1, status, trackingCode
+            internalCursor, buyer, size + 1, shippingStatus, trackingCode
         );
 
         boolean hasNext = orderEntities.size() > size;

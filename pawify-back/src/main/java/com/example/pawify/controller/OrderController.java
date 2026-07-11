@@ -50,10 +50,10 @@ public class OrderController {
     public ResponseEntity<Page<OrderResponseDTO>> getFilteredOrders(
         @AuthenticationPrincipal BuyerEntity buyerEntity,
         @RequestParam(required = false) String trackingCode,
-        @RequestParam(required = false) String status,
+        @RequestParam(required = false) String shippingStatus,
         @RequestParam(required = false) String cursor,
         @RequestParam(required = false, defaultValue = "10") Integer size
     ) {
-        return ResponseEntity.ok(orderService.getOrdersWithFilters(cursor, buyerEntity, size, status, trackingCode));
+        return ResponseEntity.ok(orderService.getOrdersWithFilters(cursor, buyerEntity, size, shippingStatus, trackingCode));
     }
 }

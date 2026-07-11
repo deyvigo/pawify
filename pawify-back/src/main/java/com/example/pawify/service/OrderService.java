@@ -14,6 +14,6 @@ public interface OrderService {
     OrderResponseDTO getOrderByTrackingCode(String trackingCode);
     void updateOrderStatusByOrderId(Long orderId, OrderStatus orderStatus);
     Page<OrderResponseDTO> getOrdersWithFilters(
-        String cursor, BuyerEntity buyer, Integer size, String status, String trackingCode
+        String cursor, BuyerEntity buyer, Integer size, String shippingStatus, String trackingCode
     );
 }

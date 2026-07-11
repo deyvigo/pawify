@@ -4,6 +4,7 @@ import com.example.pawify.dto.CursorInternalDTO;
 import com.example.pawify.model.BuyerEntity;
 import com.example.pawify.model.OrderEntity;
 import com.example.pawify.model.OrderStatus;
+import com.example.pawify.model.ShippingStatus;
 import com.example.pawify.repository.OrderRepositoryCustom;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -23,7 +24,7 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
 
     @Override
     public List<OrderEntity> findAllWithFilters(
-        CursorInternalDTO cursor, BuyerEntity buyer, Integer size, String status, String trackingCode
+        CursorInternalDTO cursor, BuyerEntity buyer, Integer size, String shippingStatus, String trackingCode
     ) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<OrderEntity> cq = cb.createQuery(OrderEntity.class);
@@ -35,12 +36,13 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
             predicates.add(cb.equal(root.get("buyer").get("id"), buyer.getId()));
         }
 
-        List<String> validStatus = List.of("PAID", "CANCELED", "PENDING", "FAILED");
-        if (status != null && !status.isBlank()) {
-            String upperStatus = status.toUpperCase();
+        List<String> validStatus = List.of("IN_TRANSIT", "DELIVERED");
+
+        if (shippingStatus != null && !shippingStatus.isBlank()) {
+            String upperStatus = shippingStatus.toUpperCase();
             if (validStatus.contains(upperStatus)) {
-                OrderStatus enumStatus = OrderStatus.valueOf(upperStatus);
-                predicates.add(cb.equal(root.get("orderStatus"), enumStatus));
+                ShippingStatus enumStatus = ShippingStatus.valueOf(upperStatus);
+                predicates.add(cb.equal(root.get("shippingStatus"), enumStatus));
             } else {
                 predicates.add(cb.disjunction());
             }
