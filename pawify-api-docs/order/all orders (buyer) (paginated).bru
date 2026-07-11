@@ -5,20 +5,20 @@ meta {
 }
 
 get {
-  url: {{actual_url}}/order?size=3
+  url: {{actual_url}}/order?shippingStatus=in_transit&size=3
   body: none
   auth: bearer
 }
 
 params:query {
+  shippingStatus: in_transit
   size: 3
-  ~status: canceled
   ~cursor: eyJpbnN0YW50IjoxNzgxMzU1ODMyLjgzNzY1MjAwMCwiaWQiOjN9
   ~trackingCode: k
 }
 
 auth:bearer {
-  token: eyJhbGciOiJIUzI1NiJ9.eyJsYXN0X25hbWUiOiJCdXllciIsImZpcnN0X25hbWUiOiJBbmRyZWEiLCJpZCI6MTEsInJvbGUiOiJCVVlFUiIsInVzZXJuYW1lIjoiYnV5ZXIxIiwiZXhwIjoxNzg0MzE3NTA3fQ.MHrT3AqTkRJhDM8J_jE-FPqj79X5GzogKOPkkgDf5J8
+  token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQlVZRVIiLCJpZCI6MTEsImZpcnN0X25hbWUiOiJBbmRyZWEiLCJsYXN0X25hbWUiOiJCdXllciIsInVzZXJuYW1lIjoiYnV5ZXIxIiwiZXhwIjoxNzg0MzQ1NTg0fQ.8uWSeRiuIhiGVlBuht0Uiua0Uh3_OdP4oEifkqv1VuE
 }
 
 settings {
