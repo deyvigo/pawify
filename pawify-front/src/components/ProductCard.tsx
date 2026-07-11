@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -10,6 +10,9 @@ import {
 import { colors } from "../theme/colors";
 import { StarRating } from "./StarRating";
 import { Product } from "../types/product";
+import { getReviews } from "../services/reviewService";
+
+const statsCache = new Map<number, { rating: number; sold: number }>();
 
 
 interface ProductCardProps {
@@ -25,6 +28,58 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   onPress,
   style,
 }) => {
+  const [stats, setStats] = useState(() => {
+    if (statsCache.has(product.productId)) {
+      return statsCache.get(product.productId)!;
+    }
+    return { rating: product.rating || 0, sold: product.sold || 0 };
+  });
+
+  // 3. Efecto ligero: Solo consulta si NO está en caché
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchRealStats = async () => {
+      if (!statsCache.has(product.productId)) {
+        try {
+          // Pedimos 50 de golpe solo para intentar tener el promedio más exacto posible.
+          // Esto no usa tu hook, usa tu servicio directamente para no contaminar estados.
+          const response = await getReviews(product.productId, 0, 50);
+          const reviews = response.content;
+
+          if (isMounted) {
+            if (reviews.length > 0) {
+              const totalStars = reviews.reduce((acc, curr) => acc + curr.rating, 0);
+              const averageRating = totalStars / reviews.length;
+              
+              const newStats = {
+                rating: averageRating,
+                sold: Math.max(product.sold, reviews.length),
+              };
+              
+              // Guardamos en caché y actualizamos la UI
+              statsCache.set(product.productId, newStats);
+              setStats(newStats);
+            } else {
+              // Si no hay reseñas, guardamos los valores por defecto en caché
+              // para no volver a consultar al backend por gusto.
+              const defaultStats = { rating: product.rating || 0, sold: product.sold || 0 };
+              statsCache.set(product.productId, defaultStats);
+              setStats(defaultStats);
+            }
+          }
+        } catch (error) {
+          console.error(`Error silencioso cargando reseñas para el producto ${product.productId}`, error);
+        }
+      }
+    };
+
+    fetchRealStats();
+
+    return () => {
+      isMounted = false; // Cleanup para evitar actualizar componentes desmontados
+    };
+  }, [product.productId, product.rating, product.sold]);
   return (
     <TouchableOpacity
       activeOpacity={0.9}
@@ -41,8 +96,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           {product.name}
         </Text>
         <View style={styles.infoRow}>
-          <Text style={styles.soldText}>{product.sold} vendidos</Text>
-          <StarRating rating={product.rating} />
+          <Text style={styles.soldText}>{stats.sold} vendidos</Text>
+          <StarRating rating={stats.rating} />
         </View>
         <View style={styles.bottomRow}>
           <Text style={styles.price}>S/{product.price.toFixed(2)}</Text>

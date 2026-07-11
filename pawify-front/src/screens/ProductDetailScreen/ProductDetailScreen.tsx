@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 import {
   View,
   Text,
@@ -56,6 +56,26 @@ export const ProductDetailScreen: React.FC<ProductDetailScreenProps> = ({
   const scrollRef = useRef<ScrollView>(null);
   const { addToCart } = useAppContext();
   const { reviews, loading: reviewsLoading, hasMore, loadMore } = useReviews(product.productId);
+
+  const displayStats = useMemo(() => {
+    // Si no hay reseñas o siguen cargando, usamos la data estática del backend
+    if (!reviews || reviews.length === 0) {
+      return {
+        rating: product.rating || 0,
+        sold: product.sold || 0,
+      };
+    }
+
+    // Sumamos todas las estrellas y las dividimos entre la cantidad de reseñas
+    const totalStars = reviews.reduce((acc, curr) => acc + curr.rating, 0);
+    const averageRating = totalStars / reviews.length;
+
+    return {
+      rating: averageRating,
+      // Si hay más reseñas que ventas registradas, mostramos la cantidad de reseñas
+      sold: product.sold > reviews.length ? product.sold : reviews.length, 
+    };
+  }, [reviews, product.rating, product.sold]);
 
   useEffect(() => {
     console.log(`[ProductDetailScreen] reviews for product ${product.productId}:`, reviews.length, reviewsLoading ? '(loading)' : '(done)');
@@ -156,9 +176,9 @@ export const ProductDetailScreen: React.FC<ProductDetailScreenProps> = ({
           </View>
           
           <View style={styles.ratingRow}>
-            <StarRating rating={product.rating} />
+            <StarRating rating={displayStats.rating} />
             <Text style={styles.ratingText}>
-              {product.rating.toFixed(1)} ({product.sold} ventas)
+              {displayStats.rating.toFixed(1)} ({displayStats.sold} ventas)
             </Text>
             <Text style={styles.shareCode}>#{product.share_code}</Text>
           </View>
@@ -166,7 +186,7 @@ export const ProductDetailScreen: React.FC<ProductDetailScreenProps> = ({
           <View style={styles.priceRow}>
             <Text style={styles.price}>S/{product.price.toFixed(2)}</Text>
             <View style={styles.activeBadge}>
-               <Text style={styles.activeText}>Active</Text>
+              <Text style={styles.activeText}>Active</Text>
             </View>
           </View>
 
