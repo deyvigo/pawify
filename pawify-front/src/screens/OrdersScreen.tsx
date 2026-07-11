@@ -15,48 +15,17 @@ interface OrdersScreenProps {
     onNavigateToDetail: (order: OrderResponseDTO) => void;
 }
 
-const FILTERS = ['Todos', 'En camino', 'Entregados', 'Cancelados'];
+const FILTERS = ['Todos', 'En camino', 'Entregados'];
 
 export const OrdersScreen = ({ onNavigateToDetail }: OrdersScreenProps) => {
-    // 1. Usamos el Hook para obtener toda la lógica
     const { 
         orders, isLoading, isRefreshing, isLoadingMore, 
-        activeFilter, setActiveFilter, handleRefresh, handleLoadMore 
+        activeFilter, setActiveFilter, searchQuery, setSearchQuery, 
+        handleRefresh, handleLoadMore 
     } = useOrders();
-
-    const [searchQuery, setSearchQuery] = useState('');
-
-
-    const filteredOrders = useMemo(() => {
-        return orders.filter(order => {
-            //Filtro por tracking
-            const safeTracking = order.tracking_code || '';
-            const matchesSearch = safeTracking.toLowerCase().includes(searchQuery.toLowerCase());
-            
-            if (!matchesSearch) return false; 
-
-            // Filtro por estado
-            const shipStatus = (order.shipping_status || '').toUpperCase();
-            const ordStatus = (order.order_status || '').toUpperCase();
-
-            switch (activeFilter) {
-                case 'En camino':
-                    // Está en tránsito y NO está cancelado
-                    return shipStatus === 'IN_TRANSIT' && ordStatus !== 'CANCELED' && ordStatus !== 'FAILED';
-                case 'Entregados':
-                    return shipStatus === 'DELIVERED';
-                case 'Cancelados':
-                    return ordStatus === 'CANCELED' || ordStatus === 'FAILED';
-                case 'Todos':
-                default:
-                    return true;
-            }
-        });
-    }, [orders, activeFilter,searchQuery]);
 
     return (
         <SafeAreaView style={styles.container}>
-            {/* Header Fijo */}
             <View style={styles.header}>
                 <View style={styles.headerTitleRow}>
                     <Image source={require('../../assets/logopawify.png')} style={styles.headerLogo} />
@@ -64,20 +33,18 @@ export const OrdersScreen = ({ onNavigateToDetail }: OrdersScreenProps) => {
                 </View>
             </View>
 
-            {/*  Barra de Búsqueda */}
             <View style={styles.searchContainer}>
                 <TextInput
                     style={styles.searchInput}
                     placeholder="Buscar por número de tracking (#)"
                     placeholderTextColor="#9CA3AF"
                     value={searchQuery}
-                    onChangeText={setSearchQuery}
+                    onChangeText={setSearchQuery} 
                     autoCapitalize="characters" 
                     autoCorrect={false}
                 />
             </View>
 
-            {/* Filtros Horizontales */}
             <View style={styles.filtersContainer}>
                 <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filtersScroll}>
                     {FILTERS.map((filter) => (
@@ -94,17 +61,15 @@ export const OrdersScreen = ({ onNavigateToDetail }: OrdersScreenProps) => {
                 </ScrollView>
             </View>
 
-            {/* Contenido Principal */}
+            {/* le pasamos "orders" de frente al FlatList */}
             {isLoading ? (
                 <ActivityIndicator size="large" color="#FF1A1A" style={{ marginTop: 50 }} />
-            ) : filteredOrders.length === 0 ? (
-                // Usamos nuestro nuevo componente de Estado Vacío
+            ) : orders.length === 0 ? (
                 <EmptyOrders />
             ) : (
                 <FlatList
-                    data={filteredOrders}
+                    data={orders}
                     keyExtractor={(item) => item.id.toString()}
-                    // Usamos el componente OrderCard
                     renderItem={({ item }) => <OrderCard order={item} onPressDetail={onNavigateToDetail} />}
                     contentContainerStyle={styles.listContainer}
                     showsVerticalScrollIndicator={false}

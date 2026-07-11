@@ -8,8 +8,29 @@ export const createOrder = async (orderData: OrderCreateRequestDTO): Promise<Ord
     return response as unknown as OrderResponseDTO;
 };
 
-export const getOrdersByBuyer = async (page: number = 0, size: number = 10, sort: string = 'orderAt,desc'): Promise<SliceResponse<OrderResponseDTO>> => {
-    const response = await api.get(`/order?page=${page}&size=${size}&sort=${sort}`);
+export const getFilteredOrders = async (
+    cursor?: string,
+    size: number = 10,
+    shippingStatus?: string,
+    trackingCode?: string
+): Promise<SliceResponse<OrderResponseDTO>> => {
+    
+    const params = new URLSearchParams();
+    params.append('size', size.toString());
+    
+    if (cursor && cursor !== 'undefined') {
+        params.append('cursor', cursor);
+    }
+    
+    if (shippingStatus) {
+        params.append('shippingStatus', shippingStatus);
+    }
+    
+    if (trackingCode) {
+        params.append('trackingCode', trackingCode);
+    }
+
+    const response = await api.get(`/order?${params.toString()}`);
     return response as unknown as SliceResponse<OrderResponseDTO>;
 };
 
