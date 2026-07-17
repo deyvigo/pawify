@@ -11,6 +11,7 @@ import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.Map;
 
+// Servicio JWT: generacion, parseo y validacion de tokens
 @Service
 public class JwtService {
     @Value("${security.jwt.secret-key}")
@@ -19,10 +20,12 @@ public class JwtService {
     @Value("${security.jwt.expiration-time}")
     private Long expirationTime;
 
+    // Construye la clave HMAC-SHA desde la clave Base64 configurada
     private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
     }
 
+    // Construye un access token con los claims indicados y expiracion configurada
     public String buildAccessToken(Map<String, Object> claims) {
         return Jwts.builder()
             .claims(claims)
@@ -31,6 +34,7 @@ public class JwtService {
             .compact();
     }
 
+    // Construye un refresh token con expiracion de 7 dias
     public String buildRefreshToken(String username) {
         return Jwts.builder()
             .claims(Map.of("username", username))
@@ -39,6 +43,7 @@ public class JwtService {
             .compact();
     }
 
+    // Extrae y valida el payload de claims de un JWT, retorna null si la firma es invalida
     public Map<String, Object> extractPayload(String token) {
         try {
             return Jwts.parser()
@@ -51,6 +56,7 @@ public class JwtService {
         }
     }
 
+    // Valida la firma y estructura de un JWT
     public boolean isValidToken(String token) {
         try {
             Jwts.parser()
@@ -63,6 +69,7 @@ public class JwtService {
         }
     }
 
+    // Extrae el claim username de un JWT
     public String getUsernameFromToken(String token) {
         Map<String, Object> claims = extractPayload(token);
         return claims != null ? (String) claims.get("username") : null;

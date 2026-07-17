@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Alert } from 'react-native';
 import { loginUser } from '../services/authService';
 
+// Maneja el flujo de login con validacion y llamada a la API
 export const useAuthentication = (onLoginSuccess: (userData: any) => void) => {
     const [isLoading, setIsLoading] = useState(false);
 

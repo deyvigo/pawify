@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Alert } from 'react-native';
 import { registerUser } from '../services/authService';
 
+// Maneja el flujo de registro de usuario con validacion y llamada a la API
 export const useRegister = () => {
     const [isLoading, setIsLoading] = useState(false);
 

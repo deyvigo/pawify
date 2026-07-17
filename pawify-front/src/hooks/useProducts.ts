@@ -2,12 +2,19 @@ import { useState, useEffect, useCallback } from "react";
 import { api } from "../services/api";
 import { ProductResponseDTO } from "../types";
 
+// Tipo de retorno del hook useProducts
 interface UseProductsReturn {
+  // Lista de productos cargados
   products: ProductResponseDTO[];
+  // Cargando productos iniciales
   loading: boolean;
+  // Cargando mas productos (scroll infinito)
   loadingMore: boolean;
+  // Mensaje de error, o null
   error: string | null;
+  // Hay mas paginas disponibles
   hasMore: boolean;
+  // Carga productos con filtros/ordenamiento dados
   loadProducts: (params: {
     search?: string;
     brand?: string;
@@ -18,11 +25,16 @@ interface UseProductsReturn {
     sort?: string;
     page?: number;
   }) => Promise<void>;
+  // Carga la siguiente pagina de productos
   loadMore: () => void;
+  // Recarga la primera pagina con los filtros actuales
   refresh: () => Promise<void>;
 }
 
+// Cantidad de productos por pagina
 const PAGE_SIZE = 20;
+
+// Mapa de etiquetas de ordenamiento a parametros de la API
 const SORT_MAP: Record<string, string> = {
   "price-asc": "price,asc",
   "price-desc": "price,desc",
@@ -32,6 +44,7 @@ const SORT_MAP: Record<string, string> = {
   "best-rated": "rating,desc",
 };
 
+// Maneja el listado de productos con filtros, ordenamiento y paginacion
 export function useProducts(authKey?: string): UseProductsReturn {
   const [products, setProducts] = useState<ProductResponseDTO[]>([]);
   const [loading, setLoading] = useState(true);

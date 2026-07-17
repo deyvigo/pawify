@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+// Implementacion del servicio de gestion de reviews
 @Service
 @AllArgsConstructor
 public class ReviewServiceImpl implements ReviewService {
@@ -30,6 +31,7 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewRepository reviewRepository;
     private final ReviewMapper reviewMapper;
 
+    // Crea un review validando propiedad del detalle y subiendo imagenes
     @Override
     @Transactional
     public ReviewResponseDTO createReview(
@@ -71,6 +73,7 @@ public class ReviewServiceImpl implements ReviewService {
         return reviewMapper.toResponseDTO(savedReview);
     }
 
+    // Lista reviews de un producto con paginacion
     @Override
     public Slice<ReviewResponseDTO> getReviewByProductId(Long productId, Pageable pageable) {
         Page<ReviewEntity> page = reviewRepository.findAllByProduct_Id(pageable, productId);
@@ -81,6 +84,7 @@ public class ReviewServiceImpl implements ReviewService {
         );
     }
 
+    // Elimina un review validando que el comprador sea el propietario
     @Override
     public void deleteReview(BuyerEntity entity, Long reviewId) {
         ReviewEntity reviewEntity = reviewRepository.findById(reviewId)

@@ -12,12 +12,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+// Controlador de operaciones de usuario
 @RestController
 @RequestMapping("/user")
 @AllArgsConstructor
 public class UserController {
     private final UserService userService;
 
+    // Cambia la contrasena del usuario autenticado
     @PostMapping("/password")
     public ResponseEntity<Void> changePassword(
         @AuthenticationPrincipal UserEntity userEntity,

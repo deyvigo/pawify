@@ -12,12 +12,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+// Controlador de categorias de productos
 @RestController
 @RequestMapping("/category")
 @AllArgsConstructor
 public class CategoryController {
     private CategoryService categoryService;
 
+    // Lista todas las categorias ordenadas alfabeticamente
     @GetMapping("")
     public ResponseEntity<List<CategoryResponseDTO>> findAllOrderedByName() {
         return ResponseEntity.ok(categoryService.findAllOrderedByNameAsc());

@@ -13,12 +13,14 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+// Controlador de perfil de comprador
 @RestController
 @RequestMapping("/buyer")
 @AllArgsConstructor
 public class BuyerController {
     private BuyerService buyerService;
 
+    // Obtiene la informacion del perfil del comprador
     @GetMapping("")
     public ResponseEntity<BuyerResponseSimpleDTO> getBuyerInfo(
         @AuthenticationPrincipal BuyerEntity buyerEntity
@@ -26,6 +28,7 @@ public class BuyerController {
         return ResponseEntity.ok(buyerService.getBuyer(buyerEntity));
     }
 
+    // Actualiza la imagen de perfil del comprador
     @PutMapping("/profile")
     public ResponseEntity<BuyerImageResponseDTO> updateProfile(
         @AuthenticationPrincipal BuyerEntity buyerEntity,
@@ -34,6 +37,7 @@ public class BuyerController {
         return ResponseEntity.ok(buyerService.createOrUpdateImage(buyerEntity, image));
     }
 
+    // Actualiza los datos personales del comprador
     @PatchMapping("")
     public ResponseEntity<UpdateBuyerResponseDTO> updateBuyer(
         @AuthenticationPrincipal BuyerEntity buyer,

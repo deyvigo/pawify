@@ -13,12 +13,14 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+// Controlador de gestion de pedidos
 @RestController
 @RequestMapping("/order")
 @AllArgsConstructor
 public class OrderController {
     private final OrderService orderService;
 
+    // Crea un nuevo pedido para el comprador autenticado
     @PreAuthorize("hasRole('BUYER')")
     @PostMapping("")
     public ResponseEntity<OrderResponseDTO> createOrder(
@@ -28,6 +30,7 @@ public class OrderController {
         return ResponseEntity.ok(orderService.createOrder(buyerEntity, orderCreateRequestDTO));
     }
 
+    // Lista los pedidos del comprador autenticado con paginacion
     @PreAuthorize("hasRole('BUYER')")
     @GetMapping("")
     public ResponseEntity<Slice<OrderResponseDTO>> getOrdersByBuyer(
@@ -37,6 +40,7 @@ public class OrderController {
         return ResponseEntity.ok(orderService.getOrdersByBuyer(buyerEntity, pageable));
     }
 
+    // Busca un pedido por su codigo de rastreo
     @GetMapping("/{trackingCode}")
     public ResponseEntity<OrderResponseDTO> getOrdersByTrackingCode(
         @PathVariable String trackingCode

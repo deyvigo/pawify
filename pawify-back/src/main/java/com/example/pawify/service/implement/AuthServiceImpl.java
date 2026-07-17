@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.Map;
 
+// Implementacion del servicio de autenticacion
 @Service
 @AllArgsConstructor
 public class AuthServiceImpl implements AuthService {
@@ -36,6 +37,7 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordResetTokenRepository passwordResetTokenRepository;
     private final EmailService emailService;
 
+    // Registra un administrador validando unicidad de username y DNI
     @Override
     public AdminRegisterResponseDTO registerAdmin(AdminRegisterRequestDTO dto) {
         if (userRepository.existsByUsername(dto.username())) throw new UsernameAlreadyUsedException("Username is already in use");
@@ -52,6 +54,7 @@ public class AuthServiceImpl implements AuthService {
         return adminMapper.toResponseDTO(savedAdminEntity);
     }
 
+    // Registra un comprador validando unicidad de username, DNI y email
     @Override
     public BuyerRegisterResponseDTO registerBuyer(BuyerRegisterRequestDTO dto) {
         if (userRepository.existsByUsername(dto.username()))  throw new UsernameAlreadyUsedException("Username is already in use");
@@ -69,6 +72,7 @@ public class AuthServiceImpl implements AuthService {
         return buyerMapper.toResponseDTO(savedBuyerEntity);
     }
 
+    // Valida credenciales y retorna access y refresh tokens
     @Override
     public JwtDTO login(LoginRequestDTO dto) {
         UserEntity userEntity = userRepository.findByUsername(dto.username())
@@ -85,6 +89,7 @@ public class AuthServiceImpl implements AuthService {
         return new JwtDTO(token, refreshToken);
     }
 
+    // Valida el refresh token y genera nuevos tokens
     @Override
     public JwtDTO refreshToken(LoginWithTokensRequestDTO dto) {
         if (!jwtService.isValidToken(dto.refreshToken())) throw new UserInvalidCredentialsException("Invalid refresh token");
@@ -100,6 +105,7 @@ public class AuthServiceImpl implements AuthService {
         return new JwtDTO(token, refreshToken);
     }
 
+    // Genera un codigo de recuperacion y lo envia por email
     @Override
     @Transactional
     public UsernameVerificationResponseDTO sendRecoveryCode(RecoveryCodeRequestDTO dto) {
@@ -130,6 +136,7 @@ public class AuthServiceImpl implements AuthService {
         }
     }
 
+    // Verifica que el codigo de recuperacion sea valido y no este expirado
     @Override
     public VerificationCodeResponseDTO verifyToken(String username, String token) {
         UserEntity userEntity = userRepository.findByUsername(username)
@@ -151,6 +158,7 @@ public class AuthServiceImpl implements AuthService {
         );
     }
 
+    // Resetea la contrasena y marca el token como usado
     @Override
     @Transactional
     public void resetPassword(PasswordRecoveryRequestDTO dto) {
@@ -175,6 +183,7 @@ public class AuthServiceImpl implements AuthService {
         passwordResetTokenRepository.save(passwordResetTokenEntity);
     }
 
+    // Construye claims con datos del usuario para el JWT
     private Map<String, Object> buildClaimsFromUser(UserEntity userEntity) {
         return Map.of(
             "id", userEntity.getId(),

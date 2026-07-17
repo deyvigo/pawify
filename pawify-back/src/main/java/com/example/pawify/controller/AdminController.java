@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 
+// Controlador de operaciones administrativas
 @RestController
 @RequestMapping("/admin")
 @AllArgsConstructor
@@ -26,16 +27,19 @@ public class AdminController {
     private final AdminService adminService;
     private final ProductService productService;
 
+    // Lista todos los compradores registrados con paginacion
     @GetMapping("/buyers")
     public ResponseEntity<Page<BuyerResponseSimpleDTO>> getAllBuyers(Pageable pageable) {
         return ResponseEntity.ok(adminService.getAllBuyers(pageable));
     }
 
+    // Lista todos los administradores registrados con paginacion
     @GetMapping("/admins")
     public ResponseEntity<Page<AdminResponseSimpleDTO>> getAllAdmins(Pageable pageable) {
         return ResponseEntity.ok(adminService.getAllAdmins(pageable));
     }
 
+    // Actualiza el estado de envio de un pedido
     @PatchMapping("/order/{trackingCode}/shipping-status")
     public ResponseEntity<Void> changeOrderStatus(
         @Valid @RequestBody ChangeOrderStatusShipmentRequestDTO requestDTO,

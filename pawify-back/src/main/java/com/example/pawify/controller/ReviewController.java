@@ -15,12 +15,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+// Controlador de resenas de productos
 @RestController
 @RequestMapping("/review")
 @AllArgsConstructor
 public class ReviewController {
     private final ReviewService reviewService;
 
+    // Crea una resena para un producto con imagenes opcionales
     @PostMapping("")
     public ResponseEntity<ReviewResponseDTO> createReview(
         @AuthenticationPrincipal BuyerEntity buyerEntity,
@@ -30,6 +32,7 @@ public class ReviewController {
         return ResponseEntity.ok(reviewService.createReview(buyerEntity, reviewCreateRequestDTO, images));
     }
 
+    // Lista las resenas de un producto con paginacion
     @GetMapping("/product/{productId}")
     public ResponseEntity<Slice<ReviewResponseDTO>> getAllReviewsByProductId(
         @PathVariable Long productId,
@@ -38,6 +41,7 @@ public class ReviewController {
         return ResponseEntity.ok(reviewService.getReviewByProductId(productId, pageable));
     }
 
+    // Elimina una resena del comprador autenticado
     @DeleteMapping("/{reviewId}")
     public ResponseEntity<Void> deleteReview(
         @AuthenticationPrincipal BuyerEntity buyerEntity,

@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Stream;
 
+// Filtro JWT que valida tokens del header Authorization en cada request
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
@@ -37,6 +38,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         this.userDetailsService = userDetailsService;
     }
 
+    // Extrae el token JWT del header Authorization
     private String getTokenFromRequest(HttpServletRequest req) {
         String bearerToken = req.getHeader("Authorization");
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
@@ -45,6 +47,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         return null;
     }
 
+    // Extrae el token, valida y establece la autenticacion en el contexto de seguridad
     @Override
     protected void doFilterInternal(
         HttpServletRequest request,

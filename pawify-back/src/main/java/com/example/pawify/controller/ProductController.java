@@ -19,12 +19,14 @@ import org.springframework.web.multipart.MultipartFile;
 import java.math.BigDecimal;
 import java.util.List;
 
+// Controlador de gestion de productos
 @RestController
 @RequestMapping("/product")
 @AllArgsConstructor
 public class ProductController {
     private ProductService productService;
 
+    // Crea un nuevo producto con imagenes
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ProductResponseSimpleDTO> createProduct(
@@ -35,6 +37,7 @@ public class ProductController {
         return ResponseEntity.ok(productService.createProduct(productCreateRequestDTO, images, userEntity));
     }
 
+    // Lista productos activos con filtros opcionales
     @GetMapping("")
     public ResponseEntity<Page<ProductResponseSimpleDTO>> getProducts(
         @RequestParam(required = false) String search,
@@ -50,6 +53,7 @@ public class ProductController {
         ));
     }
 
+    // Desactiva un producto por su share code
     @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/{shareCode}/deactivate")
     public ResponseEntity<Void> deactivateProduct(
@@ -59,6 +63,7 @@ public class ProductController {
         return ResponseEntity.noContent().build();
     }
 
+    // Activa un producto por su share code
     @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/{shareCode}/activate")
     public ResponseEntity<Void> activateProduct(
@@ -68,6 +73,7 @@ public class ProductController {
         return ResponseEntity.noContent().build();
     }
 
+    // Obtiene un producto por su ID
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponseSimpleDTO> getProductById(
         @PathVariable Long id
@@ -75,6 +81,7 @@ public class ProductController {
         return ResponseEntity.ok(productService.getProductById(id));
     }
 
+    // Actualiza los datos de un producto existente
     @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/{id}")
     public ResponseEntity<ProductResponseSimpleDTO> updateProduct(

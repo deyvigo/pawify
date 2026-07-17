@@ -1,15 +1,23 @@
 import { useState, useEffect, useCallback } from "react";
 import { getCards, CardDTO, CardCreateRequest, createCard, updateCard } from "../services/cardService";
 
+// Tipo de retorno del hook useCards
 interface UseCardsReturn {
+  // Lista de tarjetas del usuario
   cards: CardDTO[];
+  // Cargando tarjetas
   loading: boolean;
+  // Mensaje de error, o null
   error: string | null;
+  // Recarga manualmente la lista de tarjetas
   refetch: () => Promise<void>;
+  // Crea una tarjeta nueva y recarga la lista
   addCard: (data: CardCreateRequest) => Promise<void>;
+  // Actualiza una tarjeta existente y recarga la lista
   editCard: (id: number, data: CardCreateRequest) => Promise<void>;
 }
 
+// Maneja las tarjetas de pago del usuario con operaciones CRUD
 export function useCards(token?: string): UseCardsReturn {
   const [cards, setCards] = useState<CardDTO[]>([]);
   const [loading, setLoading] = useState(false);

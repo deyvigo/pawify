@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+// Implementacion del servicio de consulta de categorias
 @Service
 @AllArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
@@ -20,6 +21,7 @@ public class CategoryServiceImpl implements CategoryService {
     private final SubCategoryRepository subCategoryRepository;
     private final SubCategoryMapper subCategoryMapper;
 
+    // Retorna todas las categorias ordenadas alfabeticamente
     @Override
     public List<CategoryResponseDTO> findAllOrderedByNameAsc() {
         return categoryRepository.findByOrderByNameAsc()

@@ -10,12 +10,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+// Controlador de estados de rastreo de pedidos
 @RestController
 @RequestMapping("/tracking-status")
 @AllArgsConstructor
 public class TrackingStatusController {
     private final TrackingStatusService trackingStatusService;
 
+    // Crea un nuevo estado de rastreo para un pedido (solo admin)
     @PostMapping("")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<TrackingStatusResponseDTO> createTrackingStatus(
@@ -26,6 +28,7 @@ public class TrackingStatusController {
         ));
     }
 
+    // Lista el historial de rastreo de un pedido por su codigo
     @GetMapping("/{trackingCode}")
     public ResponseEntity<Page<TrackingStatusResponseDTO>> getTrackingStatusesByOrder(
         @PathVariable String trackingCode,

@@ -1,16 +1,25 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { getReviews, createReview, ReviewDTO, ReviewCreateRequest, SliceReviewResponse } from "../services/reviewService";
 
+// Tipo de retorno del hook useReviews
 interface UseReviewsReturn {
+  // Lista de resenas cargadas
   reviews: ReviewDTO[];
+  // Cargando resenas
   loading: boolean;
+  // Mensaje de error, o null
   error: string | null;
+  // Hay mas paginas disponibles
   hasMore: boolean;
+  // Recarga la primera pagina de resenas
   refetch: () => Promise<void>;
+  // Carga la siguiente pagina de resenas
   loadMore: () => Promise<void>;
+  // Crea una resena y recarga la lista
   addReview: (data: Omit<ReviewCreateRequest, 'detail_id'>) => Promise<void>;
 }
 
+// Maneja las resenas paginadas de un producto con funcionalidad de crear
 export function useReviews(productId: number, token?: string): UseReviewsReturn {
   const [reviews, setReviews] = useState<ReviewDTO[]>([]);
   const [loading, setLoading] = useState(false);

@@ -16,6 +16,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
+// Configuracion de seguridad de Spring: CORS, JWT, roles y rutas
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -24,6 +25,7 @@ public class SecurityConfiguration {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
+    // Configura la cadena de filtros de seguridad HTTP
     @Bean
     public SecurityFilterChain customSecurityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -59,6 +61,7 @@ public class SecurityConfiguration {
         return http.build();
     }
 
+    // Configura CORS permitiendo origenes de localhost
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();

@@ -1,6 +1,7 @@
 import { API_URL, authToken } from "../config";
 import axios from "axios";
 
+// Envia una peticion HTTP al backend y retorna la respuesta parseada
 async function request<T>(
   endpoint: string,
   options: RequestInit = {},
@@ -32,13 +33,16 @@ async function request<T>(
   return textResponse ? JSON.parse(textResponse) : {};
 }
 
+// Cliente HTTP pre-configurado para la API REST de Pawify
 export const api = {
+  // Envia un GET al endpoint indicado
   get: <T>(endpoint: string) =>
     request<T>(endpoint, {
       method: "GET",
       headers: authToken ? { Authorization: `Bearer ${authToken}` } : {},
     }),
 
+  // Envia un POST con body JSON al endpoint indicado
   post: <T>(endpoint: string, body: any) =>
     request<T>(endpoint, {
       method: "POST",
@@ -46,6 +50,7 @@ export const api = {
       headers: authToken ? { Authorization: `Bearer ${authToken}` } : {},
     }),
 
+  // Envia un PATCH con body JSON opcional al endpoint indicado
   patch: <T>(endpoint: string, body?: any) =>
     request<T>(endpoint, {
       method: "PATCH",

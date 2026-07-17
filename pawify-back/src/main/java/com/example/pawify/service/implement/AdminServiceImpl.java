@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 
+// Implementacion del servicio de operaciones administrativas
 @Service
 @AllArgsConstructor
 public class AdminServiceImpl implements AdminService {
@@ -38,18 +39,21 @@ public class AdminServiceImpl implements AdminService {
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
 
+    // Lista todos los compradores con paginacion
     @Override
     public Page<BuyerResponseSimpleDTO> getAllBuyers(Pageable pageable) {
         Page<BuyerEntity> page = buyerRepository.findAll(pageable);
         return page.map(buyerMapper::toResponseSimpleDTO);
     }
 
+    // Lista todos los administradores con paginacion
     @Override
     public Page<AdminResponseSimpleDTO> getAllAdmins(Pageable pageable) {
         Page<AdminEntity> page = adminRepository.findAll(pageable);
         return page.map(adminMapper::toResponseSimpleDTO);
     }
 
+    // Cambia el estado de envio validando la transicion permitida
     @Override
     public void changeOrderStatusByOrderId(ChangeOrderStatusShipmentRequestDTO requestDTO, String trackingCode) {
         OrderEntity orderEntity = orderRepository.findByTrackingCode(trackingCode)

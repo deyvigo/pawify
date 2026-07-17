@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+// Implementacion del servicio de estados de tracking
 @Service
 @AllArgsConstructor
 public class TrackingStatusServiceImpl implements TrackingStatusService {
@@ -26,6 +27,7 @@ public class TrackingStatusServiceImpl implements TrackingStatusService {
     private final TrackingStatusRepository trackingStatusRepository;
     private final CursorUtil cursorUtil;
 
+    // Crea una entrada de tracking vinculada a una orden
     @Override
     public TrackingStatusResponseDTO createTrackingStatus(TrackingStatusCreateRequestDTO requestDTO) {
         OrderEntity orderEntity = orderRepository.findById(requestDTO.orderId())
@@ -36,6 +38,7 @@ public class TrackingStatusServiceImpl implements TrackingStatusService {
         return trackingStatusMapper.fromEntityToDTO(trackingStatusRepository.save(trackingStatusEntity));
     }
 
+    // Lista historial de tracking con paginacion por cursor
     @Override
     public Page<TrackingStatusResponseDTO> getAllByTrackingCode(String trackingCode, String cursor, Integer size) {
         OrderEntity orderEntity = orderRepository.findByTrackingCode(trackingCode)

@@ -1,15 +1,23 @@
 import { useState, useEffect, useCallback } from "react";
 import { getAddresses, AddressDTO, AddressCreateRequest, createAddress, updateAddress } from "../services/addressService";
 
+// Tipo de retorno del hook useAddresses
 interface UseAddressesReturn {
+  // Lista de direcciones del usuario
   addresses: AddressDTO[];
+  // Cargando direcciones
   loading: boolean;
+  // Mensaje de error, o null
   error: string | null;
+  // Recarga manualmente la lista de direcciones
   refetch: () => Promise<void>;
+  // Crea una direccion nueva y recarga la lista
   addAddress: (data: AddressCreateRequest) => Promise<void>;
+  // Actualiza una direccion existente y recarga la lista
   editAddress: (id: number, data: AddressCreateRequest) => Promise<void>;
 }
 
+// Maneja las direcciones de envio del usuario con operaciones CRUD
 export function useAddresses(token?: string): UseAddressesReturn {
   const [addresses, setAddresses] = useState<AddressDTO[]>([]);
   const [loading, setLoading] = useState(true);

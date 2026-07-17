@@ -6,12 +6,14 @@ import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
 
+// Implementacion del generador de codigos alfanumericos con SecureRandom
 @Service
 @AllArgsConstructor
 public class CodeGeneratorImpl implements CodeGenerator {
     private final String CHARACTERS = "abcdefghijklmnopqrstuvwxyz1234567890";
     private final SecureRandom random = new SecureRandom();
 
+    // Genera un codigo aleatorio de la longitud indicada
     @Override
     public String generateCode(int length) {
         StringBuilder code = new StringBuilder(length);
@@ -22,6 +24,7 @@ public class CodeGeneratorImpl implements CodeGenerator {
         return code.toString();
     }
 
+    // Genera un codigo de 10 caracteres por defecto
     @Override
     public String generateCode() {
         return generateCode(10);

@@ -28,6 +28,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+// Implementacion del servicio de catalogo de productos
 @Service
 @AllArgsConstructor
 public class ProductServiceImpl implements ProductService {
@@ -40,6 +41,7 @@ public class ProductServiceImpl implements ProductService {
     private final CategoryRepository categoryRepository;
     private final SubCategoryRepository subCategoryRepository;
 
+    // Crea un producto validando rol ADMIN, subiendo imagenes y generando share code
     @Override
     @Transactional
     public ProductResponseSimpleDTO createProduct(
@@ -119,6 +121,7 @@ public class ProductServiceImpl implements ProductService {
         return productMapper.toResponseDTO(savedProduct);
     }
 
+    // Busca productos activos con filtros via JPA Specifications
     @Override
     public Page<ProductResponseSimpleDTO> getProducts(
         String search,
@@ -153,6 +156,7 @@ public class ProductServiceImpl implements ProductService {
         return page.map(productMapper::toResponseDTO);
     }
 
+    // Desactiva un producto por share code
     @Override
     public void deactivateProduct(String shareCode) {
         ProductEntity productEntity = productRepository.findByShareCode(shareCode)
@@ -164,6 +168,7 @@ public class ProductServiceImpl implements ProductService {
         productRepository.save(productEntity);
     }
 
+    // Activa un producto por share code
     @Override
     public void activateProduct(String shareCode) {
         ProductEntity productEntity = productRepository.findByShareCode(shareCode)
@@ -175,11 +180,13 @@ public class ProductServiceImpl implements ProductService {
         productRepository.save(productEntity);
     }
 
+    // Obtiene un producto por ID
     @Override
     public ProductResponseSimpleDTO getProductById(Long id) {
         return productMapper.toResponseDTO(productRepository.findById(id).orElse(null));
     }
 
+    // Actualiza producto y crea brand/category/subcategory si no existen
     @Override
     public ProductResponseSimpleDTO updateProduct(Long id, ProductCreateRequestDTO dto) {
         ProductEntity productInDb = productRepository.findById(id)

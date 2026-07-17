@@ -9,12 +9,14 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+// Implementacion del servicio de gestion de cuenta de usuario
 @Service
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
 
+    // Valida contrasena actual y confirmacion, luego guarda la nueva
     @Override
     public void changePasswordByOwner(UserEntity user, ChangePasswordRequestDTO requestDTO) {
         if (!passwordEncoder.matches(requestDTO.currentPassword(), user.getPassword())) {

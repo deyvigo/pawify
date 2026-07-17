@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { OrderResponseDTO } from '../types/orders';
 import { getFilteredOrders } from '../services/orderService';
 
+// Maneja el listado paginado de ordenes del comprador con filtros y refresh
 export const useOrders = () => {
     const [orders, setOrders] = useState<OrderResponseDTO[]>([]);
     const [cursor, setCursor] = useState<string | undefined>(undefined);

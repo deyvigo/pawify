@@ -2,13 +2,19 @@ import { useState, useEffect, useCallback } from "react";
 import { api } from "../services/api";
 import { BuyerProfileDTO } from "../types";
 
+// Tipo de retorno del hook useBuyerProfile
 interface UseBuyerProfileReturn {
+  // Datos del perfil del comprador, o null si no esta cargado
   buyerData: BuyerProfileDTO | null;
+  // Cargando perfil
   loading: boolean;
+  // Mensaje de error, o null
   error: string | null;
+  // Recarga manualmente el perfil del comprador
   refetch: () => Promise<void>;
 }
 
+// Carga y cachea el perfil del comprador autenticado
 export function useBuyerProfile(authKey?: string): UseBuyerProfileReturn {
   const [buyerData, setBuyerData] = useState<BuyerProfileDTO | null>(null);
   const [loading, setLoading] = useState(true);

@@ -9,12 +9,14 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+// Implementacion del servicio de consulta de marcas
 @Service
 @AllArgsConstructor
 public class BrandServiceImpl implements BrandService {
     private final BrandRepository brandRepository;
     private final BrandMapper brandMapper;
 
+    // Retorna todas las marcas ordenadas alfabeticamente
     @Override
     public List<BrandResponseDTO> findAllOrderedByNameAsc() {
         return brandRepository.findByOrderByNameAsc().stream()

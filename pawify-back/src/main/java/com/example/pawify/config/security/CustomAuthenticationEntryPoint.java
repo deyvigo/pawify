@@ -10,8 +10,10 @@ import tools.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.Map;
 
+// Entry point que retorna JSON 401 cuando no hay autenticacion
 @Component
 public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
+    // Escribe una respuesta JSON con status 401 y mensaje "Unauthorized"
     @Override
     public void commence(
         HttpServletRequest req,

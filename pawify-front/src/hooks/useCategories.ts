@@ -2,13 +2,19 @@ import { useState, useEffect } from "react";
 import { api } from "../services/api";
 import { CategoryResponseDTO, BrandResponseDTO } from "../types";
 
+// Tipo de retorno del hook useCategories
 interface UseCategoriesReturn {
+  // Lista de categorias cargadas
   categories: CategoryResponseDTO[];
+  // Lista de marcas cargadas
   brands: BrandResponseDTO[];
+  // Datos cargando
   loading: boolean;
+  // Mensaje de error, o null
   error: string | null;
 }
 
+// Carga y cachea categorias y marcas desde la API
 export function useCategories(authKey?: string): UseCategoriesReturn {
   const [categories, setCategories] = useState<CategoryResponseDTO[]>([]);
   const [brands, setBrands] = useState<BrandResponseDTO[]>([]);

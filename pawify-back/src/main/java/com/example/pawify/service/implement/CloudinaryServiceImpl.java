@@ -10,11 +10,13 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.Map;
 
+// Implementacion del servicio de subida de imagenes a Cloudinary
 @Service
 @AllArgsConstructor
 public class CloudinaryServiceImpl implements CloudinaryService {
     private final Cloudinary cloudinary;
 
+    // Sube imagen a Cloudinary y retorna la URL segura
     @Override
     public String uploadImage(MultipartFile file) {
         try {

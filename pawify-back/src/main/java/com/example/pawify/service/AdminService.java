@@ -12,9 +12,16 @@ import org.springframework.data.domain.Slice;
 
 import java.math.BigDecimal;
 
+// Servicio de operaciones administrativas
 public interface AdminService {
+
+    // Lista todos los compradores con paginacion
     Page<BuyerResponseSimpleDTO> getAllBuyers(Pageable pageable);
+
+    // Lista todos los administradores con paginacion
     Page<AdminResponseSimpleDTO> getAllAdmins(Pageable pageable);
+
+    // Cambia el estado de envio de una orden validando la transicion
     void changeOrderStatusByOrderId(ChangeOrderStatusShipmentRequestDTO newShippingStatus, String trackingCode);
     Page<OrderSimpleResponseDTO> getAllOrders(Pageable pageable, String trackingCode);
     AdminResponseSimpleDTO getAdmin(AdminEntity adminEntity);
