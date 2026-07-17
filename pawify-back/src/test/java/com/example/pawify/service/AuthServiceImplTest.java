@@ -270,7 +270,6 @@ class AuthServiceImplTest {
 
             when(buyerRepository.findByUsername("existinguser")).thenReturn(Optional.of(buyer));
             when(codeGenerator.generateCode(6)).thenReturn("123456");
-            when(passwordEncoder.encode("123456")).thenReturn("hashedCode");
             when(passwordResetTokenRepository.save(any())).thenReturn(new PasswordResetTokenEntity());
             doNothing().when(emailService).sendRecoveryCodeToEmail(anyString(), anyString());
 

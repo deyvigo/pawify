@@ -121,7 +121,7 @@ class OrderServiceImplTest {
             savedOrder.setTotalPrice(BigDecimal.valueOf(200));
 
             OrderResponseDTO expectedResponse = new OrderResponseDTO(
-                1L, BigDecimal.valueOf(200), null, "TRACK123", null, null
+                1L, BigDecimal.valueOf(200), null, "TRACK123", null, null, null, null
             );
 
             OrderCreateRequestDTO dto = new OrderCreateRequestDTO(
@@ -166,7 +166,7 @@ class OrderServiceImplTest {
             when(orderRepository.existsByTrackingCode("TRACK123")).thenReturn(false);
             when(orderRepository.save(any(OrderEntity.class))).thenReturn(savedOrder);
             when(orderMapper.toResponseDTO(savedOrder)).thenReturn(
-                new OrderResponseDTO(1L, BigDecimal.valueOf(250), null, "TRACK123", null, null)
+                new OrderResponseDTO(1L, BigDecimal.valueOf(250), null, "TRACK123", null, null, null, null)
             );
 
             orderService.createOrder(buyer, dto);
@@ -188,7 +188,7 @@ class OrderServiceImplTest {
             order.setId(1L);
 
             Page<OrderEntity> page = new PageImpl<>(List.of(order), pageable, 1);
-            OrderResponseDTO responseDTO = new OrderResponseDTO(1L, BigDecimal.valueOf(100), null, "TRACK123", null, null);
+            OrderResponseDTO responseDTO = new OrderResponseDTO(1L, BigDecimal.valueOf(100), null, "TRACK123", null, null, null, null);
 
             when(orderRepository.findAllByBuyer(buyer, pageable)).thenReturn(page);
             when(orderMapper.toResponseDTO(order)).thenReturn(responseDTO);
@@ -221,7 +221,7 @@ class OrderServiceImplTest {
             order.setId(1L);
             order.setTrackingCode("VALID123");
 
-            OrderResponseDTO responseDTO = new OrderResponseDTO(1L, BigDecimal.valueOf(100), null, "VALID123", null, null);
+            OrderResponseDTO responseDTO = new OrderResponseDTO(1L, BigDecimal.valueOf(100), null, "VALID123", null, null, null, null);
 
             when(orderRepository.findByTrackingCode("VALID123")).thenReturn(Optional.of(order));
             when(orderMapper.toResponseDTO(order)).thenReturn(responseDTO);

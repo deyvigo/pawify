@@ -20,5 +20,10 @@ cloudinary:
   api-key: test-api-key
   api-secret: test-api-secret
 
+stripe:
+  secret-key: sk_test_mock_stripe_key_for_integration_tests
+  publishable-key: pk_test_mock_stripe_key_for_integration_tests
+  webhook-secret: whsec_mock_webhook_secret_for_integration_tests
+
 sendgrid:
   api-key: test-sendgrid-key

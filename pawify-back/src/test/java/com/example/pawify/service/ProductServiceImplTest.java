@@ -21,7 +21,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.SliceImpl;
+
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -165,7 +165,7 @@ class ProductServiceImplTest {
             when(brandRepository.save(any(BrandEntity.class))).thenReturn(newBrand);
             when(categoryRepository.findByNameIgnoreCase("category1")).thenReturn(Optional.empty());
             when(categoryRepository.save(any(CategoryEntity.class))).thenReturn(category);
-            when(subCategoryRepository.findByNameIgnoreCase("subcat1")).thenReturn(Optional.empty());
+            when(subCategoryRepository.findByNameIgnoreCaseAndCategory_Name("subcat1", "category1")).thenReturn(Optional.empty());
             when(subCategoryRepository.save(any(SubCategoryEntity.class))).thenReturn(subCategory);
             when(productMapper.toEntity(dto)).thenReturn(new ProductEntity());
             when(productRepository.save(any(ProductEntity.class))).thenReturn(savedProduct);
@@ -192,7 +192,9 @@ class ProductServiceImplTest {
             existingBrand.setName("existingbrand");
 
             CategoryEntity category = new CategoryEntity();
+            category.setName("category1");
             SubCategoryEntity subCategory = new SubCategoryEntity();
+            subCategory.setName("subcat1");
 
             ProductEntity savedProduct = new ProductEntity();
             savedProduct.setId(1L);
@@ -208,7 +210,7 @@ class ProductServiceImplTest {
             when(codeGenerator.generateCode()).thenReturn("SHARE123");
             when(brandRepository.findByNameIgnoreCase("brandx")).thenReturn(Optional.of(existingBrand));
             when(categoryRepository.findByNameIgnoreCase("category1")).thenReturn(Optional.of(category));
-            when(subCategoryRepository.findByNameIgnoreCase("subcat1")).thenReturn(Optional.of(subCategory));
+            when(subCategoryRepository.findByNameIgnoreCaseAndCategory_Name("subcat1", "category1")).thenReturn(Optional.of(subCategory));
             when(productMapper.toEntity(dto)).thenReturn(new ProductEntity());
             when(productRepository.save(any(ProductEntity.class))).thenReturn(savedProduct);
             when(cloudinaryService.uploadImage(any())).thenReturn("http://image.url");
@@ -287,7 +289,7 @@ class ProductServiceImplTest {
             when(productRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(page);
             when(productMapper.toResponseDTO(product)).thenReturn(responseDTO);
 
-            Slice<ProductResponseSimpleDTO> result = productService.getProducts(
+            Page<ProductResponseSimpleDTO> result = productService.getProducts(
                 null, null, null, null, null, null, pageable
             );
 
@@ -311,7 +313,7 @@ class ProductServiceImplTest {
             when(productRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(page);
             when(productMapper.toResponseDTO(product)).thenReturn(responseDTO);
 
-            Slice<ProductResponseSimpleDTO> result = productService.getProducts(
+            Page<ProductResponseSimpleDTO> result = productService.getProducts(
                 "Test", null, null, null, null, null, pageable
             );
 
@@ -343,8 +345,11 @@ class ProductServiceImplTest {
             existingProduct.setName("Old Name");
 
             BrandEntity brand = new BrandEntity();
+            brand.setName("BrandX");
             CategoryEntity category = new CategoryEntity();
+            category.setName("Category1");
             SubCategoryEntity subCategory = new SubCategoryEntity();
+            subCategory.setName("SubCat1");
 
             ProductResponseSimpleDTO expectedResponse = new ProductResponseSimpleDTO(
                 1L, "Product 1", "Description", BigDecimal.valueOf(99.99),
@@ -355,7 +360,7 @@ class ProductServiceImplTest {
             when(productRepository.findById(1L)).thenReturn(Optional.of(existingProduct));
             when(brandRepository.findByNameIgnoreCase("BrandX")).thenReturn(Optional.of(brand));
             when(categoryRepository.findByNameIgnoreCase("Category1")).thenReturn(Optional.of(category));
-            when(subCategoryRepository.findByNameIgnoreCase("SubCat1")).thenReturn(Optional.of(subCategory));
+            when(subCategoryRepository.findByNameIgnoreCaseAndCategory_Name("SubCat1", "Category1")).thenReturn(Optional.of(subCategory));
             when(productRepository.save(any(ProductEntity.class))).thenReturn(existingProduct);
             when(productMapper.toResponseDTO(existingProduct)).thenReturn(expectedResponse);
 
