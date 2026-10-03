@@ -36,16 +36,20 @@ export const AddressModal = ({ visible, onClose }: AddressModalProps) => {
   const handleCreateAddress = async () => {
     if (!address.name.trim() || !address.reference.trim()) {
       Alert.alert("Error", "Completa todos los campos correctamente");
+      return;
     }
 
-    addressMutation.mutate(address, {
-      onSuccess: (newAddress) => {
-        queryClient.setQueryData<AddressResponseDTO[]>(["address"], (prev) =>
-          prev ? [...prev, newAddress] : [newAddress],
-        );
-        onClose();
+    addressMutation.mutate(
+      { ...address, name: address.name.trim(), reference: address.reference.trim() },
+      {
+        onSuccess: (newAddress) => {
+          queryClient.setQueryData<AddressResponseDTO[]>(["address"], (prev) =>
+            prev ? [...prev, newAddress] : [newAddress],
+          );
+          onClose();
+        },
       },
-    });
+    );
   };
 
   return (
