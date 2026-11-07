@@ -121,4 +121,16 @@
 ### 10. Como usuario quiero registrar un reclamo para reportar problemas con mi pedido (HU20)
 #### Criterios de aceptación
 * Si el usuario completa el formulario de registro de un reclamo, el sistema debe mostrar un mensaje de confirmación
-* Si el usuario no completa el formulario de registro de un reclamo, el sistema debe mostrar un mensaje de error
+* Si el usuario no completa el formulario de registro de un reclamo, el sistema debe mostrar un mensaje de error``
+
+## Asistente Virtual
+
+### 11. Como usuario quiero interactuar con un chatbot para recibir sugerencias de productos basadas en las necesidades de mi mascota (HU21)
+#### Criterios de aceptación
+* Dado que el usuario accede al chatbot, cuando escribe una consulta sobre una necesidad (ej. "alimento para cachorro"), entonces el sistema debe procesar el texto y responder con una lista de productos relevantes del catálogo activo
+* Dado que el chatbot recibe una consulta, si no encuentra productos relacionados o no hay stock, entonces el sistema debe responder con un mensaje informativo y sugerir categorías generales
+
+### 12. Como usuario quiero navegar al detalle de un producto directamente desde el mensaje del chatbot para comprarlo ágilmente (HU22)
+#### Criterios de aceptación
+* Dado que el chatbot muestra un producto sugerido, cuando el usuario presiona dicha sugerencia, entonces el sistema debe redirigirlo automáticamente a la vista de detalle de ese producto
+* Dado que el usuario es redirigido a la vista de detalle desde el chatbot, cuando presiona el botón de retroceso, entonces debe regresar a la vista de conversación manteniendo el historial de mensajes intacto
