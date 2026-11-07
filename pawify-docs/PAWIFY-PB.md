@@ -48,3 +48,5 @@ _Funcionalidades complementarias o secundarias que se implementarán en futuras 
 | **HU20** | Registrar un reclamo                | Usuario       | Como usuario quiero registrar un reclamo para manifestar mi inconformidad con el servicio. |
 | **HU09** | Visualizar reclamos recibidos       | Administrador | Como administrador quiero visualizar reclamos para conocer las quejas de los clientes.     |
 | **HU10** | Responder reclamos                  | Administrador | Como administrador quiero responder los reclamos para dar solución a los usuarios.         |
+| **HU21** | Recomendaciones por chatbot         | Usuario       | Como usuario quiero interactuar con un chatbot para recibir sugerencias de productos basadas en las necesidades de mi mascota. |
+| HU22 | Navegar desde el chatbot | Usuario | Como usuario quiero navegar al detalle de un producto directamente desde el mensaje del chatbot para comprarlo ágilmente. |
