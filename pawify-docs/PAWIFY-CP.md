@@ -1,4 +1,4 @@
 # Cronograma de Proyecto — Pawify
 
 ![Cronograma](./images/Cronograma-Pawify.png)
-https://docs.google.com/spreadsheets/d/1TcnPmtEB5q9UKGrEKbVbDK4Duvg0LnzPc1ZwmA6Vvf0/edit?gid=0#gid=0
+https://docs.google.com/spreadsheets/d/1aq3yHfsybFxvnN57zX_o0XExVc-g3AW_lA5UNJwJOdI/edit?usp=sharing
