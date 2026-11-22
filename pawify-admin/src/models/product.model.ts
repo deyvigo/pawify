@@ -13,6 +13,11 @@ export interface ISubCategory {
   name: string
 }
 
+export interface IProductImage {
+  id: number
+  url: string
+}
+
 export interface IProduct {
   id: number
   name: string
@@ -24,6 +29,7 @@ export interface IProduct {
   description: string
   category: ICategory
   sub_category: ISubCategory
+  images: IProductImage[]
 }
 
 export interface IGetProductsParams {

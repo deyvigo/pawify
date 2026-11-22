@@ -107,10 +107,11 @@ public class ProductServiceImpl implements ProductService {
         Set<ProductImageEntity> imageEntities = new HashSet<>();
 
         for (MultipartFile image : images) {
-            String url = cloudinaryService.uploadImage(image);
+            CloudinaryService.UploadedImage uploaded = cloudinaryService.uploadImage(image);
 
             ProductImageEntity imageEntity = new ProductImageEntity();
-            imageEntity.setUrl(url);
+            imageEntity.setUrl(uploaded.url());
+            imageEntity.setPublicId(uploaded.publicId());
             imageEntity.setProduct(savedProduct);
 
             imageEntities.add(imageRepository.save(imageEntity));

@@ -16,6 +16,12 @@ import { FormCreateProduct } from '@/components/product/FormCreateProduct'
 
 const titles = [
   {
+    name: 'IMAGEN',
+    center: true,
+    key: 'images',
+    sortable: false
+  },
+  {
     name: 'CÓDIGO',
     center: false,
     key: 'shareCode',
@@ -58,6 +64,23 @@ const titles = [
     sortable: false
   }
 ]
+
+const ProductThumbnail = ({ url, name }: { url?: string; name: string }) => {
+  const [failed, setFailed] = useState(false)
+
+  if (!url || failed) {
+    return <span className='text-subtitle text-xs'>Sin imagen</span>
+  }
+
+  return (
+    <img
+      src={url}
+      alt={name}
+      className='w-10 h-10 rounded-lg object-cover'
+      onError={() => setFailed(true)}
+    />
+  )
+}
 
 export const ProductsPage = () => {
   const [search, setSearch] = useState<string>('')
@@ -165,6 +188,11 @@ export const ProductsPage = () => {
                   key={product.id}
                   className='border-primary-border border-b last:border-b-0 first:border-t text-left'
                 >
+                  <td className='px-4 py-2 text-center'>
+                    <div className='flex justify-center'>
+                      <ProductThumbnail url={product.images?.[0]?.url} name={product.name} />
+                    </div>
+                  </td>
                   <td className='px-4 py-3'>{product.share_code}</td>
                   <td className='px-4 py-3'>{product.name}</td>
                   <td className='px-4 py-3'>{product.brand.name}</td>

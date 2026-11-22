@@ -1,4 +1,4 @@
-import { formatDateCompact, formatDateTime } from '@/utils/date'
+import { formatDateCompact } from '@/utils/date'
 
 interface MessageBubbleProps {
   message: string
@@ -7,7 +7,7 @@ interface MessageBubbleProps {
   time: string
 }
 
-export const MessageBubble = ({ message, side, name, time }: MessageBubbleProps) => {
+export const MessageBubble = ({ message, side, time }: MessageBubbleProps) => {
   return (
     <div className={`flex ${side === 'left' ? 'justify-start' : 'justify-end'}`}>
       <div

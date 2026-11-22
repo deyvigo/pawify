@@ -16,9 +16,9 @@ import java.util.Map;
 public class CloudinaryServiceImpl implements CloudinaryService {
     private final Cloudinary cloudinary;
 
-    // Sube imagen a Cloudinary y retorna la URL segura
+    // Sube imagen a Cloudinary y retorna su URL segura y su public_id
     @Override
-    public String uploadImage(MultipartFile file) {
+    public UploadedImage uploadImage(MultipartFile file) {
         try {
             Map uploadResult = cloudinary.uploader().upload(
                 file.getBytes(),
@@ -26,7 +26,10 @@ public class CloudinaryServiceImpl implements CloudinaryService {
                     "folder", "pawify"
                 )
             );
-            return uploadResult.get("secure_url").toString();
+            return new UploadedImage(
+                uploadResult.get("secure_url").toString(),
+                uploadResult.get("public_id").toString()
+            );
         } catch (IOException e) {
             throw new RuntimeException("Failed to upload image to Cloudinary", e);
         }

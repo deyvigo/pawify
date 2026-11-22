@@ -60,8 +60,9 @@ public class ReviewServiceImpl implements ReviewService {
         if (images != null && !images.isEmpty()) {
             for (MultipartFile m: images) {
                 ReviewImageEntity imageEntity = new ReviewImageEntity();
-                String url = cloudinaryService.uploadImage(m);
-                imageEntity.setUrl(url);
+                CloudinaryService.UploadedImage uploaded = cloudinaryService.uploadImage(m);
+                imageEntity.setUrl(uploaded.url());
+                imageEntity.setPublicId(uploaded.publicId());
                 imageEntity.setReview(reviewEntity);
 
                 reviewEntity.getImages().add(imageEntity);

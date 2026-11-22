@@ -8,6 +8,7 @@ import com.example.pawify.exception.UnauthorizedRequestException;
 import com.example.pawify.mapper.ProductMapper;
 import com.example.pawify.model.*;
 import com.example.pawify.repository.*;
+import com.example.pawify.service.CloudinaryService;
 import com.example.pawify.service.implement.ProductServiceImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -169,7 +170,8 @@ class ProductServiceImplTest {
             when(subCategoryRepository.save(any(SubCategoryEntity.class))).thenReturn(subCategory);
             when(productMapper.toEntity(dto)).thenReturn(new ProductEntity());
             when(productRepository.save(any(ProductEntity.class))).thenReturn(savedProduct);
-            when(cloudinaryService.uploadImage(any())).thenReturn("http://image.url");
+            when(cloudinaryService.uploadImage(any()))
+                .thenReturn(new CloudinaryService.UploadedImage("http://image.url", "pawify/test-image"));
             when(imageRepository.save(any(ProductImageEntity.class))).thenReturn(new ProductImageEntity());
             when(productMapper.toResponseDTO(savedProduct)).thenReturn(expectedResponse);
 
@@ -213,7 +215,8 @@ class ProductServiceImplTest {
             when(subCategoryRepository.findByNameIgnoreCaseAndCategory_Name("subcat1", "category1")).thenReturn(Optional.of(subCategory));
             when(productMapper.toEntity(dto)).thenReturn(new ProductEntity());
             when(productRepository.save(any(ProductEntity.class))).thenReturn(savedProduct);
-            when(cloudinaryService.uploadImage(any())).thenReturn("http://image.url");
+            when(cloudinaryService.uploadImage(any()))
+                .thenReturn(new CloudinaryService.UploadedImage("http://image.url", "pawify/test-image"));
             when(imageRepository.save(any(ProductImageEntity.class))).thenReturn(new ProductImageEntity());
             when(productMapper.toResponseDTO(savedProduct)).thenReturn(expectedResponse);
 

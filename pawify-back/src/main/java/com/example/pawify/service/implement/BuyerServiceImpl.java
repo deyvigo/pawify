@@ -45,7 +45,7 @@ public class BuyerServiceImpl implements BuyerService {
             throw new ImagesNotProvidedException("Image not provided");
         }
 
-        String path = cloudinaryService.uploadImage(image);
+        CloudinaryService.UploadedImage uploaded = cloudinaryService.uploadImage(image);
 
         BuyerImageEntity buyerImageEntity = buyerFromDb.getProfile();
         if (buyerImageEntity == null) {
@@ -54,7 +54,8 @@ public class BuyerServiceImpl implements BuyerService {
             buyerFromDb.setProfile(buyerImageEntity);
         }
 
-        buyerImageEntity.setUrl(path);
+        buyerImageEntity.setUrl(uploaded.url());
+        buyerImageEntity.setPublicId(uploaded.publicId());
         BuyerEntity saved = buyerRepository.save(buyerFromDb);
         return buyerProfileMapper.toDTO(saved.getProfile());
     }

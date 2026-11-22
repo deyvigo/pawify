@@ -14,8 +14,11 @@ public class TestCloudinaryConfig {
     public CloudinaryService cloudinaryService() {
         return new CloudinaryService() {
             @Override
-            public String uploadImage(MultipartFile file) {
-                return "http://test-cloudinary.com/image.jpg";
+            public UploadedImage uploadImage(MultipartFile file) {
+                return new UploadedImage(
+                    "http://test-cloudinary.com/image.jpg",
+                    "pawify/test-image"
+                );
             }
         };
     }

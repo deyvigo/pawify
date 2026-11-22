@@ -1,0 +1,39 @@
+# Definicion comun para local y produccion.
+#
+#   Local: docker compose up --build
+#          (carga automaticamente compose.override.yaml)
+#
+#   Prod:  docker compose -f compose.yaml -f compose.prod.yaml up -d --build
+#
+# Las variables se leen de .env (env_file), que no se versiona.
+
+services:
+  db:
+    image: postgres:16
+    container_name: pawify-db
+    env_file:
+      - .env
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - ./database/init:/docker-entrypoint-initdb.d
+    networks:
+      - internal
+
+  backend:
+    build: .
+    container_name: pawify-backend
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - .env
+    networks:
+      - internal
+
+networks:
+  internal:
+    driver: bridge
